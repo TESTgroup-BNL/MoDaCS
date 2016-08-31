@@ -10,26 +10,28 @@ class Inst_obj(QtCore.QObject):
     index = 0
     n = 0
     status = QtCore.pyqtSignal(int, str)
-    dPath = ""
+    finished = QtCore.pyqtSignal()
         
-    def __init__(self,params,globalPath,**kwds):     #Inst object init - this is the same for all instruments
-        super().__init__(**kwds)
+    def __init__(self,params,globalPath):     #Inst object init - this is the same for all instruments
+        super().__init__()
         
         self.inst_cfg = params
         
         if params["Data"]["Destination"] == None or params["Data"]["Destination"] == "":
-            self.dPath = globalPath + "\\" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "\\"  #Using global location and default instrument directory
+            dPath = globalPath + "\\" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "\\"  #Using global location and default instrument directory
         elif isabs(params["Data"]["Destination"]):
-            self.dPath = params["Data"]["Destination"] + "\\"        #Using absolute path from instrument config
+            dPath = params["Data"]["Destination"] + "\\"        #Using absolute path from instrument config
         else:
-            self.dPath = globalPath + "\\" + params["Data"]["Destination"] + "\\"       #Using global location and relative directory from instrument config
+            dPath = globalPath + "\\" + params["Data"]["Destination"] + "\\"       #Using global location and relative directory from instrument config
             
-        makedirs(self.dPath, exist_ok=True)
+        makedirs(dPath, exist_ok=True)
+        
+        self.inst_cfg["Data"]["dPath"] = dPath
         
         self.instLog = logging.getLogger(params["InstrumentInfo"]["Name"].replace(" ", "_"))
-        logPath = self.dPath + str(strftime("\\\\%Y-%m-%d_%H%M%S_" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "_Log.txt"))
+        logPath = dPath + str(strftime("\\\\%Y-%m-%d_%H%M%S_" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "_Log.txt"))
                 
-        formatter = logging.Formatter('[%(levelname)s], %(asctime)s, %(message)s')
+        formatter = logging.Formatter('[%(levelname)s] (%(threadName)-10s), %(asctime)s, %(message)s')
         formatter.datefmt = '%Y/%m/%d %I:%M:%S'
         fileHandler = logging.FileHandler(logPath, mode='w')
         fileHandler.setFormatter(formatter)
@@ -68,7 +70,7 @@ class CameraShutter:
         
     def snapshot(self):
         GPIO.output(self.shutter, True)
-        sleep(.25)
+        sleep(10)
         GPIO.output(self.shutter, False)
         
     def shutdown(self):

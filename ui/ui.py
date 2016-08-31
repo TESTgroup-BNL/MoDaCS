@@ -153,9 +153,9 @@ class Ui_MainWindow(object):
         self.btn_Start = QtWidgets.QPushButton(self.centralWidget)
         self.btn_Start.setGeometry(QtCore.QRect(270, 70, 41, 23))
         self.btn_Start.setObjectName("btn_Start")
-        self.btn_Reset = QtWidgets.QPushButton(self.centralWidget)
-        self.btn_Reset.setGeometry(QtCore.QRect(270, 120, 41, 23))
-        self.btn_Reset.setObjectName("btn_Reset")
+        self.btn_Stop = QtWidgets.QPushButton(self.centralWidget)
+        self.btn_Stop.setGeometry(QtCore.QRect(270, 120, 41, 23))
+        self.btn_Stop.setObjectName("btn_Stop")
         self.lcdNumber = QtWidgets.QLCDNumber(self.centralWidget)
         self.lcdNumber.setGeometry(QtCore.QRect(270, 20, 41, 23))
         self.lcdNumber.setDigitCount(3)
@@ -191,7 +191,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Telem"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("MainWindow", "Data"))
         self.btn_Start.setText(_translate("MainWindow", "Start"))
-        self.btn_Reset.setText(_translate("MainWindow", "Reset"))
+        self.btn_Stop.setText(_translate("MainWindow", "Stop"))
         self.label.setText(_translate("MainWindow", "Touch\n"
 "Lock"))
 

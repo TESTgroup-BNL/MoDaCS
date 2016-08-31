@@ -50,6 +50,8 @@ class Trigger(QtCore.QObject):
             
             logging.info("Interval: " + str(self.trig_int))
             logging.info("Repeat: " + str(self.trig_repeat))
+            
+            
         
     def trigger(self,source):
         
@@ -70,6 +72,10 @@ class Trigger(QtCore.QObject):
     def t_Start(self):
         self.t.start(self.trig_int)
         
+    def t_Stop(self):
+        self.t.stop()
+     
+        
         
         
 class Instruments(QtCore.QObject):
@@ -78,8 +84,9 @@ class Instruments(QtCore.QObject):
     update_table = QtCore.pyqtSignal(object)
     
     active_insts = []
+    inst_threads =[]
     
-    def init(self, instlist, dPath):
+    def init(self, instlist, globalPath):
         
         self.status.emit("Loading Instruments...")
         
@@ -90,14 +97,21 @@ class Instruments(QtCore.QObject):
                 cp_inst = configparser.ConfigParser()
                 cp_inst.read('.\\instruments\\' + inst + '\\inst_cfg.ini')
                 
+                #Create inst objects
                 inst_mod = importlib.import_module("instruments." + inst + ".inst_interface")
-                self.active_insts.append(inst_mod.Inst_obj(cp_inst, dPath))
-                self.active_insts[index].index = index
-                self.active_insts[index].init()
+                self.active_insts.append(inst_mod.Inst_obj(cp_inst, globalPath))
+                self.active_insts[index].index = index  
+                   
+                #Creat inst threads
+                self.inst_threads.append(QtCore.QThread())
+                self.active_insts[index].moveToThread(self.inst_threads[index])             #move the inst object to it's thread
+                self.active_insts[index].finished.connect(self.inst_threads[index].quit)    #make sure thread exits when inst is closed
+                self.inst_threads[index].started.connect(self.active_insts[index].init)   #make sure object init when thread starts
+                self.inst_threads[index].start()                                            #start the thread
                 
                 self.update_table.emit(cp_inst)
                 
-                logging.info("Instrument Loaded: " + cp_inst["InstrumentInfo"]["Name"] + ", Model: " + cp_inst["InstrumentInfo"]["Model"])
+                logging.info("Instrument Loaded: " + cp_inst["InstrumentInfo"]["Name"] + ", Model: " + cp_inst["InstrumentInfo"]["Model"] + ", Thread: " + str(self.inst_threads[index].currentThread()))
                 
                 index += 1
 
@@ -138,6 +152,7 @@ class Main(QtWidgets.QMainWindow):
         self.trig.status.connect(self.update_run_status)
         self.trig.progress.connect(self.update_trig_prog)
         self.ui.btn_Start.released.connect(self.trig.t_Start)
+        self.ui.btn_Stop.released.connect(self.trig.t_Stop)
         
         for i in self.inst.active_insts:
             self.trig.aq_trig.connect(i.acquire)

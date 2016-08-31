@@ -439,7 +439,7 @@
      <string>Start</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btn_Reset">
+   <widget class="QPushButton" name="btn_Stop">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -449,7 +449,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Reset</string>
+     <string>Stop</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="lcdNumber">

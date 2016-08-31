@@ -11,26 +11,28 @@ class Inst_obj(QtCore.QObject):
     index = 0
     n = 0
     status = QtCore.pyqtSignal(int, str)
-    dPath = ""
+    finished = QtCore.pyqtSignal()
         
-    def __init__(self,params,globalPath,**kwds):     #Inst object init - this is the same for all instruments
-        super().__init__(**kwds)
+    def __init__(self,params,globalPath):     #Inst object init - this is the same for all instruments
+        super().__init__()
         
         self.inst_cfg = params
         
         if params["Data"]["Destination"] == None or params["Data"]["Destination"] == "":
-            self.dPath = globalPath + "\\" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "\\"  #Using global location and default instrument directory
+            dPath = globalPath + "\\" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "\\"  #Using global location and default instrument directory
         elif isabs(params["Data"]["Destination"]):
-            self.dPath = params["Data"]["Destination"] + "\\"        #Using absolute path from instrument config
+            dPath = params["Data"]["Destination"] + "\\"        #Using absolute path from instrument config
         else:
-            self.dPath = globalPath + "\\" + params["Data"]["Destination"] + "\\"       #Using global location and relative directory from instrument config
+            dPath = globalPath + "\\" + params["Data"]["Destination"] + "\\"       #Using global location and relative directory from instrument config
             
-        makedirs(self.dPath, exist_ok=True)
+        makedirs(dPath, exist_ok=True)
+        
+        self.inst_cfg["Data"]["dPath"] = dPath
         
         self.instLog = logging.getLogger(params["InstrumentInfo"]["Name"].replace(" ", "_"))
-        logPath = self.dPath + str(strftime("\\\\%Y-%m-%d_%H%M%S_" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "_Log.txt"))
+        logPath = dPath + str(strftime("\\\\%Y-%m-%d_%H%M%S_" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "_Log.txt"))
                 
-        formatter = logging.Formatter('[%(levelname)s], %(asctime)s, %(message)s')
+        formatter = logging.Formatter('[%(levelname)s] (%(threadName)-10s), %(asctime)s, %(message)s')
         formatter.datefmt = '%Y/%m/%d %I:%M:%S'
         fileHandler = logging.FileHandler(logPath, mode='w')
         fileHandler.setFormatter(formatter)
@@ -41,7 +43,8 @@ class Inst_obj(QtCore.QObject):
         
         
     def init(self):
-        self.sp = Spec(self.inst_cfg, self.dPath)       #Call instrument init
+        self.sp = Spec(self.inst_cfg)       #Call instrument init
+        self.sp.open()
         
         self.instLog.info("Init complete")
         self.status.emit(self.index, "Ready")
@@ -56,14 +59,14 @@ class Inst_obj(QtCore.QObject):
             self.instLog.info("Acquisition %i" % self.n)
         if "Save" in aq_type:
             if not data == None:
-                self.sp.writeData(self.dPath, data)
+                self.sp.writeData(data)
         
         self.n += 1
         self.status.emit(self.index, "n=" + str(self.n))
         
     def close(self):
         self.sp.shutdown()
-        self.instLog("Spec shutdown")        
+        self.instLog.info("Spec shutdown")        
         
 
 class Spec:
@@ -73,7 +76,7 @@ class Spec:
     WL[1] = [None] * 256
     
     
-    def __init__(self, inst_cfg, path):
+    def __init__(self, inst_cfg):
         self.inst_cfg = inst_cfg
         self.specLog = logging.getLogger(inst_cfg["InstrumentInfo"]["Name"].replace(" ", "_"))
         
@@ -83,9 +86,9 @@ class Spec:
             
     
     def open(self):
-        comport = int(inst_cfg["Initialization"]["COM"])
+        comport = self.inst_cfg["Initialization"]["COM"]
         # Fake init stuff
-        specLog.info("Opened " + comport)
+        self.specLog.info("Opened " + comport)
         
         
     def get_spec(self):
@@ -99,8 +102,9 @@ class Spec:
         
         return data
         
-    def writeData(self, path, data):
+    def writeData(self, data):
         # open output file in appending mode
+        path = self.inst_cfg["Data"]["dPath"]
         current_datetime = strftime("%Y-%m-%d__%H_%M_%S")
         filename = 'Uni_' + current_datetime  + '.spu' #+ '_' + station
     
@@ -131,6 +135,6 @@ class Spec:
         print("File Closed.")  
         
     def shutdown(self):
-        specLog.info("Closed " + comport)
+        self.specLog.info("Closed " + comport)
         
         
