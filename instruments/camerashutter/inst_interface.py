@@ -7,13 +7,14 @@ import logging
 
 class Inst_obj(QtCore.QObject):
     
-    index = 0
-    n = 0
     status = QtCore.pyqtSignal(int, str)
     finished = QtCore.pyqtSignal()
         
     def __init__(self,params,globalPath):     #Inst object init - this is the same for all instruments
         super().__init__()
+        
+        self.index = 0
+        self.n = 0
         
         self.inst_cfg = params
         
@@ -70,7 +71,7 @@ class CameraShutter:
         
     def snapshot(self):
         GPIO.output(self.shutter, True)
-        sleep(10)
+        sleep(.1)
         GPIO.output(self.shutter, False)
         
     def shutdown(self):

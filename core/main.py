@@ -24,16 +24,11 @@ from GPIOEmulator.EmulatorGUI import GPIO
 
             
 class Trigger(QtCore.QObject):
-        
-    trig_mode = ""
-    trig_int = 0
-    trig_repeat = 0
-    
-    repeat = 0
     
     aq_trig = QtCore.pyqtSignal() 
     status = QtCore.pyqtSignal(str)
     progress = QtCore.pyqtSignal(int)
+    update_int = QtCore.pyqtSignal(int)
         
     def __init__(self, trig_params):
         super().__init__()
@@ -41,6 +36,9 @@ class Trigger(QtCore.QObject):
         self.trig_mode = trig_params["Mode"].replace(" ", "").split(",")
         self.trig_int = int(trig_params["Interval"])
         self.trig_repeat = int(trig_params["Repeat"])
+        
+        self.repeat = 0
+        self.scope = "Scope not defined"
         
         logging.info("Triggers: " + trig_params["Mode"])
         
@@ -51,6 +49,11 @@ class Trigger(QtCore.QObject):
             logging.info("Interval: " + str(self.trig_int))
             logging.info("Repeat: " + str(self.trig_repeat))
             
+        elif "Movement" in self.trig_mode:
+            
+            self.t = QtCore.QTimer()
+            self.t.timeout.connect(lambda: self.trigger("Movement"))
+            self.update_int.connect(lambda: self.t.start(new_int))
             
         
     def trigger(self,source):
@@ -59,7 +62,7 @@ class Trigger(QtCore.QObject):
                 
             self.aq_trig.emit()
             self.status.emit("Trigger at %s" % time.time())
-            logging.info(source + " trigger")
+            logging.info(source + " trigger (" + self.scope + ")")
     
             if source == "Timed" and self.trig_repeat > 0:
                 self.repeat += 1
@@ -69,14 +72,26 @@ class Trigger(QtCore.QObject):
                     self.t.stop()
                     self.status.emit("Done.")
             
-    def t_Start(self):
-        self.t.start(self.trig_int)
+    def t_Start(self, new_int=0):
+        if new_int == 0:
+            new_int = self.trig_int
+        self.t.start(new_int)
         
     def t_Stop(self):
         self.t.stop()
+        
+    def uiAction(self,action):
+        if action == "Start":
+            self.t_Start()
+        elif action == "Stop":
+            self.t_Stop()
+        elif action == "Manual":
+            self.trigger("Manual")
      
-        
-        
+class ITrigs(QtCore.QObject):
+    
+    sig = QtCore.pyqtSignal(str)  
+      
         
 class Instruments(QtCore.QObject):
     
@@ -84,7 +99,8 @@ class Instruments(QtCore.QObject):
     update_table = QtCore.pyqtSignal(object)
     
     active_insts = []
-    inst_threads =[]
+    inst_threads = []
+    iTrigs = []
     
     def init(self, instlist, globalPath):
         
@@ -100,14 +116,22 @@ class Instruments(QtCore.QObject):
                 #Create inst objects
                 inst_mod = importlib.import_module("instruments." + inst + ".inst_interface")
                 self.active_insts.append(inst_mod.Inst_obj(cp_inst, globalPath))
-                self.active_insts[index].index = index  
-                   
+                self.active_insts[index].index = index
+                        
                 #Creat inst threads
                 self.inst_threads.append(QtCore.QThread())
                 self.active_insts[index].moveToThread(self.inst_threads[index])             #move the inst object to it's thread
                 self.active_insts[index].finished.connect(self.inst_threads[index].quit)    #make sure thread exits when inst is closed
-                self.inst_threads[index].started.connect(self.active_insts[index].init)   #make sure object init when thread starts
-                self.inst_threads[index].start()                                            #start the thread
+                self.inst_threads[index].started.connect(self.active_insts[index].init)     #make sure object init when thread starts
+                
+                #Setup individual triggers
+                self.iTrigs.append(ITrigs())
+                if cp_inst.has_option("Trigger","Scope"):
+                    if "Individual" in cp_inst["Trigger"]["Scope"].replace(" ", "").split(","):
+                        self.active_insts[index].trig = Trigger(cp_inst["Trigger"])                                 #Create individual trigger
+                        self.active_insts[index].trig.scope = "Individual, " + inst
+                        self.active_insts[index].trig.aq_trig.connect(self.active_insts[index].acquire)             #Connect individual trigger
+                        self.iTrigs[index].sig.connect(self.active_insts[index].trig.uiAction)                      #Connect UI trigger
                 
                 self.update_table.emit(cp_inst)
                 
@@ -123,7 +147,6 @@ class Instruments(QtCore.QObject):
 class Main(QtWidgets.QMainWindow):
     startTime = 0
     count = 0
-    
    
     def __init__(self, parent=None):
         super().__init__()
@@ -148,15 +171,39 @@ class Main(QtWidgets.QMainWindow):
         self.inst.status.connect(self.update_run_status)
         self.inst.init(cp["Active_Insts"], dataPath)
         
+        #Setup global trigger
         self.trig = Trigger(cp["Trigger"])
+        self.trig.scope = "Global"
         self.trig.status.connect(self.update_run_status)
         self.trig.progress.connect(self.update_trig_prog)
         self.ui.btn_Start.released.connect(self.trig.t_Start)
         self.ui.btn_Stop.released.connect(self.trig.t_Stop)
+        self.ui.btn_ManTrig.released.connect(lambda: self.trig.trigger("Manual"))
         
+        #Connect individual trigger buttons
+        self.ui.btn_Start_In.released.connect(lambda: self.ui_Trig_In("Start"))    
+        self.ui.btn_Stop_In.released.connect(lambda: self.ui_Trig_In("Stop"))
+        self.ui.btn_ManTrig_In.released.connect(lambda: self.ui_Trig_In("Manual"))
+        
+        #Connect insts to trigs
         for i in self.inst.active_insts:
-            self.trig.aq_trig.connect(i.acquire)
-            i.status.connect(self.update_inst_status)
+            
+            i.status.connect(self.update_inst_status)  
+                      
+            if i.inst_cfg.has_option("Trigger","Scope"):
+                if "Global" in i.inst_cfg["Trigger"]["Scope"].replace(" ", "").split(","):
+                    self.trig.aq_trig.connect(i.acquire)                #Connect global trigger
+            else:
+                self.trig.aq_trig.connect(i.acquire)                    #Connect global trigger by default
+                
+        for i in self.inst.inst_threads:
+            i.start()                                                   #Start instrument threads
+
+        
+    def ui_Trig_In(self, act):
+        if len(self.ui.tbl_Instruments.selectionModel().selectedRows()) > 0:
+            r = self.ui.tbl_Instruments.selectionModel().selectedRows()[0].row()
+            self.inst.iTrigs[r].sig.emit(act)
         
         
     def set_inst_table(self, cp_inst):      
@@ -231,7 +278,7 @@ class Main(QtWidgets.QMainWindow):
         triggered = False
         while(1):
             if GPIO.input(15) == True and triggered == False:
-                self.trig.trigger("Manual")
+                self.trig[0].trigger("Manual")
                 time.sleep(1)
                 triggered = True
             elif triggered == True:
