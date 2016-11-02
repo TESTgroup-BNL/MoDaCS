@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>291</width>
+    <height>121</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QProgressBar" name="pb2">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>30</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QProgressBar::chunk {background-color:rgb(0, 85, 255) ; width: 1px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+   </property>
+   <property name="minimum">
+    <number>1000</number>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="value">
+    <number>1500</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="format">
+    <string>%v</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="pb1">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>20</y>
+     <width>16</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>4</pointsize>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QProgressBar::chunk {background-color:rgb(0, 85, 255) ; width: 10px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+   </property>
+   <property name="minimum">
+    <number>1000</number>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="value">
+    <number>1500</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="textVisible">
+    <bool>true</bool>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+   <property name="invertedAppearance">
+    <bool>false</bool>
+   </property>
+   <property name="textDirection">
+    <enum>QProgressBar::TopToBottom</enum>
+   </property>
+   <property name="format">
+    <string>%v</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="pb4">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>30</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QProgressBar::chunk {background-color:rgb(0, 85, 255) ; width: 1px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+   </property>
+   <property name="minimum">
+    <number>1000</number>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="value">
+    <number>1500</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="format">
+    <string>%v</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="pb3">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>20</y>
+     <width>16</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>4</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QProgressBar::chunk {background-color:rgb(0, 85, 255) ; width: 10px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+   </property>
+   <property name="minimum">
+    <number>1000</number>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="value">
+    <number>1500</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="textVisible">
+    <bool>true</bool>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+   <property name="invertedAppearance">
+    <bool>false</bool>
+   </property>
+   <property name="textDirection">
+    <enum>QProgressBar::TopToBottom</enum>
+   </property>
+   <property name="format">
+    <string>%v</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="pb5">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>70</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QProgressBar::chunk {background-color:rgb(0, 85, 255) ; width: 1px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+   </property>
+   <property name="minimum">
+    <number>1000</number>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="value">
+    <number>1500</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="format">
+    <string>%v</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="pb7">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>90</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QProgressBar::chunk {background-color:rgb(0, 85, 255) ; width: 1px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+   </property>
+   <property name="minimum">
+    <number>1000</number>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="value">
+    <number>1500</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="format">
+    <string>%v</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="pb6">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>70</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QProgressBar::chunk {background-color:rgb(0, 85, 255) ; width: 1px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+   </property>
+   <property name="minimum">
+    <number>1000</number>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="value">
+    <number>1500</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="format">
+    <string>%v</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="pb8">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>90</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QProgressBar::chunk {background-color:rgb(0, 85, 255) ; width: 1px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+   </property>
+   <property name="minimum">
+    <number>1000</number>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="value">
+    <number>1500</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="format">
+    <string>%v</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>0</y>
+     <width>171</width>
+     <height>116</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>RC Inputs</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>101</width>
+     <height>116</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Vehicle</string>
+   </property>
+   <widget class="QProgressBar" name="pb_Battery">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QProgressBar::chunk {background-color:rgb(0, 255, 0) ; width: 1px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+    <property name="value">
+     <number>100</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="invertedAppearance">
+     <bool>false</bool>
+    </property>
+    <property name="format">
+     <string>Batt: %v%</string>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="pb_Vcc">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QProgressBar::chunk {background-color:rgb(0, 255, 0) ; width: 1px; }
+
+ QProgressBar {border: 1px solid grey; border-radius: 1px; text-align: center; }</string>
+    </property>
+    <property name="minimum">
+     <number>4000</number>
+    </property>
+    <property name="maximum">
+     <number>6000</number>
+    </property>
+    <property name="value">
+     <number>5000</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="invertedAppearance">
+     <bool>false</bool>
+    </property>
+    <property name="format">
+     <string>Vcc: %vmV</string>
+    </property>
+   </widget>
+  </widget>
+  <zorder>groupBox</zorder>
+  <zorder>pb2</zorder>
+  <zorder>pb1</zorder>
+  <zorder>pb4</zorder>
+  <zorder>pb3</zorder>
+  <zorder>pb5</zorder>
+  <zorder>pb7</zorder>
+  <zorder>pb6</zorder>
+  <zorder>pb8</zorder>
+  <zorder>groupBox_2</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,77 +1,51 @@
-from time import sleep, strftime
-from PyQt5 import QtCore
+from time import sleep
 from GPIOEmulator.EmulatorGUI import GPIO
-from os.path import isabs
-from os import makedirs
-import logging
 
-class Inst_obj(QtCore.QObject):
+
+class Inst_interface():
     
-    status = QtCore.pyqtSignal(int, str)
-    finished = QtCore.pyqtSignal()
-        
-    def __init__(self,params,globalPath):     #Inst object init - this is the same for all instruments
-        super().__init__()
-        
-        self.index = 0
-        self.n = 0
-        
-        self.inst_cfg = params
-        
-        if params["Data"]["Destination"] == None or params["Data"]["Destination"] == "":
-            dPath = globalPath + "\\" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "\\"  #Using global location and default instrument directory
-        elif isabs(params["Data"]["Destination"]):
-            dPath = params["Data"]["Destination"] + "\\"        #Using absolute path from instrument config
-        else:
-            dPath = globalPath + "\\" + params["Data"]["Destination"] + "\\"       #Using global location and relative directory from instrument config
-            
-        makedirs(dPath, exist_ok=True)
-        
-        self.inst_cfg["Data"]["dPath"] = dPath
-        
-        self.instLog = logging.getLogger(params["InstrumentInfo"]["Name"].replace(" ", "_"))
-        logPath = dPath + str(strftime("\\\\%Y-%m-%d_%H%M%S_" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "_Log.txt"))
-                
-        formatter = logging.Formatter('[%(levelname)s] (%(threadName)-10s), %(asctime)s, %(message)s')
-        formatter.datefmt = '%Y/%m/%d %I:%M:%S'
-        fileHandler = logging.FileHandler(logPath, mode='w')
-        fileHandler.setFormatter(formatter)
+    #instLog = logger object
+    #inst_cfg = config object
+    #inst_wid = instrument widget
     
-        self.instLog.setLevel(logging.DEBUG)
-        self.instLog.addHandler(fileHandler)
-        self.instLog.propagate = False
+    inputs = ["shutterspeed"]
+    outputs = []
         
+    #### Event functions ####
         
     def init(self):
-        self.cs = CameraShutter(self.inst_cfg)       #Call instrument init
-        
-        self.instLog.info("Init complete")
-        self.status.emit(self.index, "Ready")
-        
+        try:
+            self.cs = CameraShutter(int(self.inst_cfg["Initialization"]["shutterpin"]))       #Call instrument init
+        except Exception as e:
+            self.instLog.warning(e)
         
     def acquire(self):
         self.cs.snapshot()                          #Call instrument acquisition method
-        self.instLog.info("Snapshot %i" % self.n)
-        
-        self.n += 1
-        self.status.emit(self.index, "n=" + str(self.n))
         
     def close(self):
         self.cs.shutdown()
-        self.instLog("Camera shutdown")        
-        
 
-class CameraShutter:
+
+        
+    def shutterspeed(self, val, ev):
+        print("input from %s: %s" % (ev, val))
+
+
+
+class CameraShutter():
     
-    def __init__(self, inst_cfg):
-        self.shutter = int(inst_cfg["Initialization"]["shutterpin"])
-        GPIO.setmode(GPIO.BCM)       
-        GPIO.setup(self.shutter, GPIO.OUT)
-        GPIO.output(self.shutter, False)
+    def __init__(self, shutterpin):
+        self.shutter = shutterpin
+        try:
+            GPIO.setmode(GPIO.BCM)       
+            GPIO.setup(self.shutter, GPIO.OUT)
+            GPIO.output(self.shutter, False)
+        except:
+            pass
         
     def snapshot(self):
         GPIO.output(self.shutter, True)
-        sleep(.1)
+        sleep(.5)
         GPIO.output(self.shutter, False)
         
     def shutdown(self):

@@ -8,39 +8,18 @@ import random
 
 class Inst_obj(QtCore.QObject):
     
+    error = QtCore.pyqtSignal(object)
+    ready = QtCore.pyqtSignal(bool)
     status = QtCore.pyqtSignal(int, str)
     finished = QtCore.pyqtSignal()
         
-    def __init__(self,params,globalPath):     #Inst object init - this is the same for all instruments
+    def __init__(self,params,iLog):     #Inst object init - this is the same for all instruments
         super().__init__()
         
         self.index = 0
         self.n = 0
-        
         self.inst_cfg = params
-        
-        if params["Data"]["Destination"] == None or params["Data"]["Destination"] == "":
-            dPath = globalPath + "\\" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "\\"  #Using global location and default instrument directory
-        elif isabs(params["Data"]["Destination"]):
-            dPath = params["Data"]["Destination"] + "\\"        #Using absolute path from instrument config
-        else:
-            dPath = globalPath + "\\" + params["Data"]["Destination"] + "\\"       #Using global location and relative directory from instrument config
-            
-        makedirs(dPath, exist_ok=True)
-        
-        self.inst_cfg["Data"]["dPath"] = dPath
-        
-        self.instLog = logging.getLogger(params["InstrumentInfo"]["Name"].replace(" ", "_"))
-        logPath = dPath + str(strftime("\\\\%Y-%m-%d_%H%M%S_" + params["InstrumentInfo"]["Name"].replace(" ", "_") + "_Log.txt"))
-                
-        formatter = logging.Formatter('[%(levelname)s] (%(threadName)-10s), %(asctime)s, %(message)s')
-        formatter.datefmt = '%Y/%m/%d %I:%M:%S'
-        fileHandler = logging.FileHandler(logPath, mode='w')
-        fileHandler.setFormatter(formatter)
-    
-        self.instLog.setLevel(logging.DEBUG)
-        self.instLog.addHandler(fileHandler)
-        self.instLog.propagate = False
+        self.instLog = iLog
         
         
     def init(self):
@@ -105,7 +84,7 @@ class Spec:
         
     def writeData(self, data):
         # open output file in appending mode
-        path = self.inst_cfg["Data"]["dPath"]
+        path = self.inst_cfg["Data"]["absolutePath"]
         current_datetime = strftime("%Y-%m-%d__%H_%M_%S")
         filename = 'Uni_' + current_datetime  + '.spu' #+ '_' + station
     
