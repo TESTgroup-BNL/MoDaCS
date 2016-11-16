@@ -3,7 +3,7 @@ import logging #, objgraph
 import configparser
 import importlib
 from os.path import isabs
-from os import makedirs
+from os import makedirs, path
 
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import pyqtSignal
@@ -111,17 +111,17 @@ class Inst_obj(QtCore.QObject):
 
         #Read inst config
         cp_inst = configparser.ConfigParser()
-        cp_inst.read('.\\instruments\\' + inst + '\\inst_cfg.ini')
+        cp_inst.read(path.join('.', 'instruments', inst, 'inst_cfg.ini'))
         
         self.cp_inst = cp_inst
         
         #Setup data storage directory
         if not cp_inst.has_option("Data", "Destination"):
-            dataPath = globalPath + "\\" + cp_inst["InstrumentInfo"]["Name"].replace(" ", "_") + "\\"  #Using global location and default instrument directory
+            dataPath = path.join(globalPath, cp_inst["InstrumentInfo"]["Name"].replace(" ", "_"))  #Using global location and default instrument directory
         elif isabs(cp_inst["Data"]["Destination"]):
-            dataPath = cp_inst["Data"]["Destination"] + "\\"                            #Using absolute path from instrument config
+            dataPath = cp_inst["Data"]["Destination"]                               #Using absolute path from instrument config
         else:
-            dataPath = globalPath + "\\" + cp_inst["Data"]["Destination"] + "\\"        #Using global location and relative directory from instrument config
+            dataPath = path.join(globalPath, cp_inst["Data"]["Destination"])        #Using global location and relative directory from instrument config
         
         makedirs(dataPath, exist_ok=True)
         if not cp_inst.has_section("Data"):
@@ -130,7 +130,7 @@ class Inst_obj(QtCore.QObject):
         
         #Setup inst log
         iLog = logging.getLogger(cp_inst["InstrumentInfo"]["Name"].replace(" ", "_"))
-        logPath = dataPath + str(strftime("\\\\%Y-%m-%d_%H%M%S_" + cp_inst["InstrumentInfo"]["Name"].replace(" ", "_") + "_Log.txt"))
+        logPath = path.join(dataPath, str(strftime("%Y-%m-%d_%H%M%S_" + cp_inst["InstrumentInfo"]["Name"].replace(" ", "_") + "_Log.txt")))
                 
         formatter = logging.Formatter('[%(levelname)-10s] (%(threadName)-10s), %(asctime)s, %(message)s') # 
         formatter.datefmt = '%Y/%m/%d %I:%M:%S'

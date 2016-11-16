@@ -10,11 +10,14 @@ import configparser
 import copy
 import importlib
 from os.path import isabs
-from os import makedirs
+from os import makedirs, path
 from test.test_threading_local import target
 
 from PyQt5 import QtWidgets, QtCore
-from GPIOEmulator.EmulatorGUI import GPIO
+try:
+    import RPi.GPIO as GPIO
+except:
+    from GPIOEmulator.EmulatorGUI import GPIO
 from logging import StreamHandler
 
 sys.path.append("..")
@@ -55,7 +58,7 @@ class Main(QtWidgets.QMainWindow):
         #Initialize config parser and logger
         cp = configparser.ConfigParser()
         opts, args = getopt.getopt(sys.argv[1:],"hc:", ["run_config="])
-        run_config = '.\\core\\run_cfg.ini'
+        run_config = path.join('.', 'core', 'run_cfg.ini')
         try:
             for opt, arg in opts:
                 if opt in ("-h", "--help", "?", "help"):
@@ -64,9 +67,9 @@ class Main(QtWidgets.QMainWindow):
                 if opt in ("-c", "--run_config"):
                     run_config = arg
             cp.read(run_config)
-            dataPath = cp["Data"]["location"] + str(strftime("\\\\%Y-%m-%d_%H%M%S"))
+            dataPath = path.join(cp["Data"]["location"], str(strftime("%Y-%m-%d_%H%M%S")))
             makedirs(dataPath, exist_ok=True)
-            logFile = dataPath + str(strftime("\\\\%Y-%m-%d_%H%M%S_RunLog.txt"))
+            logFile = path.join(dataPath, str(strftime("%Y-%m-%d_%H%M%S_RunLog.txt")))
         except KeyError:
             print("Error: run_cfg file missing or missing required keys")
             raise

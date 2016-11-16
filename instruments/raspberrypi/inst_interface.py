@@ -1,7 +1,10 @@
 from time import sleep
 from PyQt5 import QtCore
 import threading
-from GPIOEmulator.EmulatorGUI import GPIO
+try:
+    import RPi.GPIO as GPIO
+except:
+    from GPIOEmulator.EmulatorGUI import GPIO
 
 
 class Inst_interface(QtCore.QObject):
@@ -17,9 +20,10 @@ class Inst_interface(QtCore.QObject):
         
     def init(self):
         self.listen = True
+        self.trigpin = int(self.inst_cfg["Initialization"]["triggerpin"])
         try:
             GPIO.setmode(GPIO.BCM)
-            GPIO.setup(15, GPIO.IN)
+            GPIO.setup(self.trigpin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
         except Exception as e:
             self.instLog.warning(e)
             
@@ -43,7 +47,7 @@ class Inst_interface(QtCore.QObject):
         triggered = False
         self.instLog.info("Listening thread started.")
         while(self.listen == True):
-            if GPIO.input(15) == True and triggered == False:
+            if GPIO.input(self.trigpin) == False and triggered == False:
                 self.signals["digitalTrig"].emit("RaspPi")
                 sleep(1)
                 triggered = True

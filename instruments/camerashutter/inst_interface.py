@@ -1,5 +1,8 @@
 from time import sleep
-from GPIOEmulator.EmulatorGUI import GPIO
+try:
+    import RPi.GPIO as GPIO
+except:
+    from GPIOEmulator.EmulatorGUI import GPIO
 
 
 class Inst_interface():
