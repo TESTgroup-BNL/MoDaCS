@@ -1,4 +1,4 @@
-import logging, objgraph
+import logging #, objgraph
 from PyQt5 import QtCore
 
 import event_handlers
@@ -6,17 +6,23 @@ import event_handlers
 
 def events_init(self, cp_events):
   
+    logging.info("Loading Events...")
+    
     for ev, value in cp_events.items():
         try:          
             self.event_objs[ev] = Event_obj(self.active_insts, ev, value, self.reset_lambdas, self.globalTrig, self.event_reloadSig, event_handlers)
-            self.event_addedSig.emit(self.event_objs[ev], ev)
+            self.event_addedSig.emit(self.event_objs[ev].signals, ev)
+            #self.event_objs[ev].remoteSig.connect(self.event_remoteSig)
         except Exception as e:
             logging.warning("Error loading events: %s" % e)
+            
+    logging.info("%d/%d events/connections loaded.\n" % (len(self.event_objs), len(cp_events)))
 
 
 class Event_obj(QtCore.QObject):
     
     finishedSig = QtCore.pyqtSignal()
+    #remoteSig = QtCore.pyqtSignal(int, str, str, str, object)
     
     def __init__(self, insts, ev, value, reset_lambdas, gloabalTrigger, event_reloadSig, event_handlers):
         super().__init__()
@@ -29,8 +35,7 @@ class Event_obj(QtCore.QObject):
         self.event_handler = None
         self.event_thread = None
         self.insts = insts
-        self.inputs = {}
-        self.outputs = {}
+        self.signals = {}
         self.isDirect = False
         self.QueuedUniqueConnection = QtCore.Qt.QueuedConnection | QtCore.Qt.UniqueConnection
         
@@ -39,12 +44,16 @@ class Event_obj(QtCore.QObject):
         self.finishedSig.connect(self.event_thread.quit)     #make sure thread exits when inst is closed
 
         if "->" in value:
-            self.inputs, self.outputs = self.connect_direct(ev, value)    #Direct connection
+            self.signals["inputs"], self.signals["outputs"] = self.connect_direct(ev, value)    #Direct connection
+            self.signals["direct"] = True
         else:
-            self.inputs, self.outputs = self.connect_handler(ev, value)   #Event handler
+            self.signals["inputs"], self.signals["outputs"] = self.connect_handler(ev, value)   #Event handler
+            self.signals["direct"] = False
             self.event_thread.started.connect(self.event_init)   #make sure object init when thread starts
                     
         self.event_thread.start()                                #start event thread
+        
+    #def __getstate__(self):
 
     def connect_direct(self, ev, value):
         inputs = {}
@@ -89,13 +98,8 @@ class Event_obj(QtCore.QObject):
             raise e
         inputs_names = value.split(";")[0].split(",")
         outputs_names = value.split(";")[1].split(",")
-        
-        print(self)
-        print(inputs_names, outputs_names)        
-        #self.event_handler = m()                        #Create event handler
-        self.event_handler = m()
-        #self.event_handler = self.event_handler_b
-        print(self.event_handler)
+      
+        self.event_handler = m()                        #Create event handler
         
         output_count = 0
         for o in outputs_names:
@@ -105,7 +109,6 @@ class Event_obj(QtCore.QObject):
             outSig = self.event_handler.output
             outputs[o] = outSig
             try:
-                #self.events[ev].output.connect(lambda val=None, ev=ev, input_m=input_m : print("event: %s, val: %s, %s" %(ev, val, input_m)))
                 if d[0] == "GlobalTrigger":
                     outSig.connect(lambda ev=ev, trig=self.globalTrigger : trig.emit(ev), self.QueuedUniqueConnection)
                 else:
@@ -159,20 +162,15 @@ class Event_obj(QtCore.QObject):
         if inst not in self.reset_lambdas:
             try:
                 self.reset_lambdas.append(inst)
-                print("reset lambda: %s, %s, %s" % (self.ev, inst, self.reset_lambdas))
-                self.insts[inst].interfaceReadySig.connect(lambda inst=None, s=self : s.reinit_inst(inst), self.QueuedUniqueConnection)
-                #self.insts[inst].interfaceReadySig.connect(self.reinit_inst) #, self.QueuedUniqueConnection)
+                self.insts[inst].interfaceReadySig.connect(lambda inst=None, s=self : s.reinit_inst(inst.inst), self.QueuedUniqueConnection)
             except Exception as e:
-                print("ERROR %s" % e)
-    
-    #@QtCore.pyqtSlot(str)
+                logging.error("Error connecting 'interfacereadySig': %s" % e)
+                
     def reinit_inst(self, inst):
-        #for ev, ev_obj in self.cp_events.items():
         if inst in self.ev_value:
             try:
-                logging.info("Inputs: %s, Outputs: %s" % (self.inputs, self.outputs))
+                logging.info("Inputs: %s, Outputs: %s" % (self.signals["inputs"], self.signals["outputs"]))
                 try:
-                    print(self.event_handler)
                     self.event_handler.deletelater()
                 except:
                     pass
@@ -184,17 +182,17 @@ class Event_obj(QtCore.QObject):
                 #    except:
                 #        pass
                  
-                self.inputs.clear()
-                self.outputs.clear()
-                print(self.ev, self.ev_value)
+                self.signals.clear()
                 if "->" in self.ev_value:
-                    self.inputs, self.outputs = self.connect_direct(self.ev, self.ev_value)  #Direct connection
+                    self.signals["inputs"], self.signals["outputs"] = self.connect_direct(self.ev, self.ev_value)  #Direct connection
+                    self.signals["direct"] = True
                 else:
-                    self.inputs, self.outputs = self.connect_handler(self.ev, self.ev_value) #Event handler
+                    self.signals["inputs"], self.signals["outputs"] = self.connect_handler(self.ev, self.ev_value) #Event handler   
+                    self.signals["direct"] = False          
             except Exception as e:
                 logging.error(e)               
-            logging.info("Event reloaded for '%s': %s, Inputs: %s, Outputs: %s" % (inst, self.ev, self.inputs, self.outputs))
-            self.event_reloadSig.emit(self, self.ev)
+            logging.info("Event reloaded for '%s': %s, Inputs: %s, Outputs: %s" % (inst, self.ev, self.signals["inputs"], self.signals["outputs"]))
+            self.event_reloadSig.emit(self.signals, self.ev)
 
     
 class waitforReady():

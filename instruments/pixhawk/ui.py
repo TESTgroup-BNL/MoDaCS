@@ -142,6 +142,9 @@ class Ui_Form(object):
         self.pb_Vcc.setAlignment(QtCore.Qt.AlignCenter)
         self.pb_Vcc.setInvertedAppearance(False)
         self.pb_Vcc.setObjectName("pb_Vcc")
+        self.btn_test = QtWidgets.QPushButton(self.groupBox_2)
+        self.btn_test.setGeometry(QtCore.QRect(10, 70, 75, 23))
+        self.btn_test.setObjectName("btn_test")
         self.groupBox.raise_()
         self.pb2.raise_()
         self.pb1.raise_()
@@ -171,4 +174,5 @@ class Ui_Form(object):
         self.groupBox_2.setTitle(_translate("Form", "Vehicle"))
         self.pb_Battery.setFormat(_translate("Form", "Batt: %v%"))
         self.pb_Vcc.setFormat(_translate("Form", "Vcc: %vmV"))
+        self.btn_test.setText(_translate("Form", "PushButton"))
 

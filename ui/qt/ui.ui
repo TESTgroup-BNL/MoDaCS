@@ -28,9 +28,15 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>321</width>
-      <height>241</height>
+      <width>326</width>
+      <height>240</height>
      </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>320</width>
+      <height>240</height>
+     </size>
     </property>
     <property name="tabPosition">
      <enum>QTabWidget::North</enum>
@@ -39,7 +45,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="iconSize">
      <size>
@@ -454,118 +460,131 @@ Trigger</string>
      <attribute name="title">
       <string>Events</string>
      </attribute>
-     <widget class="QTreeWidget" name="treeWidget">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>291</width>
-        <height>191</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="sizeAdjustPolicy">
-       <enum>QAbstractScrollArea::AdjustToContents</enum>
-      </property>
-      <property name="alternatingRowColors">
-       <bool>false</bool>
-      </property>
-      <property name="uniformRowHeights">
-       <bool>false</bool>
-      </property>
-      <property name="itemsExpandable">
-       <bool>true</bool>
-      </property>
-      <property name="wordWrap">
-       <bool>false</bool>
-      </property>
-      <attribute name="headerVisible">
-       <bool>false</bool>
-      </attribute>
-      <attribute name="headerDefaultSectionSize">
-       <number>200</number>
-      </attribute>
-      <attribute name="headerHighlightSections">
-       <bool>false</bool>
-      </attribute>
-      <attribute name="headerMinimumSectionSize">
-       <number>20</number>
-      </attribute>
-      <attribute name="headerShowSortIndicator" stdset="0">
-       <bool>false</bool>
-      </attribute>
-      <attribute name="headerStretchLastSection">
-       <bool>true</bool>
-      </attribute>
-      <column>
-       <property name="text">
-        <string>Signal</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Last Value</string>
-       </property>
-      </column>
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <property name="text">
-        <string>Direct Connections</string>
-       </property>
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="foreground">
-        <brush brushstyle="NoBrush">
-         <color alpha="255">
-          <red>0</red>
-          <green>0</green>
-          <blue>255</blue>
-         </color>
-        </brush>
-       </property>
+       <widget class="QTreeWidget" name="treeWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>false</bool>
+        </property>
+        <property name="uniformRowHeights">
+         <bool>false</bool>
+        </property>
+        <property name="itemsExpandable">
+         <bool>true</bool>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+        <attribute name="headerDefaultSectionSize">
+         <number>200</number>
+        </attribute>
+        <attribute name="headerHighlightSections">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="headerMinimumSectionSize">
+         <number>20</number>
+        </attribute>
+        <attribute name="headerShowSortIndicator" stdset="0">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="headerStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Signal</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Last Value</string>
+         </property>
+        </column>
+        <item>
+         <property name="text">
+          <string>Global Trigger</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="foreground">
+          <brush brushstyle="NoBrush">
+           <color alpha="255">
+            <red>170</red>
+            <green>0</green>
+            <blue>0</blue>
+           </color>
+          </brush>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Direct Connections</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="foreground">
+          <brush brushstyle="NoBrush">
+           <color alpha="255">
+            <red>0</red>
+            <green>0</green>
+            <blue>255</blue>
+           </color>
+          </brush>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Events</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="foreground">
+          <brush brushstyle="NoBrush">
+           <color alpha="255">
+            <red>0</red>
+            <green>0</green>
+            <blue>255</blue>
+           </color>
+          </brush>
+         </property>
+        </item>
+       </widget>
       </item>
-      <item>
-       <property name="text">
-        <string>Events</string>
-       </property>
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="foreground">
-        <brush brushstyle="NoBrush">
-         <color alpha="255">
-          <red>0</red>
-          <green>0</green>
-          <blue>255</blue>
-         </color>
-        </brush>
-       </property>
-      </item>
-     </widget>
+     </layout>
     </widget>
    </widget>
    <widget class="QTableWidget" name="tbl_Instruments">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>25</y>
+      <y>20</y>
       <width>321</width>
       <height>91</height>
      </rect>

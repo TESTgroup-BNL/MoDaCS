@@ -1,5 +1,5 @@
 from time import time, strftime
-import logging, objgraph
+import logging #, objgraph
 import configparser
 import importlib
 from os.path import isabs
@@ -11,14 +11,14 @@ from PyQt5.QtCore import pyqtSignal
     
 def inst_init(self, instlist, globalPath):
     
-    self.status.emit("Loading Instruments...")
+    logging.info("Loading Instruments...")
     
     index = 0        
     for inst in instlist:
-        if instlist[inst] == "True":
+        if str.lower(instlist[inst]) == "true":
             try:                    
                 #Create inst objects
-                self.active_insts[inst] = Inst_obj(globalPath, inst)
+                self.active_insts[inst] = Inst_obj(globalPath, inst, self.ui_int.client.enabled)
                 self.active_insts[inst].index = index
                 self.inst_list.append(inst)
                 
@@ -32,13 +32,13 @@ def inst_init(self, instlist, globalPath):
             except Exception as e:
                 logging.error("Error loading '%s': %s" % (inst, e))
                 try:
-                    self.active_insts[inst] = None
+                    del self.active_insts[inst]
                 except Exception:
                     pass
             
             index += 1
 
-    self.status.emit("\n%d/%d instruments active." % (len(self.active_insts), len(instlist)))
+    logging.info("%d/%d instruments active.\n" % (len(self.active_insts), len(instlist)))
 
 
 
@@ -48,16 +48,16 @@ class Inst_obj(QtCore.QObject):
     readySig = QtCore.pyqtSignal() 
     triggerSig = QtCore.pyqtSignal(str)
     resetSig = QtCore.pyqtSignal()
-    interfaceReadySig = QtCore.pyqtSignal(str)
+    interfaceReadySig = QtCore.pyqtSignal(object)
     finishedSig = QtCore.pyqtSignal()
-    tCountSig = QtCore.pyqtSignal(int, int)
+    tCountSig = QtCore.pyqtSignal(object)
     logupdateSig = QtCore.pyqtSignal(str)
     
     def tCount(self):
         self.tCount_prop += 1
-        self.tCountSig.emit(self.index, self.tCount_prop) 
+        self.tCountSig.emit([self.index, self.tCount_prop]) 
     
-    statusSig = QtCore.pyqtSignal(int, str)
+    statusSig = QtCore.pyqtSignal(object)
     @property
     def status(self):
         return self.status_prop
@@ -65,7 +65,7 @@ class Inst_obj(QtCore.QObject):
     def status(self, s):
         self.status_prop = s
         self.instLog.debug(s)
-        self.statusSig.emit(self.index, s)
+        self.statusSig.emit([self.index, s])
         if (s == "Ready"):
             self.ready = True
             self.readySig.emit()
@@ -88,10 +88,10 @@ class Inst_obj(QtCore.QObject):
             #else:
             e_str = str(e)
             self.status_prop = e_str
-            self.statusSig.emit(self.index, e_str)
+            self.statusSig.emit([self.index, e_str])
             self.errorSig.emit(self.index, e)
         
-    def __init__(self, globalPath,inst):     #Inst object init - this is the same for all instruments
+    def __init__(self, globalPath, inst, client_enabled):     #Inst object init - this is the same for all instruments
         super().__init__()
        
         self.ready = False
@@ -99,13 +99,16 @@ class Inst_obj(QtCore.QObject):
         self.status_prop = ""     
         self.error_prop = None
         self.inst = inst
+        self.client_enabled = client_enabled
                                             
         #Create inst threads
-        self.inst_thread = QtCore.QThread()
-        self.moveToThread(self.inst_thread)                 #move the inst object to its thread
-        self.finishedSig.connect(self.inst_thread.quit)     #make sure thread exits when inst is closed
-        self.inst_thread.started.connect(self.init)         #make sure object init when thread starts
+        if not client_enabled:
+            self.inst_thread = QtCore.QThread()
+            self.moveToThread(self.inst_thread)                 #move the inst object to its thread
+            self.finishedSig.connect(self.inst_thread.quit)     #make sure thread exits when inst is closed
+            self.inst_thread.started.connect(self.init)         #make sure object init when thread starts
         
+
         #Read inst config
         cp_inst = configparser.ConfigParser()
         cp_inst.read('.\\instruments\\' + inst + '\\inst_cfg.ini')
@@ -141,7 +144,7 @@ class Inst_obj(QtCore.QObject):
         sh.setFormatter(formatter)
         iLog.addHandler(sh)
         iLog.propagate = False
-        
+    
         #Setup internal objects and trigger params
         self.index = 0
         self.inst_cfg = cp_inst
@@ -161,8 +164,6 @@ class Inst_obj(QtCore.QObject):
             except:
                 iLog.warning("Error reading trigger interval, defaulting to 1 sec")
                 self.trig_int = 1000
-            self.t = QtCore.QTimer()
-            self.t.timeout.connect(lambda: self.triggerSig("Timed"))            
             iLog.info("Interval: " + str(self.trig_int))  
 
         #Setup individual signals/triggers
@@ -171,7 +172,10 @@ class Inst_obj(QtCore.QObject):
         
         self.create_inst_interface()
         
-        logging.info("Instrument Loaded: " + cp_inst["InstrumentInfo"]["Name"] + ", Model: " + cp_inst["InstrumentInfo"]["Model"] + ", Thread: " + str(self.inst_thread.currentThread()))              
+        if not client_enabled:
+            logging.info("Instrument Loaded: " + cp_inst["InstrumentInfo"]["Name"] + ", Model: " + cp_inst["InstrumentInfo"]["Model"] + ", Thread: " + str(self.inst_thread.currentThread()))
+        else:
+            logging.info("Instrument Loaded: " + cp_inst["InstrumentInfo"]["Name"] + ", Model: " + cp_inst["InstrumentInfo"]["Model"])
                     
     def create_inst_interface(self):
     #Create inst interface
@@ -203,59 +207,7 @@ class Inst_obj(QtCore.QObject):
         except:
             pass
         
-    def init_instUI(self):
-        #Create UI if available
-        try:
-            inst_ui_mod = importlib.import_module("instruments." + self.inst + ".ui")
-            self.inst_ui = inst_ui_mod.Ui_Form()
-            self.inst_ui.setupUi(self.inst_wid)
-        except:
-            self.instLog.info("UI not found, showing default")
-            try:
-                inst_ui_mod = importlib.import_module("ui.inst_default_ui")
-                self.inst_ui = inst_ui_mod.Ui_Form()
-                self.inst_ui.setupUi(self.inst_wid)
-                self.inst_ui.plainTextEdit.setPlainText(self.cp_to_str(self.cp_inst))
-            except:
-                self.instLog.info("Default UI not found")        
-        try:
-            #self.inst_log_wid = QtWidgets.QPlainTextEdit(self.inst_log_container)
-            #sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-            #self.inst_log_wid.setSizePolicy(sizePolicy)
-            #self.inst_log_wid.setGeometry(QtCore.QRect(0, 0, 271, 110))
-            self.inst_log_wid = self.inst_log_container            
-            self.inst_log_wid.setReadOnly(True)
-            self.logupdateSig.connect(self.inst_log_wid.appendPlainText)
-            self.instLog.addHandler(QSignalHandler(self.logupdateSig))
-        except Exception as e:
-            self.instLog.warning("Error setting up log UI: %s" % e)
-            
-        self.init_UI_Sigs()
-        
-    
-    def init_UI_Sigs(self):
-        #Setup UI signals
-        try:
-            for s in self.interface.ui_outputs:
-                try:
-                    s_list = s.split(".")
-                    s_obj = s_list[0].strip()
-                    s_atr = s_list[1].strip()
-                    o = getattr(self.inst_ui, s_obj)
-                    m = getattr(o, s_atr)
-                    self.interface.ui_signals[s].connect(m)
-                    #self.interface.ui_signals[s].connect(lambda s=s, val=None : logging.info("%s, %s" % (s, val)))
-                except Exception as e:
-                    self.instLog.warning("Error connecting UI signal '%s': %s" % (s, ev))
-        except:
-            pass
-        
-        #Run any additional init
-        try:
-            self.ui.inst_ui = self.inst_ui
-            self.ui.init()
-        except:
-            pass
+        self.interfaceReadySig.emit(self)
         
 
     def cp_to_str(self, cp):
@@ -276,6 +228,12 @@ class Inst_obj(QtCore.QObject):
         self.instLog.info("Init complete")
         self.status = "Ready"
         
+        #Init timed triggers
+        if "Timed" in self.trig_mode:
+            self.t = QtCore.QTimer(self)
+            self.t.setInterval(self.trig_int)
+            self.t.timeout.connect(lambda: self.triggerSig.emit("Timed"))
+        
     def close(self):
         try:
             self.interface.close()
@@ -289,15 +247,22 @@ class Inst_obj(QtCore.QObject):
         #objgraph.show_refs([self.interface.signals['shutter']], filename="C://temp//og_i_sig_resetstart.dot")
         self.close()
         try:
-            for s in self.interface.signals:
-                s.disconnect()
-            self.interface.delete()
+            for key, s in self.interface.signals.items():
+                try:
+                    s.disconnect()
+                except:
+                    pass
+            for key, s in self.interface.ui_signals.items():
+                try:
+                    s.disconnect()   
+                except:
+                    pass
+            self.interface = None
         except Exception as e:
             self.instLog.info(e)
             pass
         self.create_inst_interface()
-        self.init_UI_Sigs()
-        self.interfaceReadySig.emit(self.inst)
+        #self.init_UI_Sigs()
         self.init()
 
     def trigger(self,source):
@@ -318,21 +283,28 @@ class Inst_obj(QtCore.QObject):
             else:
                 self.instLog.info("Trigger, Inst not ready")
             
-    def t_Start(self, new_int=0):
-        if new_int == 0:
-            new_int = self.trig_int
-        self.t.start(new_int)
+    def t_Start(self):
+        self.t.start()
         
     def t_Stop(self):
         self.t.stop()
         
     def uiAction(self,action):
         if action == "Start":
-            self.t_Start()
+            try:
+                self.t.start()
+                self.instLog.info("Timed trigger started.")
+            except:
+                self.instLog.warning("No timer set up; not started.")
+
         elif action == "Stop":
-            self.t_Stop()
-        elif action == "Manual":
-            self.trigger("Manual")
+            try:
+                self.t.stop()
+                self.instLog.info("Timed trigger stopped.")
+            except:
+                self.instLog.warning("No timer set up; not stopped.")
+        else:
+            self.trigger(action)
     
 class Sig(QtCore.QObject):                      #Signal "wrapper" to allow programmatic definition of signals
     s = QtCore.pyqtSignal(object, object)

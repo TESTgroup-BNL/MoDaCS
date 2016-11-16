@@ -1,4 +1,3 @@
-from dronekit import connect, VehicleMode
 from PyQt5 import QtCore, QtGui
 from PyQt5.Qt import pyqtSignal
 import logging
@@ -11,12 +10,14 @@ class Inst_interface(QtCore.QObject):
     inputs = ["test"]
     outputs = ["trigger", "shutter"]
     
-    ui_inputs = []
+    ui_inputs = ["btn_test.released"]
     ui_outputs = ["pb1.setValue", "pb2.setValue", "pb3.setValue", "pb4.setValue", "pb5.setValue", "pb6.setValue", "pb7.setValue", "pb8.setValue", "pb_Battery.setValue", "pb_Vcc.setValue"]
 
     #### Common event functions ####
         
     def init(self):
+        
+        from dronekit import connect, VehicleMode
                 
         connection_string = self.inst_cfg["Initialization"]["Connection"]
         self.instLog.info("Connecting to vehicle on: %s" % (connection_string,))
@@ -27,10 +28,14 @@ class Inst_interface(QtCore.QObject):
             raise Exception("Error connecting: %s" % e)
 
         try:
-            self.vehicle
-            
+            self.vehicle   
         except Exception:
             raise Exception("Init failed")
+        
+        try:
+            self.ui_signals["btn_test.released"].connect(lambda: print("Button pressed!"))
+        except Exception as e:
+            raise e
         
         try:
             self.vehicle.cb_interface = Callback_interface(self.ui_signals)
