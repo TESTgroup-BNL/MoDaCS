@@ -1,12 +1,13 @@
+#Qt Imports
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QFont, QIcon
-
-import importlib
+#System Imports
+import importlib, logging, pickle
 from time import time, strftime, sleep, localtime
-
-import logging, pickle
+#MoDaCS Imports
 import ui.inst_ui_frame
 import remote
+from util import QSignalHandler, Sig
 
 class UI_interface(QtCore.QObject):
     
@@ -18,6 +19,8 @@ class UI_interface(QtCore.QObject):
         
         self.active_insts = active_insts
         self.inst_list = inst_list
+        self._rCount = 0
+        self._sCount = 0
 
         self.server = remote.Server(cp["Server"], main_app, active_insts)
         self.client = remote.Client(cp["Client"], main_app, active_insts)
@@ -58,51 +61,68 @@ class UI_interface(QtCore.QObject):
         self.ui.treeWidget.setColumnWidth(0, 180)   
         
         if self.ui_large:
-            self.ui.tbl_Instruments.cellDoubleClicked.connect(lambda: self.ui_showinstUI(self.get_selected_inst()))         
+            self.ui.tbl_Instruments.cellDoubleClicked.connect(lambda: self.ui_showinstUI(self.get_selected_inst()))
+            self.ui.actionQuit.triggered.connect(main_app.close)
+            self.ui.menuView.addAction(self.ui.dw_Conns.toggleViewAction())
+            self.ui.menuView.addAction(self.ui.dw_MasterLog.toggleViewAction())
+            self.ui.actionTabbed_Mode.triggered.connect(lambda state=0: self.ui.mdiArea.setViewMode(state))
+            self.ui.actionTile_Horizontally.triggered.connect(self.ui.mdiArea.tileSubWindows)
+            self.ui.actionTile_Cascade.triggered.connect(self.ui.mdiArea.cascadeSubWindows)
         else:
             self.ui.tbl_Instruments.setVisible(False)
             self.ui.tabWidget.currentChanged.connect(self.ui_tabChange)
             self.ui.tbl_Instruments.itemSelectionChanged.connect(lambda: self.ui_showinstUI(self.get_selected_inst()))
+            self.ui.btn_quit.released.connect(main_app.close)
             
+        
+        self.ui.btn_Start_In.released.connect(lambda: self.ui_Trig_In("Start"))    
+        self.ui.btn_Stop_In.released.connect(lambda: self.ui_Trig_In("Stop"))
+        self.ui.btn_ManTrig_In.released.connect(lambda: self.ui_Trig_In("Manual"))
+        self.ui.btn_InstRst.released.connect(lambda: self.ui_Reset())
+        
+        if self.client.enabled or self.server.enabled:
+            #Client and Server
+            self.client.dataRecievedSig.connect(self.ui_update_net_R)
+            self.server.dataSentSig.connect(self.ui_update_net_S)
+        else:
+            #No Client or Server
+            self.ui.gb_Network.setVisible(False)
             
-        if self.client.enabled:
-            self.remote_ui_updateTime.connect(self.ui_updateTime)
-            #self.remote_event_Sig.connect(lambda val: print(val))
-            self.remote_event_Sig.connect(self.ui_remote_event)
-            if self.server.enabled:
-                self.remote_ui_updateTime.connect(lambda val: self.server.sendSig.emit("main_app.ui_int.remote_ui_updateTime", val))
-            
-            if self.client.provideControl:
-                self.ui.btn_Start_In.released.connect(lambda: self.client.controlServer.sendSig.emit(self.get_selected_inst() + ".triggerSig", "Start"))
-                self.ui.btn_Stop_In.released.connect(lambda: self.client.controlServer.sendSig.emit(self.get_selected_inst() + ".triggerSig", "Stop"))
-                self.ui.btn_ManTrig_In.released.connect(lambda: self.client.controlServer.sendSig.emit(self.get_selected_inst() + ".triggerSig", "Manual"))
-                self.ui.btn_ManTrig.released.connect(lambda: self.client.controlServer.sendSig.emit("main_app.ui_int.ui.btn_ManTrig.released", None))
-                self.ui.btn_InstRst.released.connect(lambda: self.client.controlServer.sendSig.emit(self.get_selected_inst() + ".resetSig", None))
-            else:
+        
+        #Client Only
+        if self.client.enabled and (not self.server.enabled):
+            #No control
+            if not self.client.provideControl:
                 self.ui.btn_Start_In.setVisible(False)    
                 self.ui.btn_Stop_In.setVisible(False)    
                 self.ui.btn_ManTrig_In.setVisible(False)    
                 self.ui.btn_InstRst.setVisible(False)
                 self.ui.btn_ManTrig.setVisible(False) 
-                self.ui.groupBox.setVisible(False) 
-                
-                if self.server.enabled:
-                    self.remote_event_Sig.connect(lambda val: self.server.sendSig.emit("main_app.remote_event_Sig", val))   #if running  as a client and server, just forward the remote event update
-         
+                self.ui.groupBox.setVisible(False)
         else:
             self.old_time = None
             self.clockTimer = QtCore.QTimer()
             self.clockTimer.timeout.connect(self.clock_update)
-            self.clockTimer.start(10)
-            
-            self.ui.btn_Start_In.released.connect(lambda: self.active_insts[self.get_selected_inst()].triggerSig.emit("Start"))    
-            self.ui.btn_Stop_In.released.connect(lambda: self.active_insts[self.get_selected_inst()].triggerSig.emit("Stop"))
-            self.ui.btn_ManTrig_In.released.connect(lambda: self.active_insts[self.get_selected_inst()].triggerSig.emit("Manual"))
-            self.ui.btn_InstRst.released.connect(lambda: self.active_insts[self.get_selected_inst()].resetSig.emit())
+            self.clockTimer.start(10)    
         
-            if self.server.enabled:
-                self.remote_event_Sig.connect(lambda val: self.server.sendSig.emit("main_app.ui_int.remote_event_Sig", val))
-
+        
+        #Client
+        if self.client.enabled:
+            self.remote_ui_updateTime.connect(self.ui_updateTime)
+            self.remote_event_Sig.connect(self.ui_remote_event) 
+            
+            if self.client.provideControl:
+                self.ui.btn_ManTrig.released.connect(lambda: self.client.controlServer.sendSig.emit("main_app.ui_int.ui.btn_ManTrig.released", None))
+                self.client.controlServer.dataSentSig.connect(self.ui_update_net_S)
+            
+        
+        #Server
+        if self.server.enabled:
+            self.remote_event_Sig.connect(lambda val: self.server.sendSig.emit("main_app.ui_int.remote_event_Sig", val))
+           
+            if self.server.allowControl:
+                self.server.controlClient.dataRecievedSig.connect(self.ui_update_net_R)
+        
 
     def clock_update(self):
         lt = localtime()
@@ -111,6 +131,16 @@ class UI_interface(QtCore.QObject):
             self.ui_updateTime(lt)
             if self.server.enabled:
                 self.server.sendSig.emit("main_app.ui_int.remote_ui_updateTime", lt)
+                
+    def ui_update_net_R(self, host, port, l):
+        self._rCount += l
+        self.ui.lbl_Rcount.setText(str(self._rCount))
+        self.ui.lbl_R_IP.setText(host + ":" + str(port))
+        
+    def ui_update_net_S(self, host, port, l):
+        self._sCount += l
+        self.ui.lbl_Scount.setText(str(self._sCount))
+        self.ui.lbl_S_IP.setText(host + ":" + str(port))
 
     def ui_remote_event(self, val):
         t_sig = self.ui_eventtree_wids[val["key"]]
@@ -203,23 +233,30 @@ class UI_interface(QtCore.QObject):
                 else:
                     i.inst_wid = self.ui.stackedWidget.widget(self.ui.stackedWidget.addWidget(QtWidgets.QWidget()))
                     i.inst_log_container = self.ui.stackedWidget_log.widget(self.ui.stackedWidget_log.addWidget(QtWidgets.QPlainTextEdit()))
-                logging.debug("Created widget for %s: %s" % (key, str(i.inst_wid)))
                 
-                self.init_instUI(i)     
-                i.interfaceReadySig.connect(self.init_UI_Sigs)
-                self.init_UI_Sigs(i)
+                if self.init_instUI(i):    #If using a user UI, connect UI signals
+                    i.interfaceReadySig.connect(self.init_UI_Sigs)
+                    self.init_UI_Sigs(i)
+                else:
+                    i.interfaceReadySig.connect(self.uiReadySkip)
                 loaded += 1
             except:
                 raise
             
         logging.info("%d/%d instrument UIs loaded.\n" % (loaded, len(self.active_insts)))
+        
+    def uiReadySkip(self, i):
+        i.uiReady = True
+        i.uiReadySig.emit()
             
     def init_instUI(self, i):
         #Create UI if available
+        using_user_ui = False
         try:
             inst_ui_mod = importlib.import_module("instruments." + i.inst + ".ui")
             i.inst_ui = inst_ui_mod.Ui_Form()
             i.inst_ui.setupUi(i.inst_wid)
+            using_user_ui = True
         except:
             i.instLog.info("UI not found, showing default")
             try:
@@ -242,50 +279,56 @@ class UI_interface(QtCore.QObject):
                 i.logupdateSig.connect(lambda val=None, target_sig=i.inst + ".logupdateSig" : self.server.sendSig.emit(target_sig, val))
         except Exception as e:
             i.instLog.warning("Error setting up log UI: %s" % e)
+        finally:
+            if not using_user_ui:
+                i.uiReady = True
+            return using_user_ui
         
     
     def init_UI_Sigs(self, i):
         #Setup UI signals
-        #print(i)
+        i.ui_interface.ui = i.inst_ui
         try:
             for s in i.interface.ui_outputs:
                 try:
                     s_list = s.split(".")
-                    s_obj = s_list[0].strip()
-                    s_atr = s_list[1].strip()
-                    o = getattr(i.inst_ui, s_obj)
-                    m = getattr(o, s_atr)
+                    m = i.ui_interface
+                    for s_obj in s_list:
+                        m = getattr(m, s_obj.strip())
                     i.interface.ui_signals[s].connect(m)
-                    #i.interface.ui_signals[s].connect(lambda val=None:print(val))
                     if self.server.enabled:
                         i.interface.ui_signals[s].connect(lambda val=None, name="", target_sig=i.inst + ".interface.ui_signals['" + s.replace(".","~") + "']" : self.server.sendSig.emit(target_sig, val))
                     #i.interface.ui_signals[s].connect(lambda s=s, val=None : logging.info("%s, %s" % (s, val)))
                 except Exception as e:
-                    i.instLog.warning("Error connecting UI signal '%s': %s" % (s, ev))
-            
+                    i.instLog.warning("Error connecting UI signal '%s': %s" % (s, e))
+        except Exception as e:
+            i.instLog.warning("Error connecting UI outputs: %s" % e)
+        
+        try:
             for s in i.interface.ui_inputs:
                 try:
                     s_list = s.split(".")
-                    s_obj = s_list[0].strip()
-                    s_atr = s_list[1].strip()
-                    o = getattr(i.inst_ui, s_obj)
-                    m = getattr(o, s_atr)
+                    m = i.ui_interface
+                    for s_obj in s_list:
+                        m = getattr(m, s_obj.strip())
                     i.interface.ui_signals[s] = m
                     #i.interface.ui_signals[s].connect(lambda val=None:print(val))
                     if self.client.provideControl:
                         i.interface.ui_signals[s].connect(lambda val=None, name="", target_sig=i.inst + ".interface.ui_signals['" + s.replace(".","~") + "']" : self.client.controlServer.sendSig.emit(target_sig, val))
                         #i.interface.ui_signals[s].connect(lambda s=s, val=None : logging.info("%s, %s" % (s, val)))
                 except Exception as e:
-                    i.instLog.warning("Error connecting UI signal '%s': %s" % (s, ev))
-        except:
-            pass
+                    i.instLog.warning("Error connecting UI signal '%s': %s" % (s, e))
+        except Exception as e:
+            i.instLog.warning("Error connecting UI inputs: %s" % e)
         
         #Run any additional init
         try:
-            i.ui.inst_ui = i.inst_ui
-            i.ui.init()
+            i.ui_interface.provideControl = self.client.provideControl
+            i.ui_interface.init()
         except:
             pass
+        i.uiReady = True
+        i.uiReadySig.emit()
         
     def get_selected_inst(self):
         if len(self.ui.tbl_Instruments.selectionModel().selectedRows()) > 0:
@@ -304,34 +347,47 @@ class UI_interface(QtCore.QObject):
         self.ui_eventtree_topwids[key].parent().removeChild(self.ui_eventtree_topwids[key])
         self.ui_eventtree_add(i, key)
 
-    def ui_Trig_In(self, act, i):
-            self.active_insts[i].triggerSig.emit(act)
+    def ui_Trig_In(self, act):
+        try:
+            if self.client.provideControl:
+                self.client.controlServer.sendSig.emit(self.get_selected_inst() + ".triggerSig", act)
+            else:
+                self.active_insts[self.get_selected_inst()].triggerSig.emit(act)
+        except:
+            pass
             
-    def ui_Reset(self, i):
-            self.active_insts[i].resetSig.emit()
-        
-    def ui_set_inst_table(self, cp_inst):
-        self.ui.plainTextEdit.appendPlainText("- " + cp_inst["InstrumentInfo"]["Name"])
+    def ui_Reset(self):
+        try:
+            if self.client.provideControl:
+                self.client.controlServer.sendSig.emit(self.get_selected_inst() + ".resetSig", None)
+            else:
+                self.active_insts[self.get_selected_inst()].resetSig.emit()
+        except:
+            pass
+
+    def ui_set_inst_table(self, cp_inst, inst):
         r = self.ui.tbl_Instruments.rowCount()
         self.ui.tbl_Instruments.insertRow(r)
+        self.inst_list[r] = inst
+        
         item = QtWidgets.QTableWidgetItem(cp_inst["InstrumentInfo"]["Name"])
         item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
         self.ui.tbl_Instruments.setItem(r, 0, item)
         #self.ui.tbl_Instruments.setItem(r, 1, QtWidgets.QTableWidgetItem(cp_inst["InstrumentInfo"]["Model"]))
         self.ui.tbl_Instruments.setItem(r, 1, QtWidgets.QTableWidgetItem("0"))
         self.ui.tbl_Instruments.setItem(r, 2, QtWidgets.QTableWidgetItem("Standby"))
-        self.try_pass(self.ui.tbl_Instruments.setItem, r, 3, QtWidgets.QTableWidgetItem(cp_inst["Data"]["absolutePath"]))
+        self.ui.tbl_Instruments.setItem(r, 3, QtWidgets.QTableWidgetItem(cp_inst["Data"]["absolutePath"]))
             
     #def ui_update_run_status(self, s):
     #    self.ui.plainTextEdit.appendPlainText(s)
         
     def ui_update_inst_status(self, val):
-        r = val[0]
+        r = self.inst_list.index(val[0])
         status = val[1]
         self.ui.tbl_Instruments.setItem(r, 2, QtWidgets.QTableWidgetItem(status))
         
     def ui_update_tCount(self, val):
-        r = val[0]
+        r = self.inst_list.index(val[0])
         n = val[1]
         self.ui.tbl_Instruments.setItem(r, 1, QtWidgets.QTableWidgetItem(str(n)))
         
@@ -359,35 +415,3 @@ class UI_interface(QtCore.QObject):
         self.ui.lcdTime.display(strftime("%H"+":"+"%M"+":"+"%S", time_val))
         
         
-    def try_pass(self, func, *args):
-        try:
-            func(*args)
-        except:
-            pass
-        
-
-class QSignalHandler(logging.Handler):          #logging handler that emits all log entries through a specified signal
-    
-    def __init__(self, sig):
-        super().__init__()
-        self.sig = sig
-
-    def emit(self, record):
-        msg = self.format(record)
-        self.sig.emit(msg)
-
-    def write(self, m):
-        pass
-
-class Sig(QtCore.QObject):                      #Signal "wrapper" to allow programmatic definition of signals
-    s = QtCore.pyqtSignal(object, object)
-    
-    def __init__(self, name):
-        super().__init__()
-        self.name = name
-        
-    def emit(self, object):
-        self.s.emit(object, self.name)
-        
-    def connect(self, obj):
-        self.s.connect(obj)

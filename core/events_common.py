@@ -1,6 +1,8 @@
-import logging #, objgraph
+#System Imports
+import logging
+#Qt Imports
 from PyQt5 import QtCore
-
+#MoDaCS Imports
 import event_handlers
 
 
@@ -11,6 +13,8 @@ def events_init(self, cp_events):
     for ev, value in cp_events.items():
         try:          
             self.event_objs[ev] = Event_obj(self.active_insts, ev, value, self.reset_lambdas, self.globalTrig, self.event_reloadSig, event_handlers)
+            self.runningThreads.watchThread(self.event_objs[ev].event_thread)
+            self.finishedSig.connect(self.event_objs[ev].finishedSig)
             self.event_addedSig.emit(self.event_objs[ev].signals, ev)
             #self.event_objs[ev].remoteSig.connect(self.event_remoteSig)
         except Exception as e:
@@ -40,6 +44,7 @@ class Event_obj(QtCore.QObject):
         self.QueuedUniqueConnection = QtCore.Qt.QueuedConnection | QtCore.Qt.UniqueConnection
         
         self.event_thread = QtCore.QThread()                     #Create event thread
+        self.event_thread.name = ev
         self.moveToThread(self.event_thread)
         self.finishedSig.connect(self.event_thread.quit)     #make sure thread exits when inst is closed
 
@@ -193,25 +198,3 @@ class Event_obj(QtCore.QObject):
                 logging.error(e)               
             logging.info("Event reloaded for '%s': %s, Inputs: %s, Outputs: %s" % (inst, self.ev, self.signals["inputs"], self.signals["outputs"]))
             self.event_reloadSig.emit(self.signals, self.ev)
-
-    
-class waitforReady():
-
-    def __init__(self, insts, taregt):
-        self._insts = insts
-        self._target = target
-        
-        self._checkReady()                      #If all are already ready, no need to set up signal listeners
-                    
-        for i in insts:
-            i.readySig.connect(self._checkReady)      #Connect "ready" signals for updates
-
-    def _checkReady(self):        
-        for i in _insts:                         #Check ready states.  This is done directly (without signals/locals) to be efficient and because they are single reads only, it is thread-safe.
-            if not i.ready:
-                return
-        self._target()                           #If all are ready, call the target
-        
-    
-
-

@@ -1,33 +1,30 @@
 from time import sleep, strftime
 from PyQt5 import QtCore
-from GPIOEmulator.EmulatorGUI import GPIO
+try:
+    import RPi.GPIO as GPIO
+    usingRPi = True
+except:
+    from GPIOEmulator.EmulatorGUI import GPIO
+    usingRPi = False
 from os.path import isabs
 from os import makedirs
 import logging
 import random
 
-class Inst_obj(QtCore.QObject):
+class Inst_interface(QtCore.QObject):
     
-    error = QtCore.pyqtSignal(object)
-    ready = QtCore.pyqtSignal(bool)
-    status = QtCore.pyqtSignal(int, str)
-    finished = QtCore.pyqtSignal()
-        
-    def __init__(self,params,iLog):     #Inst object init - this is the same for all instruments
-        super().__init__()
-        
-        self.index = 0
-        self.n = 0
-        self.inst_cfg = params
-        self.instLog = iLog
-        
+    #instLog = logger object
+    #inst_cfg = config object
+    
+    inputs = []
+    outputs = []
+    
+    ui_inputs = []
+    ui_outputs = []
         
     def init(self):
         self.sp = Spec(self.inst_cfg)       #Call instrument init
         self.sp.open()
-        
-        self.instLog.info("Init complete")
-        self.status.emit(self.index, "Ready")
         
         
     def acquire(self):
@@ -35,14 +32,9 @@ class Inst_obj(QtCore.QObject):
         
         aq_type = self.inst_cfg["Acquisition"]["Aq_Type"].replace(" ", "").split(",")
         
-        if "Log" in aq_type:
-            self.instLog.info("Acquisition %i" % self.n)
         if "Save" in aq_type:
             if not data == None:
                 self.sp.writeData(data)
-        
-        self.n += 1
-        self.status.emit(self.index, "n=" + str(self.n))
         
     def close(self):
         self.sp.shutdown()

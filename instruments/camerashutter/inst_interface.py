@@ -40,7 +40,11 @@ class CameraShutter():
     def __init__(self, shutterpin):
         self.shutter = shutterpin
         try:
-            GPIO.setmode(GPIO.BCM)       
+            GPIO.setmode(GPIO.BCM)
+            sleep(0.1)
+        except:
+            pass
+        try:    
             GPIO.setup(self.shutter, GPIO.OUT)
             GPIO.output(self.shutter, False)
         except:

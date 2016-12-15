@@ -1,4 +1,6 @@
+#Qt Imports
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject, QThread   
+#System Imports
 import logging
 
 class shutterspeed(QObject):

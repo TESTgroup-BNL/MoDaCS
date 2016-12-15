@@ -1,10 +1,12 @@
 from time import sleep
 from PyQt5 import QtCore
-import threading
+import threading, datetime, logging, subprocess
 try:
     import RPi.GPIO as GPIO
+    usingRPi = True
 except:
     from GPIOEmulator.EmulatorGUI import GPIO
+    usingRPi = False
 
 
 class Inst_interface(QtCore.QObject):
@@ -15,6 +17,9 @@ class Inst_interface(QtCore.QObject):
     
     inputs = []
     outputs = ["digitalTrig"]
+    
+    ui_inputs = ["syncTimeSig"]
+    ui_outputs = []
         
     #### Event functions ####
         
@@ -23,6 +28,10 @@ class Inst_interface(QtCore.QObject):
         self.trigpin = int(self.inst_cfg["Initialization"]["triggerpin"])
         try:
             GPIO.setmode(GPIO.BCM)
+            sleep(0.1)
+        except:
+            pass
+        try:
             GPIO.setup(self.trigpin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
         except Exception as e:
             self.instLog.warning(e)
@@ -35,6 +44,7 @@ class Inst_interface(QtCore.QObject):
         except Exception as e:
             self.instLog.warning(e)
 
+        self.ui_signals["syncTimeSig"].connect(self.setTime)
         
     def acquire(self):
         return                          #Call instrument acquisition method
@@ -42,7 +52,6 @@ class Inst_interface(QtCore.QObject):
     def close(self):
         self.listen = False
         
-
     def gpio_monitor(self):
         triggered = False
         self.instLog.info("Listening thread started.")
@@ -55,3 +64,28 @@ class Inst_interface(QtCore.QObject):
                 triggered = False
             sleep(.01)
         self.instLog.info("Listening thread finished.")
+        
+    def setTime(self, new_dt):
+        if usingRPi:
+            subprocess.call('sudo date -s ' + new_dt.strftime('%Y-%m-%d'), shell=True)
+            subprocess.call('sudo date -s ' + new_dt.strftime('%H:%M:%S'), shell=True)
+        
+        self.instLog.info("Clock set: %s %s" % (new_dt.strftime('%Y-%m-%d'), new_dt.strftime('%H:%M:%S')))
+
+            
+class Ui_interface(QtCore.QObject):
+    
+    #self.client_enabled = inst_interface.client_enabled
+    syncTimeSig = QtCore.pyqtSignal(object)    #this has to go in the UI class so that it is executed by clients (the inst interface class is not)
+    
+    def init(self):
+        #self.inst_ui.syncTimeSig = self.syncTimeSig
+        self.syncTimeSig.connect(self.ui.dt_ClientClock.setDateTime)
+        if self.provideControl:
+            self.ui.pb_SetClock.released.connect(self.syncTime)
+        else:
+            self.ui.pb_SetClock.setVisible(False)
+            
+    def syncTime(self):
+        self.syncTimeSig.emit(datetime.datetime.now())
+        #self.ui.dt_ClientClock.setDateTime(QtCore.QDateTime.currentDateTime())
