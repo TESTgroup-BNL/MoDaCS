@@ -1,14 +1,15 @@
 #System Imports
 from time import time, strftime
-import logging, configparser, importlib
+import logging, configparser, importlib, traceback, sys
 from os import makedirs, path
+
 #Qt Imports
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import pyqtSignal
 from util import QSignalHandler, Sig
 
     
-def inst_init(self, instlist, globalPath):
+def inst_init(self, instlist, globalPath, mainthreadlist):
     
     logging.info("Loading Instruments...")
     
@@ -17,14 +18,19 @@ def inst_init(self, instlist, globalPath):
         if str.lower(instlist[inst]) == "true":
             try:                    
                 client_only = (self.ui_int.client.enabled and (not self.ui_int.server.enabled))
+                mainthread = None
+                if inst in mainthreadlist:
+                    if bool(mainthreadlist[inst]) == True:
+                        mainthread = self.thread()
 
                 #Create inst objects
-                self.active_insts[inst] = Inst_obj(globalPath, inst, client_only)
+                self.active_insts[inst] = Inst_obj(globalPath, inst, client_only, self.getGlobalTrigCount, mainthread)
                 self.active_insts[inst].index = index
                 self.inst_list.append(inst)
                 
-                self.runningThreads.watchThread(self.active_insts[inst].inst_thread)
-                self.active_insts[inst].inst_thread.started.connect(self.active_insts[inst].init)         #make sure object init when thread starts
+                if not client_only:
+                    self.runningThreads.watchThread(self.active_insts[inst].inst_thread)
+                    self.active_insts[inst].inst_thread.started.connect(self.active_insts[inst].init)         #make sure object init when thread starts
 
                 cp_inst = self.active_insts[inst].cp_inst
 
@@ -63,6 +69,10 @@ class Inst_obj(QtCore.QObject):
     
     def tCount(self):
         self.tCount_prop += 1
+        try:
+            self.interface.inst_n += 1      #if interface is broken, don't worry about it (though tCount should never be updating in that case anyway)
+        except:
+            pass
         self.tCountSig.emit([self.inst, self.tCount_prop]) 
     
     statusSig = QtCore.pyqtSignal(object)
@@ -99,7 +109,7 @@ class Inst_obj(QtCore.QObject):
             self.statusSig.emit([self.inst, e_str])
             self.errorSig.emit(self.inst, e)
         
-    def __init__(self, globalPath, inst, client_only):     #Inst object init - this is the same for all instruments
+    def __init__(self, globalPath, inst, client_only, getGlobalTrigCount, mainthread=None):     #Inst object init - this is the same for all instruments
         super().__init__()
        
         self.ready = False
@@ -109,12 +119,17 @@ class Inst_obj(QtCore.QObject):
         self.inst = inst
         self.client_only = client_only
         self.initDone = False
+        self.getGlobalTrigCount = getGlobalTrigCount
                                             
         #Create inst threads
         if not client_only:
-            self.inst_thread = QtCore.QThread()
-            self.inst_thread.name = inst
-            self.moveToThread(self.inst_thread)                 #move the inst object to its thread
+            if mainthread is not None:
+                self.inst_thread = mainthread
+            else:
+                self.inst_thread = QtCore.QThread()
+                self.inst_thread.name = inst
+                self.moveToThread(self.inst_thread)                 #move the inst object to its thread
+                
             self.finishedSig.connect(self.finished)             #make sure thread exits when inst is closed
             self.uiReadySig.connect(self.init)                  #Re-init after instrument restart
         
@@ -199,6 +214,8 @@ class Inst_obj(QtCore.QObject):
         self.interface = inst_mod.Inst_interface()
         self.interface.instLog = self.instLog
         self.interface.inst_cfg = self.inst_cfg
+        self.interface.inst_n = 0
+        self.interface.instPath = path.join("instruments", self.inst)
         
         #Setup inst signals and input sub
         self.interface.signals = {}
@@ -238,7 +255,12 @@ class Inst_obj(QtCore.QObject):
             self.initDone = True
             try:
                 self.interface.init()        #Call instrument init
+            except ImportError as e:
+                traceback.print_exc(file=sys.stdout)
+                self.instLog.warning("Import error: " + str(e))
+                pass
             except Exception as e:
+                traceback.print_exc(file=sys.stdout)
                 self.error = "Init error: " + str(e)
                 return
             self.instLog.info("Init complete")
@@ -284,13 +306,15 @@ class Inst_obj(QtCore.QObject):
 
     def trigger(self,source):
         if source in self.trig_mode or "*" in self.trig_mode:
-            if self.ready:
+            if self.ready or source=="Manual":
                 self.status = "Acquiring"
                 
                 try:
-                    self.instLog.info("Acq. %i, Trigger: %s" % (self.tCount_prop, source))
-                    self.tCount()                                     #Increment acquisition counter
+                    self.globalTrigCount = self.getGlobalTrigCount()
+                    self.interface.globalTrigCount = self.globalTrigCount
+                    self.instLog.info("Acq. %i, Trigger: %s, RecNum: %i" % (self.tCount_prop, source, self.globalTrigCount))
                     self.interface.acquire()                          #Call instrument acquisition method
+                    self.tCount()                                     #Increment acquisition counter
 
                 except Exception as e:
                     self.error = "Trigger error: " + str(e)

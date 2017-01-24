@@ -961,6 +961,9 @@ section::{font: 12px;}</string>
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Tabbed Mode</string>
    </property>

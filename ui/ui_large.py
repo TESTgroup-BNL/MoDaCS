@@ -377,6 +377,7 @@ class Ui_MainWindow(object):
         self.actionMaster_Log.setObjectName("actionMaster_Log")
         self.actionTabbed_Mode = QtWidgets.QAction(MainWindow)
         self.actionTabbed_Mode.setCheckable(True)
+        self.actionTabbed_Mode.setChecked(True)
         self.actionTabbed_Mode.setObjectName("actionTabbed_Mode")
         self.actionTile_Horizontally = QtWidgets.QAction(MainWindow)
         self.actionTile_Horizontally.setObjectName("actionTile_Horizontally")

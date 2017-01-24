@@ -1,8 +1,14 @@
+#Qt Imports
 from PyQt5 import QtCore, QtGui
 from PyQt5.Qt import pyqtSignal
-import logging, json, time
-from util import JSONWriter
+
+#System Imports
+import logging, json, importlib
+from time import time, sleep
 from os import path
+
+#MoDaCS Imports
+from util import JSONFileField
 
 class Inst_interface(QtCore.QObject):
     
@@ -18,12 +24,14 @@ class Inst_interface(QtCore.QObject):
     #### Common event functions ####
         
     def init(self):
-        
-        import dronekit
+        try:
+            importlib.reload(dronekit)
+        except:
+            import dronekit
         #from dronekit import connect, VehicleMode
         
         self.instLog.info("Waiting for Pixhawk to initialize...")
-        time.sleep(2)   #Wait for Pixhawk to finish booting
+        sleep(2)   #Wait for Pixhawk to finish booting
         connection_string = self.inst_cfg["Initialization"]["Connection"]
         self.instLog.info("Connecting to vehicle on: %s" % (connection_string,))
     
@@ -55,16 +63,17 @@ class Inst_interface(QtCore.QObject):
                 for cmd in mission_list:
                     #d["Flight Plan"].append(cmd)
                     d["Flight Plan"].append([cmd.seq,cmd.current,cmd.frame,cmd.command,cmd.param1,cmd.param2,cmd.param3,cmd.param4,cmd.x,cmd.y,cmd.z,cmd.autocontinue])
-                print(d)
+                #print(d)
         #except TypeError:
         #    self.instLog.warning("No flight plan loaded")
         except Exception as e:
             self.instLog.error("Error saving flight plan: %s" % e)
 
         self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
-        self.jsonWriter = JSONWriter()
-        self.jsonWriter.start(self.dataFile, d)
-            
+        self.jsonFF = JSONFileField(self.dataFile)
+        self.jsonFF.addElement("Header", d)
+        self.jsonFF.addField("Data", fieldType=list)
+
         try:
             self.ui_signals["ui.btn_test.released"].connect(lambda: self.instLog.info("Button pressed!"))
         except Exception as e:
@@ -122,12 +131,12 @@ class Inst_interface(QtCore.QObject):
         d["Ground Speed"] = self.vehicle.groundspeed
         d["Heading"] = self.vehicle.heading
         d["Global Location"] = self.vehicle.location.global_frame
-        
-        self.jsonWriter.write(time.time(), d)
+    
+        self.jsonFF["Data"].write(d, recnum=self.globalTrigCount, timestamp=time())
 
         
     def close(self):
-        self.jsonWriter.close()
+        self.jsonFF.close()
         self.vehicle.close()
     
     #Method to process input signals

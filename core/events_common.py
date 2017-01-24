@@ -9,11 +9,13 @@ import event_handlers
 def events_init(self, cp_events):
   
     logging.info("Loading Events...")
+    client_only = (self.ui_int.client.enabled and (not self.ui_int.server.enabled))
     
     for ev, value in cp_events.items():
         try:          
             self.event_objs[ev] = Event_obj(self.active_insts, ev, value, self.reset_lambdas, self.globalTrig, self.event_reloadSig, event_handlers)
-            self.runningThreads.watchThread(self.event_objs[ev].event_thread)
+            if not client_only:
+                self.runningThreads.watchThread(self.event_objs[ev].event_thread)
             self.finishedSig.connect(self.event_objs[ev].finishedSig)
             self.event_addedSig.emit(self.event_objs[ev].signals, ev)
             #self.event_objs[ev].remoteSig.connect(self.event_remoteSig)

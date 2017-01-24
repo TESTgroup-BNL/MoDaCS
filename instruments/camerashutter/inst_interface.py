@@ -1,8 +1,11 @@
-from time import sleep
+from time import sleep, time
+from os import path
 try:
     import RPi.GPIO as GPIO
 except:
     from GPIOEmulator.EmulatorGUI import GPIO
+    
+from util import JSONFileField
 
 
 class Inst_interface():
@@ -10,6 +13,7 @@ class Inst_interface():
     #instLog = logger object
     #inst_cfg = config object
     #inst_wid = instrument widget
+    #inst_n = acquisition count
     
     inputs = ["shutterspeed"]
     outputs = []
@@ -22,12 +26,22 @@ class Inst_interface():
         except Exception as e:
             self.instLog.warning(e)
         
-    def acquire(self):
-        self.cs.snapshot()                          #Call instrument acquisition method
+        datafile = self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.jsonFF = JSONFileField(datafile)
+        self.jsonFF.addField("Header")
+        self.jsonFF["Header"]["Model"] = self.inst_cfg["InstrumentInfo"]["Model"]
+        self.jsonFF["Header"]["Lens"] = self.inst_cfg["InstrumentInfo"]["Lens"]
+        self.jsonFF.addField("Data", fieldType=list)
         
+    def acquire(self):
+        t = time()
+        self.cs.snapshot()                          #Call instrument acquisition method
+        self.jsonFF["Data"].write("Image " + str(self.inst_n), recnum=self.globalTrigCount, timestamp=t, compact=True)
+
     def close(self):
         self.cs.shutdown()
-
+        self.jsonFF["Header"]["Images Captured"] = self.inst_n
+        self.jsonFF.close()
 
         
     def shutterspeed(self, val, ev):

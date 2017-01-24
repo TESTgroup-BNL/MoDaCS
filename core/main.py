@@ -5,7 +5,7 @@ Created on Jul 13, 2016
 '''
 #System Imports
 import sys, traceback, getopt, logging, configparser, copy, importlib, subprocess
-from time import time, strftime, sleep
+from time import time, strftime
 from os import makedirs, path, execv
 
 #Qt Imports
@@ -21,11 +21,10 @@ except:
 sys.path.append("..")
 sys.path.append(".")
 
-from inst_common import inst_init, QSignalHandler
-import instruments
+from inst_common import inst_init
 from events_common import events_init
 import ui.ui_interface
-import util
+from util import QSignalHandler, RunningThreads
         
 
 
@@ -39,15 +38,9 @@ class Main(QtWidgets.QMainWindow):
     globalTrig = QtCore.pyqtSignal(str)
     logupdateSig = QtCore.pyqtSignal(str)
     finishedSig = QtCore.pyqtSignal()
+    uiReadySig = QtCore.pyqtSignal()
     
-    active_insts = {}
-    inst_list = []
-        
-    event_objs = {}
-    reset_lambdas = []
-    
-    startTime = 0
-    count = 0
+
     
     ui_large = False
    
@@ -55,11 +48,23 @@ class Main(QtWidgets.QMainWindow):
         super().__init__()
         QtWidgets.QMainWindow.__init__(self)
         
+        self.active_insts = {}
+        self.inst_list = []
+            
+        self.event_objs = {}
+        self.reset_lambdas = []
+        
+        self.startTime = 0
+        self.count = 0
+        
+        self.globalTrigCount = 0
+        self.globalTrig.connect(lambda: self.incGlobalTrigCount())
+                
         self.finishedSig.connect(self.finished)
         self.readyToClose = False
         self.shutdown_mode = ""
         
-        self.runningThreads = util.RunningThreads()
+        self.runningThreads = RunningThreads()
               
         #Initialize config parser and logger
         cp = configparser.ConfigParser()
@@ -112,7 +117,11 @@ class Main(QtWidgets.QMainWindow):
             self.ui_int.ui.btn_ManTrig.released.connect(lambda: self.globalTrig.emit("Manual"))
           
         #Initialize Instruments
-        inst_init(self, cp["Active_Insts"], dataPath)
+        try:
+            mainthreadlist = cp["MainThread"]
+        except:
+            mainthreadlist = []
+        inst_init(self, cp["Active_Insts"], dataPath, mainthreadlist)
         
         #Initialize Events
         events_init(self, cp["Events"])
@@ -131,6 +140,13 @@ class Main(QtWidgets.QMainWindow):
                 
         if self.ui_int.server.allowControl:
             self.ui_int.server.controlClient.thread.start()
+    
+    def incGlobalTrigCount(self):
+        #if not source == "Manual":
+        self.globalTrigCount += 1  
+    
+    def getGlobalTrigCount(self):
+        return self.globalTrigCount
             
     def closeEvent(self, event):
         if self.readyToClose:

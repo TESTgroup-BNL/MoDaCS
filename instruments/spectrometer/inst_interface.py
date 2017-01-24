@@ -1,5 +1,5 @@
 from time import sleep, strftime
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 try:
     import RPi.GPIO as GPIO
     usingRPi = True
@@ -10,6 +10,7 @@ from os.path import isabs
 from os import makedirs
 import logging
 import random
+import pyqtgraph as pg
 
 class Inst_interface(QtCore.QObject):
     
@@ -20,11 +21,12 @@ class Inst_interface(QtCore.QObject):
     outputs = []
     
     ui_inputs = []
-    ui_outputs = []
+    ui_outputs = ["specData"]
         
     def init(self):
         self.sp = Spec(self.inst_cfg)       #Call instrument init
         self.sp.open()
+        self.ui_signals["specData"].connect(lambda: print("TEST"))
         
         
     def acquire(self):
@@ -32,13 +34,54 @@ class Inst_interface(QtCore.QObject):
         
         aq_type = self.inst_cfg["Acquisition"]["Aq_Type"].replace(" ", "").split(",")
         
+        #Update UI
+        self.ui_signals["specData"].emit(data)
+        
         if "Save" in aq_type:
             if not data == None:
                 self.sp.writeData(data)
         
     def close(self):
         self.sp.shutdown()
-        self.instLog.info("Spec shutdown")        
+        self.instLog.info("Spec shutdown")    
+        
+        
+class Ui_interface(QtCore.QObject):
+    
+    specData = QtCore.pyqtSignal(object)
+    
+    def init(self):
+        
+        self.pw = pg.PlotWidget(name='Plot1')
+        self.layout1 = QtGui.QVBoxLayout()
+        self.layout1.setContentsMargins(0,0,0,0)
+        self.layout1.addWidget(self.pw)
+        self.ui.pltWidget.setLayout(self.layout1)
+        
+        self.specplot = self.pw.plot()
+        self.ui.pltWidget.setContentsMargins(0,0,0,0)
+        y_axis = self.pw.getAxis('left')
+        y_axis.enableAutoSIPrefix(False)
+        y_axis.showLabel(False)
+        y_axis.setRange(0, 1)
+        y_axis.setWidth(15)
+
+        x_axis = self.pw.getAxis('bottom')
+        x_axis.enableAutoSIPrefix(False)
+        x_axis.showLabel(False)
+        x_axis.setHeight(15)
+        #self.pw.setLabel('bottom', 'Wavelength', units='nm')
+        
+        self.pw.getAxis('top').setHeight(5)
+        
+        self.specData.connect(self.updatePlot)
+        
+    
+    def updatePlot(self, data):       
+        wls = data[0]
+        intens = data[1]
+        self.pw.setXRange(min(wls), max(wls))
+        self.specplot.setData(x=wls, y=intens)    
         
 
 class Spec:
