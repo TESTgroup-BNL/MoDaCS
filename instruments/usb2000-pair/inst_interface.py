@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 #System Imports
 from time import sleep, time
-from os import path
+from os import path, makedirs
 import importlib
 
 #MoDaCS Imports
@@ -68,8 +68,10 @@ class Inst_interface(QtCore.QObject):
             raise Exception("Error setting up Seabreeze interface")
         
         #Create output file
-        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], "Data", self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        makedirs(path.dirname(self.dataFile), exist_ok=True)
         self.jsonFF = JSONFileField(self.dataFile)
+        self.jsonFF.addElement("Configuration", {s:dict(self.inst_cfg.items(s)) for s in self.inst_cfg.sections()})
         self.jsonFF.addField("References", fieldType=list)
         self.jsonFF.addField("Data", fieldType=list)
         
@@ -117,6 +119,8 @@ class Inst_interface(QtCore.QObject):
         for key, spec in self.specs.items():
             intensities[key] = self.getIntensitiesList(spec)
 
+        options = {"IntegrationTime":self.int_time, "CorrectDarkCounts":self.correct_dark, "CorrectNonlinearity":self.correct_nonlin}
+
         #Save data
         if getRef:
             self.jsonFF["References"].write(intensities, timestamp=t, compact=True)
@@ -136,12 +140,12 @@ class Inst_interface(QtCore.QObject):
                 
                 #Save data
                 ### python >=3.5 only ### self.jsonFF["Data"].write({**intensities, **{"Reflectance":list(reflec)}}, timestamp=t, compact=True)
-                self.jsonFF["Data"].write({"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Reflectance":list(reflec)}, recnum=self.globalTrigCount, timestamp=t, compact=True)
+                self.jsonFF["Data"].write({"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Reflectance":list(reflec), "Options":options}, recnum=self.globalTrigCount, timestamp=t, compact=True)
             else:
                 self.instLog.warning("No reference values recorded yet; reflectance not calculated in real-time.")
                 reflec = []
                 #Save data without reflectance
-                self.jsonFF["Data"].write(intensities, timestamp=t, compact=True)
+                self.jsonFF["Data"].write({"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Options":options}, recnum=self.globalTrigCount, timestamp=t, compact=True)
     
             #Update UI
             self.ui_signals["updatePlot"].emit([intensities, False, reflec])

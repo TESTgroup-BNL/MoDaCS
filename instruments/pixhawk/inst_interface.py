@@ -1,11 +1,11 @@
 #Qt Imports
 from PyQt5 import QtCore, QtGui
-from PyQt5.Qt import pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 
 #System Imports
 import logging, json, importlib
 from time import time, sleep
-from os import path
+from os import path, makedirs
 
 #MoDaCS Imports
 from util import JSONFileField
@@ -69,8 +69,10 @@ class Inst_interface(QtCore.QObject):
         except Exception as e:
             self.instLog.error("Error saving flight plan: %s" % e)
 
-        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], "Data", self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        makedirs(path.dirname(self.dataFile), exist_ok=True)
         self.jsonFF = JSONFileField(self.dataFile)
+        self.jsonFF.addElement("Configuration", {s:dict(self.inst_cfg.items(s)) for s in self.inst_cfg.sections()})
         self.jsonFF.addElement("Header", d)
         self.jsonFF.addField("Data", fieldType=list)
 
@@ -113,7 +115,7 @@ class Inst_interface(QtCore.QObject):
 #                print("%s: %s" % attr_name, data)   
         
         except Exception as e:
-            raise Exception("Failed to setup callback: %s" % e)
+            self.instLog.error("Failed to setup callback: %s" % e)
         
     def acquire(self):
         

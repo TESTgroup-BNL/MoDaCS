@@ -15,7 +15,10 @@ from PyQt5 import QtWidgets, QtCore
 try:
     import RPi.GPIO as GPIO
 except:
-    from GPIOEmulator.EmulatorGUI import GPIO
+    try:
+        from GPIOEmulator.EmulatorGUI import GPIO
+    except:
+        pass
 
 #MoSaCS Imports
 sys.path.append("..")
@@ -39,11 +42,7 @@ class Main(QtWidgets.QMainWindow):
     logupdateSig = QtCore.pyqtSignal(str)
     finishedSig = QtCore.pyqtSignal()
     uiReadySig = QtCore.pyqtSignal()
-    
 
-    
-    ui_large = False
-   
     def __init__(self, parent=None):
         super().__init__()
         QtWidgets.QMainWindow.__init__(self)
@@ -64,6 +63,7 @@ class Main(QtWidgets.QMainWindow):
         self.readyToClose = False
         self.shutdown_mode = ""
         
+        self.ui_large = False
         self.runningThreads = RunningThreads()
               
         #Initialize config parser and logger
@@ -91,7 +91,11 @@ class Main(QtWidgets.QMainWindow):
         format='[%(levelname)-10s] (%(threadName)-10s), %(asctime)s, %(message)s',
         datefmt='%Y/%m/%d %I:%M:%S',)
         
-        logging.getLogger().addHandler(logging.StreamHandler())
+        sh = logging.StreamHandler()
+        formatter = logging.Formatter("[%(levelname)-10s] (%(threadName)-10s), %(asctime)s, %(message)s")
+        sh.setFormatter(formatter)
+        
+        logging.getLogger().addHandler(sh)
         
         #Initialize Main UI
         if cp.has_option("UI", "Size"):
@@ -150,11 +154,11 @@ class Main(QtWidgets.QMainWindow):
             
     def closeEvent(self, event):
         if self.readyToClose:
-            if self.shutdown_mode == "Restart MoDaCS":
+            if self.shutdown_mode == "Restart\nMoDaCS":
                 execv(sys.executable, ['python3'] + sys.argv)
-            elif self.shutdown_mode == "Shutdown RaspPi":
+            elif self.shutdown_mode == "Shutdown\nRaspPi":
                 subprocess.call('sudo shutdown now', shell=True)
-            elif self.shutdown_mode == "Restart RaspPi":
+            elif self.shutdown_mode == "Restart\nRaspPi":
                 subprocess.call('sudo shutdown -r now', shell=True)
             event.accept()
         else:

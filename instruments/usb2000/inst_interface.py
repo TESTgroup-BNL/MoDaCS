@@ -2,7 +2,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 #System Imports
 from time import sleep, time
-from os import path
+from os import path, makedirs
 #MoDaCS Imports
 from util import JSONFileField
 #Other Imports
@@ -31,14 +31,16 @@ class Inst_interface(QtCore.QObject):
         devices = sb.list_devices()
         self.instLog.info("Devices found: %s" % devices)
         if len(devices) == 0:
-            raise Exception("No devices found.")
+            self.error = "No devices found."
         self.instLog.info("Using %s" % devices[0])
         global spec
         spec = sb.Spectrometer(devices[0])
         
         #Create output file
-        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], "Data", self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        makedirs(path.dirname(self.dataFile), exist_ok=True)
         self.jsonFF = JSONFileField(self.dataFile)
+        self.jsonFF.addElement("Configuration", {s:dict(self.inst_cfg.items(s)) for s in self.inst_cfg.sections()})
         self.jsonFF.addField("References", fieldType=list)
         self.jsonFF.addField("Data", fieldType=list)
         

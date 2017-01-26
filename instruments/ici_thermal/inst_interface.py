@@ -67,11 +67,13 @@ class Inst_interface(QtCore.QObject):
             raise Exception("Error setting up thermal camera: %s" % e)
         
         #Create output file
-        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], "Data", self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
         self.imgPath = path.join(self.inst_cfg["Data"]["absolutePath"], "Thermal")
+        makedirs(path.dirname(self.dataFile), exist_ok=True)
         makedirs(self.imgPath, exist_ok=True)
         
         self.jsonFF = JSONFileField(self.dataFile)
+        self.jsonFF.addElement("Configuration", {s:dict(self.inst_cfg.items(s)) for s in self.inst_cfg.sections()})
         self.jsonFF.addField("Header")
         self.jsonFF["Header"]["Model"] = self.inst_cfg["InstrumentInfo"]["Model"]
         self.jsonFF["Header"]["Serial Number"] = self.tc.getSN()

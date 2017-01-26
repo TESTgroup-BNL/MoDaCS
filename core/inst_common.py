@@ -166,7 +166,7 @@ class Inst_obj(QtCore.QObject):
         iLog.addHandler(fileHandler)
         
         sh = logging.StreamHandler()
-        formatter = logging.Formatter("        [" + inst + "]: %(message)s")
+        formatter = logging.Formatter("[%(levelname)-10s] (%(threadName)-10s), %(asctime)s,        [" + inst + "]: %(message)s")
         sh.setFormatter(formatter)
         iLog.addHandler(sh)
         iLog.propagate = False
@@ -306,7 +306,7 @@ class Inst_obj(QtCore.QObject):
 
     def trigger(self,source):
         if source in self.trig_mode or "*" in self.trig_mode:
-            if self.ready or source=="Manual":
+            if self.ready or source=="Individual":
                 self.status = "Acquiring"
                 
                 try:

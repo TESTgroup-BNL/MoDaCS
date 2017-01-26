@@ -1,9 +1,12 @@
 from time import sleep, time
-from os import path
+from os import path, makedirs
 try:
     import RPi.GPIO as GPIO
 except:
-    from GPIOEmulator.EmulatorGUI import GPIO
+    try:
+        from GPIOEmulator.EmulatorGUI import GPIO
+    except:
+        pass
     
 from util import JSONFileField
 
@@ -26,9 +29,11 @@ class Inst_interface():
         except Exception as e:
             self.instLog.warning(e)
         
-        datafile = self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        datafile = self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], "Data", self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        makedirs(path.dirname(self.dataFile), exist_ok=True)
         self.jsonFF = JSONFileField(datafile)
         self.jsonFF.addField("Header")
+        self.jsonFF.addElement("Configuration", {s:dict(self.inst_cfg.items(s)) for s in self.inst_cfg.sections()})
         self.jsonFF["Header"]["Model"] = self.inst_cfg["InstrumentInfo"]["Model"]
         self.jsonFF["Header"]["Lens"] = self.inst_cfg["InstrumentInfo"]["Lens"]
         self.jsonFF.addField("Data", fieldType=list)

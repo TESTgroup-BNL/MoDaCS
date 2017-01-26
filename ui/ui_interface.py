@@ -89,7 +89,7 @@ class UI_interface(QtCore.QObject):
         
         self.ui.btn_Start_In.released.connect(lambda: self.ui_Trig_In("Start"))    
         self.ui.btn_Stop_In.released.connect(lambda: self.ui_Trig_In("Stop"))
-        self.ui.btn_ManTrig_In.released.connect(lambda: self.ui_Trig_In("Indiv. Man."))
+        self.ui.btn_ManTrig_In.released.connect(lambda: self.ui_Trig_In("Individual"))
         self.ui.btn_InstRst.released.connect(lambda: self.ui_Reset())
         
         if self.client.enabled or self.server.enabled:

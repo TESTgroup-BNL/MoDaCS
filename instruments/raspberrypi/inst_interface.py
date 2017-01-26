@@ -5,7 +5,10 @@ try:
     import RPi.GPIO as GPIO
     usingRPi = True
 except:
-    from GPIOEmulator.EmulatorGUI import GPIO
+    try:
+        from GPIOEmulator.EmulatorGUI import GPIO
+    except:
+        pass
     usingRPi = False
 
 
