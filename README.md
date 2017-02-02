@@ -10,6 +10,10 @@ Currently being developed with:
 - Python 3.5
 - Qt 5.7 (not using any features past 5.3 for compatibility with default Raspbian Jessie Qt package)
 
+
+*Security note:* The remote monitoring/control interface is NOT secure in any way and should not be used on a public a network.  There is currently no authentication process and the protocol allows almost any Qt signal/slot in the application to be targeted.
+
+
 ##MoDaCS Installation
 
 Requirements:
