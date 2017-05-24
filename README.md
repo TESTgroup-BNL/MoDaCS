@@ -19,7 +19,7 @@ Currently being developed with:
 Requirements:
 
 - python (32-bit) >= 3.4 ([https://www.python.org/downloads/](https://www.python.org/downloads/))
-- pyqt5 (available via pip)
+- pyqt5 (available via pip on Windows or under the package name "python3-pyqt5" on Raspbian Jessie)
 
 
 ##Instrument Dependencies
