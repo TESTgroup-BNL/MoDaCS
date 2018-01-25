@@ -117,36 +117,3 @@ class SFTP_Server(QObject):
                 self.sftpEnabled = False
                 self.sock.close
                 self.sftp_finished.emit()
-                
-                
-class DownloadProgress(QtWidgets.QProgressDialog):
-
-    def __init__(self, parent=None, total=100):
-        super(DownloadProgress, self).__init__(parent)
-        layout = QtGui.QVBoxLayout(self)       
-        self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        self.setFixedSize(200,200)
-        self.progressBar = QtGui.QProgressBar(self)
-        self.progressBar.setRange(0,total)
-        self.currentDir = QtGui.QLabel(self)
-        self.currentFile = QtGui.QLabel(self)
-        button = QtGui.QPushButton("Cancel", self)
-        layout.addWidget(self.currentDir)
-        layout.addWidget(self.currentFile)
-        layout.addWidget(self.progressBar)
-        layout.addWidget(button)
-
-        self.cancelled = False
-        button.clicked.connect(self.onCancel)
-        self.show()
-
-    def onCancel(self):
-        self.cancelled = True
-
-    def setProgress(self, file, i):
-        self.progressBar.setValue(i)
-        self.currentFile.setText(file)
-    
-    def setDirTotal(self, dir, total):
-        self.currentDir.setText(dir)
-        self.progressBar.setRange(0,total)  
