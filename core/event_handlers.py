@@ -1,4 +1,6 @@
+#Qt Imports
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject, QThread   
+#System Imports
 import logging
 
 class shutterspeed(QObject):
@@ -36,3 +38,4 @@ class testthing(QObject):
     
     def input(self, data, name):
         logging.info("hello from testthing, %s: %s" % (name, int(QThread.currentThreadId())))
+        

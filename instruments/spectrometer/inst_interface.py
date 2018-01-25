@@ -1,52 +1,111 @@
-from time import sleep, strftime
-from PyQt5 import QtCore
-from GPIOEmulator.EmulatorGUI import GPIO
+#System Imports
+import logging, json, random
+from time import sleep, strftime, time
 from os.path import isabs
 from os import makedirs
-import logging
-import random
 
-class Inst_obj(QtCore.QObject):
+#Qt Imports
+from PyQt5 import QtCore, QtGui
+
+#MoDaCS Imports
+from inst_common import Inst_jsonFF
+
+#Other Imports
+try:
+    import RPi.GPIO as GPIO
+    usingRPi = True
+except:
+    from GPIOEmulator.EmulatorGUI import GPIO
+    usingRPi = False
+import pyqtgraph as pg
+
+
+class Inst_interface(QtCore.QObject):
+
+    inputs = []
+    outputs = []
     
-    error = QtCore.pyqtSignal(object)
-    ready = QtCore.pyqtSignal(bool)
-    status = QtCore.pyqtSignal(int, str)
-    finished = QtCore.pyqtSignal()
+    ui_inputs = []
+    ui_outputs = ["specData"]
         
-    def __init__(self,params,iLog):     #Inst object init - this is the same for all instruments
-        super().__init__()
+    def init(self, inst_vars, jsonFF):
         
-        self.index = 0
-        self.n = 0
-        self.inst_cfg = params
-        self.instLog = iLog
-        
-        
-    def init(self):
-        self.sp = Spec(self.inst_cfg)       #Call instrument init
-        self.sp.open()
-        
-        self.instLog.info("Init complete")
-        self.status.emit(self.index, "Ready")
+        self.inst_vars = inst_vars
+        self.jsonFF = jsonFF
+
+        self.sp = Spec(self.inst_vars.inst_cfg)       #Call instrument init
+        self.sp.open()   
         
         
     def acquire(self):
         data = self.sp.get_spec()
+        self.jsonFF["Data"].write(data, recnum=self.inst_vars.globalTrigCount, timestamp=time())
         
-        aq_type = self.inst_cfg["Acquisition"]["Aq_Type"].replace(" ", "").split(",")
+        aq_type = self.inst_vars.inst_cfg["Acquisition"]["Aq_Type"].replace(" ", "").split(",")
         
-        if "Log" in aq_type:
-            self.instLog.info("Acquisition %i" % self.n)
+        #Update UI
+        if self.inst_vars.realtime:
+            self.ui_signals["specData"].emit(data)
+        
         if "Save" in aq_type:
             if not data == None:
                 self.sp.writeData(data)
+                                
+                
+    def displayRec(self, recNum):
         
-        self.n += 1
-        self.status.emit(self.index, "n=" + str(self.n))
+        try:
+            cachedData = self.jsonFF.read_jsonFFcached(self.jsonFF["Data"], recNum, self.inst_vars.inst_n, self.inst_vars.globalTrigCount)
+        except KeyError:
+            pass
+        
+        try:
+            self.ui_signals["specData"].emit(cachedData[str(recNum)][1])
+        except Exception as e:
+            self.inst_vars.inst_log.info("Error displaying record " + str(recNum) + ": " + str(e))
+
         
     def close(self):
         self.sp.shutdown()
-        self.instLog.info("Spec shutdown")        
+        self.inst_vars.inst_log.info("Spec shutdown")    
+        
+        
+class Ui_interface(QtCore.QObject):
+    
+    specData = QtCore.pyqtSignal(object)
+    
+    def init(self):
+        
+        self.pw = pg.PlotWidget(name='Plot1')
+        self.layout1 = QtGui.QVBoxLayout()
+        self.layout1.setContentsMargins(0,0,0,0)
+        self.layout1.addWidget(self.pw)
+        self.ui.pltWidget.setLayout(self.layout1)
+        
+        self.specplot = self.pw.plot()
+        self.ui.pltWidget.setContentsMargins(0,0,0,0)
+        y_axis = self.pw.getAxis('left')
+        y_axis.enableAutoSIPrefix(False)
+        y_axis.showLabel(False)
+        y_axis.setRange(0, 1)
+        y_axis.setWidth(15)
+
+        x_axis = self.pw.getAxis('bottom')
+        x_axis.enableAutoSIPrefix(False)
+        x_axis.showLabel(False)
+        x_axis.setHeight(15)
+        #self.pw.setLabel('bottom', 'Wavelength', units='nm')
+        
+        self.pw.getAxis('top').setHeight(5)
+        
+        self.specData.connect(self.updatePlot)
+        
+    
+    def updatePlot(self, data):       
+        wls = data[0]
+        intens = data[1]
+        self.pw.setXRange(min(wls), max(wls))
+        self.specplot.setData(x=wls, y=intens)    
         
 
 class Spec:
