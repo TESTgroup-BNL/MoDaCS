@@ -301,7 +301,7 @@ class Main(QtWidgets.QMainWindow):
 
                 elif self.shutdown_mode == "New Config":
                     #print(QDir.toNativeSeparators(sys.executable + ' "' + sys.argv[0] + '" -o "' + self.newConfigFile[0] + '"'))
-                    subprocess.Popen(QDir.toNativeSeparators(sys.executable + ' "' + sys.argv[0] + '" -c "' + self.newConfigFile[0] + '"'))
+                    subprocess.Popen(QDir.toNativeSeparators(sys.executable + ' "' + sys.argv[0] + '" -f "' + self.newConfigFile[0] + '"'))
                     #QProcess.startDetached(QDir.toNativeSeparators(sys.executable + ' "' + sys.argv[0] + '" -o "' + self.newConfigFile[0] + '"'))   
             event.accept()
         else:
@@ -313,7 +313,10 @@ class Main(QtWidgets.QMainWindow):
                 reply = QtWidgets.QMessageBox.question(self, 'Quit?', quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
                 if reply == QtWidgets.QMessageBox.Yes:   
                     self.finishedSig.emit("")
-                    event.ignore()
+                    if self.readyToClose:
+                        self.closeEvent(event)      #to catch when "finished" and "quit" execute before event is ignored
+                    else:
+                        event.ignore()
                 else:
                     event.ignore()
             else:
@@ -346,15 +349,20 @@ class Main(QtWidgets.QMainWindow):
             self.jsonFF.close()
         except:
             pass
-        logging.debug("Stopping %i thread(s)" % len(self.runningThreads))
-        sys.stdout.flush()
-        self._i = 0
-        self.runningThreads.allDone.connect(self.quit)
-        self.runningThreads.countChange.connect(lambda n: logging.debug("Waiting for %i thread(s)" % n))
 
-        self.shut_timer = QtCore.QTimer(self)
-        self.shut_timer.timeout.connect(self.check_shutdown)
-        self.shut_timer.start(1000)
+        if len(self.runningThreads) == 0:
+            self.quit()
+        else:
+            logging.debug("Stopping %i thread(s)" % len(self.runningThreads))
+            sys.stdout.flush()
+            self._i = 0
+            
+            self.runningThreads.allDone.connect(self.quit)
+            self.runningThreads.countChange.connect(lambda n: logging.debug("Waiting for %i thread(s)" % n))
+    
+            self.shut_timer = QtCore.QTimer(self)
+            self.shut_timer.timeout.connect(self.check_shutdown)
+            self.shut_timer.start(1000)
     
     def check_shutdown(self):
         self._i += 1
@@ -376,7 +384,10 @@ class Main(QtWidgets.QMainWindow):
             
     def quit(self):
         logging.info("Done.")
-        self.shut_timer.stop()
+        try:
+            self.shut_timer.stop()
+        except AttributeError:
+            pass
         if self.sftpEnabled and self.isServer:
             self.sftpEnabled = False
             sftp_server = sftp.SFTP_Server(self.run_cfg, self.quit)
