@@ -113,7 +113,7 @@ Sections:
     |Size|-large <br> -small|Determines the UI size mode.  "Small" is designed as a limited interface for a 320x240 fixed display while "large" operates like a typical resizable desktop application.|
     |WaitForNTP|True/False|When running on an ARM based device, tries to contact an NTP server to sync time before starting to record data.  (Times out after 1 minute.)|
 
-    For example:
+    For example:  
 
   > [UI]  
   Size = large  
@@ -130,7 +130,7 @@ Sections:
     |TCP_Client_Port| 0-65535 | The client port to use|
     |AllowControl| True/False | Sets whether or to allow remote clients to control this instance |
     
-For example:
+    For example:  
     
   > [Server]  
   Enabled = True  
@@ -151,7 +151,7 @@ For example:
     |TCP_Client_Port| 0-65535 | The client (local) port to use |
     |ProvideControl| True/False | Sets whether or to send remote control commands to server |
  
-For example:
+    For example:  
 
   > [Client]  
   Enabled = True  
@@ -161,7 +161,7 @@ For example:
   TCP_Client_Port = 9400  
   ProvideControl = True  
 
-Note on Server/Client configuration: TCP_Server_IP and TCP_Server_Port are mostly redundant and should almost always be the same for both the Server and Client modules.  The same applies to TCP_Client_IP and TCP_Client_Port.
+    Note on Server/Client configuration: TCP_Server_IP and TCP_Server_Port are mostly redundant and should almost always be the same for both the Server and Client modules.  The same applies to TCP_Client_IP and TCP_Client_Port.
 
 
 - **Run Instrument in Main Thread \[MainThread\] (optional, for debugging only)**
@@ -172,4 +172,4 @@ Note on Server/Client configuration: TCP_Server_IP and TCP_Server_Port are mostl
   usb2000-pair = True  
 
 
-[##Instrument Modules Information](README-Instruments.md)
+#[Instrument Modules Information](README-Instruments.md)

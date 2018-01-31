@@ -1,63 +1,80 @@
 # Instrument Modules
 
-|Instrument|Dependencies|Notes|
-|----------|------------|-----|
-|**Ocean Optics USB2000+**|
-|
-||- *python-seabreeze*                                                                                                                                |
-||                                                                                                                                                    |
-||    Follow the instructions to install python-seabreeze from [https://github.com/ap--/python-seabreeze](https://github.com/ap--/python-seabreeze).  |
-||                                                                                                                                                    |
-||- *pyqtgraph*                                                                                                                                       |
-||                                                                                                                                                    |
-||    A standard pip install ("sudo pip install pyqtgraph") should work.                                                                              |
-||                                                                                                                                                    |
-||- *numpy*                                                                                                                                           |
-||                                                                                                                                                    |
-||    A standard pip install ("sudo pip install numpy") should work.                                                                                  |
-||                                                                                                                                                    |
-||                                                                                                                                                    |
-|**ICI Thermal Camera**|
-||                                                                                                                                                                                                                  |
-||- *pyqtgraph*                                                                                                                                                                                                     |
-||                                                                                                                                                                                                                  |
-||    A standard pip install ("sudo pip install pyqtgraph") should work.                                                                                                                                            |
-||                                                                                                                                                                                                                  |
-||- *numpy*                                                                                                                                                                                                         |
-||                                                                                                                                                                                                                  |
-||    A standard pip install ("sudo pip install numpy") should work.                                                                                                                                                |
-||                                                                                                                                                                                                                  |
-||- *ICI Library, Firmware and Calibrations Files*                                                                                                                                                                  |
-||                                                                                                                                                                                                                  |
-||    All of these should be obtained from ICI.  The library should be something like "libici9000.a" (compiled for appropriate target), the firmware “ici9000.hex” and the calibration file(s) “Cal6001194F.bin”.   |
-||                                                                                                                                                                                                                  |
-||- *C++/Python Wrapper*                                                                                                                                                                                            |
-||                                                                                                                                                                                                                  |
-||    Compiled on Raspberry Pi and linked to ICI Library.  Sets up C wrapper around C++ calls which in turn can be called by ctypes in Python.                                                                      |
-|
-|**Pixhawk**|
-|
-||- *dronekit*                                                                                                                         |
-||    A standard pip install ("sudo pip install dronekit") should work.  ([http://python.dronekit.io/](http://python.dronekit.io/))    |
-||                                                                                                                                     |
-|
-|**Camera Shutter, Raspberry Pi**|
-|
-||- *RPi.GPIO*                                                                                                                                                                                                                                |
-||                                                                                                                                                                                                                                            |
-||    Part of the standard Raspberry Pi library; should be installed by default in Raspbian.                                                                                                                                                  |
-||                                                                                                                                                                                                                                            |
-||OR                                                                                                                                                                                                                                          |
-||                                                                                                                                                                                                                                            |
-||- *GPIOEmulator*                                                                                                                                                                                                                            |
-||                                                                                                                                                                                                                                            |
-||    An emulator for the Raspberry Pi’s GPIO ports.  Works with both inputs and outputs, interrupts are not supported, however. ([https://sourceforge.net/projects/pi-gpio-emulator/](https://sourceforge.net/projects/pi-gpio-emulator/))   |
-|
-|
-|**Other**
-|
-||- On Windows with Intel x86 or x64 processors, some packages use numpy-mkl, available precomplied here: [http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy](http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy) |
 
+<table><tr><th>Instrument</th><th>Dependencies</th><th>Notes</th></tr>
+<tr><td rowspan="3">
+
+**Ocean Optics USB2000+**
+</td><td>
+
+*pyqtgraph*
+</td><td>A standard pip install should work (on Raspbian, "sudo pip install pyqtgraph").</td></tr>
+<tr><td>
+ 
+*numpy*
+</td><td> A standard pip install should work (on Raspbian, "sudo pip install numpy").</td></tr>
+</td><td>
+
+*python-seabreeze*
+ </td><td>
+ 
+ Follow the instructions to install python-seabreeze from [https://github.com/ap--/python-seabreeze](https://github.com/ap--/python-seabreeze).</td></tr>
+<tr><td rowspan="4">
+
+**ICI Thermal Camera**
+</td><td>
+
+*pyqtgraph* 
+</td><td>A standard pip install should work (on Raspbian, "sudo pip install pyqtgraph").</td></tr>
+<tr><td>
+ 
+*numpy*
+</td><td> A standard pip install should work (on Raspbian, "sudo pip install numpy").</td></tr>
+<tr><td>
+ 
+*ICI Library, Firmware and Calibrations Files*
+</td><td>All of these should be obtained from ICI.  The library should be something like "libici9000.a" (compiled for appropriate target), the firmware “ici9000.hex” and the calibration file(s) “Cal6001194F.bin”.</td></tr>
+<tr><td>
+ 
+*C++/Python Wrapper*
+</td><td>Compiled on Raspberry Pi and linked to ICI Library.  Sets up C wrapper around C++ calls which in turn can be called by ctypes in Python.</td></tr>
+<tr><td>
+
+**Pixhawk**
+</td><td>
+
+*dronekit*
+</td><td>
+
+A standard pip install ("sudo pip install dronekit") should work.  ([http://python.dronekit.io/](http://python.dronekit.io/))</td></tr>
+
+<tr><td rowspan="2">
+
+**Camera Shutter, Raspberry Pi**
+</td><td>
+
+*RPi.GPIO*
+</td><td>Part of the standard Raspberry Pi library; should be installed by default in Raspbian.</td><tr>
+</td><td>
+
+OR<br>
+*GPIOEmulator*
+</td><td>
+
+An emulator for the Raspberry Pi’s GPIO ports.  Works with both inputs and outputs, interrupts are not supported, however. ([https://sourceforge.net/projects/pi-gpio-emulator/](https://sourceforge.net/projects/pi-gpio-emulator/))
+</td></tr>
+<tr><td>
+
+**Other**
+</td><td>
+
+*numpy-mkl*
+</td><td>
+
+On Windows with Intel x86 or x64 processors, some packages use numpy-mkl, available precomplied here: [http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy](http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy)
+</td></tr>
+
+</table>
 
 # Instrument Configuration 
 ### (instruments/\<instrument\>/inst_cfg.ini)
