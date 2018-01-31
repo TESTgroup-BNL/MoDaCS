@@ -88,10 +88,10 @@ Sections:
 	For example:  
 
     > [Data]  
-    > Location = C:\\temp\\MoDaCS Data
-	> AutoTransfer = True
-    > SSH_User = pi
-    > SSH_Password = <your password here>
+    Location = C:\\temp\\MoDaCS Data
+	AutoTransfer = True
+    SSH_User = pi
+    SSH_Password = <your password here>
 
 - **Event Handlers [Events]**
 
@@ -127,11 +127,11 @@ Sections:
 	|TCP_Server_Port| 0-65535 | The server (local) port to use|
 	|TCP_Client_IP| IP Address |  The client IP to use (the IP of the remote computer).|
 	|TCP_Client_Port| 0-65535 | The client port to use|
-	|AllowControl| True/False | Sets whether or to allow remote clients to control this instance  
+	|AllowControl| True/False | Sets whether or to allow remote clients to control this instance |
 	
 For example:
     
-		> [Server]  
+	> [Server]  
 	Enabled = True
 	TCP_Server_IP = 192.168.1.101
 	TCP_Client_IP = 192.168.1.100
@@ -147,11 +147,11 @@ For example:
 	|TCP_Server_Port| 0-65535 | The remote server port to use |
 	|TCP_Client_IP| IP Address | The client IP to use (the IP of this computer).  This options exists to differentiate between different networks when multiple network adapters are active.|
 	|TCP_Client_Port| 0-65535 | The client (local) port to use |
-	|ProvideControl| True/False | Sets whether or to send remote control commands to server
+	|ProvideControl| True/False | Sets whether or to send remote control commands to server |
  
 For example:
 
-		> [Client]  
+	> [Client]  
 	Enabled = True
 	TCP_Server_IP = 192.168.1.101
 	TCP_Client_IP = 192.168.1.100
