@@ -4,7 +4,7 @@
 <table><tr><th>Instrument</th><th>Dependencies</th><th>Notes</th></tr>
 <tr><td rowspan="3">
 
-**Ocean Optics USB2000+**
+**Ocean Optics USB2000+ Pair**
 </td><td>
 
 *pyqtgraph*
@@ -50,7 +50,7 @@ A standard pip install ("sudo pip install dronekit") should work.  ([http://pyth
 
 <tr><td rowspan="2">
 
-**Camera Shutter, Raspberry Pi**
+**Camera Shutter and Raspberry Pi**
 </td><td>
 
 *RPi.GPIO*
@@ -75,6 +75,17 @@ On Windows with Intel x86 or x64 processors, some packages use numpy-mkl, availa
 </td></tr>
 
 </table>
+
+Some other instrument/utility modules that are somewhat functional but under development:
+|Instrument|Description|
+|----------|-----------|
+|atm_sensors|Listens for a serial stream over raw UDP of atmospheric state data (temperature, RH, pressure), saves it to a CSV and displays a realtime plot.  (Based on ip_datasream.)|
+|flir_lepton|Interfaces with a FLIR Lepton module for thermal imaging.|
+|ip_datastream|Listens for a serial stream over raw UDP and saves it to a CSV.|
+|lidarlite|Interfaces with a [LIDAR-Lite v2](https://www.pulsedlight3d.com/products/lidar-lite-v2-blue-label.html) sensor for distance/altitude information.|
+|spectrometer|Deprecated module, originally used for testing/debugging.  Generates random, fake data.|
+|usb2000|Deprecated module, interfaced with a single Ocean Optics USB-2000.|
+|user_input|Passes a user entered string as an event.  Can be used to set prefixes for the data files saved by the ici_thermal module.|
 
 # Instrument Configuration 
 ### (instruments/\<instrument\>/inst_cfg.ini)

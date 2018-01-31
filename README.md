@@ -182,5 +182,4 @@ Sections:
   > [MainThread]  
   usb2000-pair = True  
 
-
-# [Instrument Modules Information](README-Instruments.md)
+  
