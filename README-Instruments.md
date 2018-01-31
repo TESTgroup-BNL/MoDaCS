@@ -77,6 +77,7 @@ On Windows with Intel x86 or x64 processors, some packages use numpy-mkl, availa
 </table>
 
 Some other instrument/utility modules that are somewhat functional but under development:
+
 |Instrument|Description|
 |----------|-----------|
 |atm_sensors|Listens for a serial stream over raw UDP of atmospheric state data (temperature, RH, pressure), saves it to a CSV and displays a realtime plot.  (Based on ip_datasream.)|
