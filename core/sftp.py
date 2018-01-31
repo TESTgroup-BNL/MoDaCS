@@ -25,25 +25,29 @@ class SFTP_Client(QObject):
         except KeyError as e:
             logging.warning("Error in RunConfig: %s /nSFTP transfer aborted." % e)
             sleep(1)
-            self.sock.writeDatagram("SFTP Done".encode(), QtNetwork.QHostAddress(self.run_cfg["Client"]["TCP_Server_IP"]), int(self.run_cfg["Client"]["TCP_Server_Port"])+1)
-            self.sock.close()
+            self.sftpDone()
             return
             
         self.sock.readyRead.connect(lambda: self.checksftpReady()) 
         self.sock.bind(QtNetwork.QHostAddress(self.run_cfg["Client"]["TCP_Client_IP"]), int(self.run_cfg["Client"]["TCP_Client_Port"])+1)
                    
     def checksftpReady(self):
-        while self.sock.hasPendingDatagrams():
-            datagram, host, port = self.sock.readDatagram(self.sock.pendingDatagramSize())
-            #self.dataRecievedSig.emit(host.toString(), int(port), len(datagram))
-            data = datagram.decode()
-            print(data)
-            #dat_str = "" + data
-            if data.startswith("Start SFTP"):
-                #print("Starting SFTP Transfer...")
-                logging.info("Starting SFTP Transfer...")
-                self.sftpTransfer(data[12:])
-                
+        try:
+            while self.sock.hasPendingDatagrams():
+                datagram, host, port = self.sock.readDatagram(self.sock.pendingDatagramSize())
+                #self.dataRecievedSig.emit(host.toString(), int(port), len(datagram))
+                data = datagram.decode()
+                print(data)
+                #dat_str = "" + data
+                if data.startswith("Start SFTP"):
+                    #print("Starting SFTP Transfer...")
+                    logging.info("Starting SFTP Transfer...")
+                    self.sftpTransfer(data[12:])
+        except Exception as e:
+            logging.warning(e)
+            self.sftpDone()
+            return
+        
     def sftpTransfer(self, remote_dir):
         print(remote_dir)
         transport = paramiko.Transport((self.run_cfg["Client"]["TCP_Server_IP"],22))
@@ -56,10 +60,14 @@ class SFTP_Client(QObject):
         sftp.close()
         transport.close()
         
-        self.sock.writeDatagram("SFTP Done".encode(), QtNetwork.QHostAddress(self.run_cfg["Client"]["TCP_Server_IP"]), int(self.run_cfg["Client"]["TCP_Server_Port"])+1)
-        self.sock.close()
+        self.sftpDone()
         
         logging.info("Done with SFTP Transfer.")
+        return
+    
+    def sftpDone(self):
+        self.sock.writeDatagram("SFTP Done".encode(), QtNetwork.QHostAddress(self.run_cfg["Client"]["TCP_Server_IP"]), int(self.run_cfg["Client"]["TCP_Server_Port"])+1)
+        self.sock.close()
         return
     
     def download_dir(self, remote_dir, local_dir, sftp, dl_prog=None):
