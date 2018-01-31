@@ -13,6 +13,10 @@ Currently being developed with:
 
 *Security note:* The remote monitoring/control interface is NOT secure in any way and should not be used on a public a network.  There is currently no authentication process and the protocol allows almost any Qt signal/slot in the application to be targeted.
 
+## Tl;dr, show me some data! (Viewer Mode Quickstart)
+1.  Install ([Python 3](https://www.python.org/downloads/))
+2.  Install PyQt 5 and pyqtgraph (run "pip install pyqt5")
+3.  From the MoDaCS directory, run "python .\core\main.py -f .\ExampleData\RunData.json"
 
 ## MoDaCS Installation
 
@@ -24,19 +28,25 @@ Requirements:
 Optional:
 
 - *paramiko* (for SFTP)
-    Available via pip but depends on cryptography which has some binary dependencies
-    For Raspbian Jessie:
-        1. Run sudo apt-get update
-        2. Run sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
-        3. Run sudo pip (or pip3) install --upgrade setuptools
-        4. Run sudo pip (or pip3) install paramiko
-            Note: this step can take ~20 mins on some Rasp Pi 2 systems while it builds some of the cryptography dependencies
+
+    Available via pip but depends on cryptography which has some binary dependencies.
+    
+    For Raspbian Jessie:  
+    1. Run sudo apt-get update
+    2. Run sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
+    3. Run sudo pip (or pip3) install --upgrade setuptools
+    4. Run sudo pip (or pip3) install paramiko
+       Note: this step can take ~20 mins on some Rasp Pi 2 systems while it builds some of the cryptography dependencies
             
 - *neopixel* (for RGB feedback LED on Raspberry Pi)
+
     Available from Adafruit: https://learn.adafruit.com/neopixels-on-raspberry-pi/software
 
 - *pyqtgraph* (allows Viewer Mode to work for most instruments with no other dependencies)
 
+    Available via pip
+    
+## [Instrument Modules Information](README-Instruments.md)
     
 ## Running MoDaCS
 
@@ -48,7 +58,8 @@ Optional:
 
     Instrument configurations are stored in the file(s) "/*instrument*/inst_cfg.ini".
 
-3.a. **Start Remote Client & Server for Data Collection**
+3.
+    a. **Start Remote Client & Server for Data Collection**
 
     For both the client and server, from the MoDaCS directory run "python ./core/main.py".  Ensure that the default python installation is >= python 3.4, or specify python3 if necessary.  Optionally, use the “-c <config file>” option to use an alternative configuration file.  This is useful for keeping both server and client configurations on the same machine.  For example: “python ./core/main.py -c ./core/run_cfg_client.ini”.
 
@@ -56,13 +67,13 @@ Optional:
 
     Note:  It is recommended to start the client first so that all UI elements are initialized properly.  Starting the client after the server will still work without issue, but indicators will be invalid until explicitly updated by the server.  The client computer should have the same active instrument modules and instrument configurations as the server.
 
-**OR**
+    **OR**
     
-3.b. **Start Viewer Mode**
-
+    b. **Start Viewer Mode**
     To start MoDaCS in viewer mode (to view previously saved data data), from the MoDaCS directory run "python ./core/main.py -o".  Ensure that the default python installation is >= python 3.4, or specify python3 if necessary.
     Alternatively, if running in data collection mode, the File->Load Records menu item will restart MoDaCS in viewer mode.  An open file dialog will appear.  The "RunData.json" file from the session being opened should be selected.
-    
+
+
 ## Run Configuration
 ### ([core/run_cfg.ini](core/run_cfg.ini))
 
@@ -172,4 +183,4 @@ Sections:
   usb2000-pair = True  
 
 
-#[Instrument Modules Information](README-Instruments.md)
+# [Instrument Modules Information](README-Instruments.md)
