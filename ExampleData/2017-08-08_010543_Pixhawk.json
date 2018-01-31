@@ -1,0 +1,22 @@
+{
+	"Configuration":{
+		"InstrumentInfo": {
+			"name": "Pixhawk",
+			"model": "PX4"
+		},
+		"Initialization": {
+			"connection": "/dev/ttyACM0"
+		},
+		"Data": {
+			"outputfileprefix": "2017-08-08_010543_Pixhawk",
+			"destination": "",
+			"absolutepath": "/home/pi/MoDaCS_Data/2017-08-08_010543/",
+			"inst": "pixhawk"
+		},
+		"Trigger": {
+			"source": "Remote, Auto, *"
+		}
+	},
+	"Data":{
+	}
+}

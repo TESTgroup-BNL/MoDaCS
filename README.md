@@ -15,7 +15,7 @@ Currently being developed with:
 
 ## Tl;dr, show me some data! (Viewer Mode Quickstart)
 1.  Install ([Python 3](https://www.python.org/downloads/))
-2.  Install PyQt 5 and pyqtgraph (run "pip install pyqt5")
+2.  Install PyQt 5 and pyqtgraph (run "pip install pyqt5 pyqtgraph")
 3.  From the MoDaCS directory, run "python .\core\main.py -f .\ExampleData\RunData.json"
 
 ## MoDaCS Installation

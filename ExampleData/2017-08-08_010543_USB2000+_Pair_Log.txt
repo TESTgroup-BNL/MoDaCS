@@ -1,0 +1,637 @@
+[INFO      ] (MainThread), 2017/08/08 01:05:43, Triggers: *
+[DEBUG     ] (MainThread), 2017/08/08 01:05:43, Creating instrument interface...
+[DEBUG     ] (MainThread), 2017/08/08 01:05:45, Interface ready
+[INFO      ] (Dummy-4   ), 2017/08/08 01:05:48, Devices found: [<SeaBreezeDevice USB2000PLUS:FLMS03923>, <SeaBreezeDevice USB2000PLUS:FLMS03924>]
+[INFO      ] (Dummy-4   ), 2017/08/08 01:05:48, Upward device:  <SeaBreezeDevice USB2000PLUS:FLMS03924>
+[INFO      ] (Dummy-4   ), 2017/08/08 01:05:48, Downward device:  <SeaBreezeDevice USB2000PLUS:FLMS03923>
+[INFO      ] (Dummy-4   ), 2017/08/08 01:05:48, Samples per point: 10
+[INFO      ] (Dummy-4   ), 2017/08/08 01:05:48, Integration time changed to: 10000 uS
+[INFO      ] (Dummy-4   ), 2017/08/08 01:05:48, Init complete
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:05:48, Ready
+[INFO      ] (MainThread), 2017/08/08 01:06:04, Integration time changed to: 9000 uS
+[INFO      ] (MainThread), 2017/08/08 01:06:05, Integration time changed to: 8000 uS
+[INFO      ] (MainThread), 2017/08/08 01:06:09, Integration time changed to: 1200 uS
+[INFO      ] (MainThread), 2017/08/08 01:06:12, Setting dark current values now!
+[INFO      ] (MainThread), 2017/08/08 01:06:13, Set dark current integration time 1200 uS
+[INFO      ] (Dummy-4   ), 2017/08/08 01:07:25, Set white reference!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:07:27, Set white reference!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:07:28, Set white reference!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:13, Set white reference!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:27, Attempting reset
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:27, Shutdown
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:27, Clearing signals
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:27, Creating instrument interface...
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:27, Interface ready
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:28, Attempting reset
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:28, Shutdown
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:28, Clearing signals
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:28, Creating instrument interface...
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:28, Interface ready
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:29, Devices found: [<SeaBreezeDevice USB2000PLUS:FLMS03923>, <SeaBreezeDevice USB2000PLUS:FLMS03924>]
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:29, Upward device:  <SeaBreezeDevice USB2000PLUS:FLMS03924>
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:29, Downward device:  <SeaBreezeDevice USB2000PLUS:FLMS03923>
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:29, Samples per point: 10
+[ERROR     ] (Dummy-4   ), 2017/08/08 01:08:29, Init error: 'ui.sb_intTime.valueChanged'
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:36, Attempting reset
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:37, Shutdown
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:37, Clearing signals
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:37, Creating instrument interface...
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:37, Interface ready
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:38, Devices found: [<SeaBreezeDevice USB2000PLUS:FLMS03923>, <SeaBreezeDevice USB2000PLUS:FLMS03924>]
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:38, Upward device:  <SeaBreezeDevice USB2000PLUS:FLMS03924>
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:38, Downward device:  <SeaBreezeDevice USB2000PLUS:FLMS03923>
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:38, Samples per point: 10
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:38, Integration time changed to: 10000 uS
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:38, Init complete
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:08:38, Ready
+[INFO      ] (Dummy-4   ), 2017/08/08 01:08:47, Integration time changed to: 1200 uS
+[INFO      ] (Dummy-4   ), 2017/08/08 01:09:48, Setting dark current values now!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:09:49, Set dark current integration time 1200 uS
+[INFO      ] (Dummy-4   ), 2017/08/08 01:10:22, Setting dark current values now!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:10:23, Set dark current integration time 1200 uS
+[INFO      ] (Dummy-4   ), 2017/08/08 01:11:08, Setting dark current values now!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:11:08, Set dark current integration time 1200 uS
+[INFO      ] (Dummy-4   ), 2017/08/08 01:11:44, Set white reference!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:11:46, Set white reference!
+[INFO      ] (Dummy-4   ), 2017/08/08 01:11:47, Set white reference!
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:18:54, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:18:54, Acq. 0, Trigger: RaspPi, RecNum: 0
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:18:55, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:18:56, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:18:56, Acq. 1, Trigger: RaspPi, RecNum: 1
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:18:56, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:18:57, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:18:57, Acq. 2, Trigger: RaspPi, RecNum: 2
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:18:58, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:18:59, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:18:59, Acq. 3, Trigger: RaspPi, RecNum: 3
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:00, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:00, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:00, Acq. 4, Trigger: RaspPi, RecNum: 4
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:01, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:02, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:02, Acq. 5, Trigger: RaspPi, RecNum: 5
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:03, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:03, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:03, Acq. 6, Trigger: RaspPi, RecNum: 6
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:04, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:04, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:04, Acq. 7, Trigger: RaspPi, RecNum: 7
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:05, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:06, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:06, Acq. 8, Trigger: RaspPi, RecNum: 8
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:07, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:07, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:07, Acq. 9, Trigger: RaspPi, RecNum: 9
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:08, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:08, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:08, Acq. 10, Trigger: RaspPi, RecNum: 10
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:10, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:10, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:10, Acq. 11, Trigger: RaspPi, RecNum: 11
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:11, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:11, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:11, Acq. 12, Trigger: RaspPi, RecNum: 12
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:12, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:13, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:13, Acq. 13, Trigger: RaspPi, RecNum: 13
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:14, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:14, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:14, Acq. 14, Trigger: RaspPi, RecNum: 14
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:15, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:16, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:16, Acq. 15, Trigger: RaspPi, RecNum: 15
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:17, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:22, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:22, Acq. 16, Trigger: RaspPi, RecNum: 16
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:23, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:29, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:29, Acq. 17, Trigger: RaspPi, RecNum: 17
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:30, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:31, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:31, Acq. 18, Trigger: RaspPi, RecNum: 18
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:32, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:33, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:33, Acq. 19, Trigger: RaspPi, RecNum: 19
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:33, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:34, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:34, Acq. 20, Trigger: RaspPi, RecNum: 20
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:35, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:35, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:36, Acq. 21, Trigger: RaspPi, RecNum: 21
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:37, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:37, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:37, Acq. 22, Trigger: RaspPi, RecNum: 22
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:38, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:38, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:38, Acq. 23, Trigger: RaspPi, RecNum: 23
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:39, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:40, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:40, Acq. 24, Trigger: RaspPi, RecNum: 24
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:41, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:41, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:41, Acq. 25, Trigger: RaspPi, RecNum: 25
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:43, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:43, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:43, Acq. 26, Trigger: RaspPi, RecNum: 26
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:44, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:44, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:44, Acq. 27, Trigger: RaspPi, RecNum: 27
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:45, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:45, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:45, Acq. 28, Trigger: RaspPi, RecNum: 28
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:47, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:47, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:47, Acq. 29, Trigger: RaspPi, RecNum: 29
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:48, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:48, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:48, Acq. 30, Trigger: RaspPi, RecNum: 30
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:49, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:49, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:50, Acq. 31, Trigger: RaspPi, RecNum: 31
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:50, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:51, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:51, Acq. 32, Trigger: RaspPi, RecNum: 32
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:53, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:19:59, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:19:59, Acq. 33, Trigger: RaspPi, RecNum: 33
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:00, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:06, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:06, Acq. 34, Trigger: RaspPi, RecNum: 34
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:07, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:08, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:08, Acq. 35, Trigger: RaspPi, RecNum: 35
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:09, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:10, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:10, Acq. 36, Trigger: RaspPi, RecNum: 36
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:11, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:11, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:11, Acq. 37, Trigger: RaspPi, RecNum: 37
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:12, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:12, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:13, Acq. 38, Trigger: RaspPi, RecNum: 38
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:13, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:14, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:14, Acq. 39, Trigger: RaspPi, RecNum: 39
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:15, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:15, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:15, Acq. 40, Trigger: RaspPi, RecNum: 40
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:17, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:17, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:17, Acq. 41, Trigger: RaspPi, RecNum: 41
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:18, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:18, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:18, Acq. 42, Trigger: RaspPi, RecNum: 42
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:19, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:22, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:22, Acq. 43, Trigger: RaspPi, RecNum: 44
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:23, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:23, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:23, Acq. 44, Trigger: RaspPi, RecNum: 45
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:24, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:25, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:25, Acq. 45, Trigger: RaspPi, RecNum: 47
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:26, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:26, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:26, Acq. 46, Trigger: RaspPi, RecNum: 48
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:28, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:28, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:28, Acq. 47, Trigger: RaspPi, RecNum: 49
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:29, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:29, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:29, Acq. 48, Trigger: RaspPi, RecNum: 50
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:30, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:30, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:30, Acq. 49, Trigger: RaspPi, RecNum: 50
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:32, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:32, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:32, Acq. 50, Trigger: RaspPi, RecNum: 50
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:32, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:35, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:35, Acq. 51, Trigger: RaspPi, RecNum: 51
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:36, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:42, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:42, Acq. 52, Trigger: RaspPi, RecNum: 52
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:43, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:43, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:43, Acq. 53, Trigger: RaspPi, RecNum: 53
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:44, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:45, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:45, Acq. 54, Trigger: RaspPi, RecNum: 54
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:46, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:46, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:46, Acq. 55, Trigger: RaspPi, RecNum: 55
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:47, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:48, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:48, Acq. 56, Trigger: RaspPi, RecNum: 56
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:49, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:49, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:49, Acq. 57, Trigger: RaspPi, RecNum: 57
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:50, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:51, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:51, Acq. 58, Trigger: RaspPi, RecNum: 58
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:51, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:52, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:52, Acq. 59, Trigger: RaspPi, RecNum: 59
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:53, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:53, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:53, Acq. 60, Trigger: RaspPi, RecNum: 60
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:55, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:55, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:55, Acq. 61, Trigger: RaspPi, RecNum: 61
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:56, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:56, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:56, Acq. 62, Trigger: RaspPi, RecNum: 62
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:57, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:58, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:58, Acq. 63, Trigger: RaspPi, RecNum: 63
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:59, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:20:59, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:20:59, Acq. 64, Trigger: RaspPi, RecNum: 64
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:00, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:00, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:00, Acq. 65, Trigger: RaspPi, RecNum: 65
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:02, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:02, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:02, Acq. 66, Trigger: RaspPi, RecNum: 66
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:03, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:03, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:04, Acq. 67, Trigger: RaspPi, RecNum: 67
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:05, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:11, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:11, Acq. 68, Trigger: RaspPi, RecNum: 68
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:13, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:18, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:18, Acq. 69, Trigger: RaspPi, RecNum: 69
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:20, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:20, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:20, Acq. 70, Trigger: RaspPi, RecNum: 70
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:22, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:22, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:22, Acq. 71, Trigger: RaspPi, RecNum: 71
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:23, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:23, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:23, Acq. 72, Trigger: RaspPi, RecNum: 72
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:24, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:25, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:25, Acq. 73, Trigger: RaspPi, RecNum: 73
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:26, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:26, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:26, Acq. 74, Trigger: RaspPi, RecNum: 74
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:27, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:28, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:28, Acq. 75, Trigger: RaspPi, RecNum: 75
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:28, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:29, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:29, Acq. 76, Trigger: RaspPi, RecNum: 76
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:30, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:30, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:30, Acq. 77, Trigger: RaspPi, RecNum: 77
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:31, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:32, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:32, Acq. 78, Trigger: RaspPi, RecNum: 78
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:33, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:33, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:33, Acq. 79, Trigger: RaspPi, RecNum: 79
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:35, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:35, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:35, Acq. 80, Trigger: RaspPi, RecNum: 80
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:36, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:36, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:36, Acq. 81, Trigger: RaspPi, RecNum: 81
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:38, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:38, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:38, Acq. 82, Trigger: RaspPi, RecNum: 82
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:39, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:39, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:39, Acq. 83, Trigger: RaspPi, RecNum: 83
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:40, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:41, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:41, Acq. 84, Trigger: RaspPi, RecNum: 84
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:41, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:47, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:47, Acq. 85, Trigger: RaspPi, RecNum: 85
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:48, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:54, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:54, Acq. 86, Trigger: RaspPi, RecNum: 86
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:55, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:56, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:56, Acq. 87, Trigger: RaspPi, RecNum: 87
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:57, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:57, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:57, Acq. 88, Trigger: RaspPi, RecNum: 88
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:58, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:58, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:21:58, Acq. 89, Trigger: RaspPi, RecNum: 89
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:21:59, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:00, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:00, Acq. 90, Trigger: RaspPi, RecNum: 90
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:01, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:01, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:01, Acq. 91, Trigger: RaspPi, RecNum: 91
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:03, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:03, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:03, Acq. 92, Trigger: RaspPi, RecNum: 92
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:04, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:04, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:04, Acq. 93, Trigger: RaspPi, RecNum: 93
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:05, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:06, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:06, Acq. 94, Trigger: RaspPi, RecNum: 94
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:07, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:07, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:07, Acq. 95, Trigger: RaspPi, RecNum: 95
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:08, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:08, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:08, Acq. 96, Trigger: RaspPi, RecNum: 96
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:09, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:10, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:10, Acq. 97, Trigger: RaspPi, RecNum: 97
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:11, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:11, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:11, Acq. 98, Trigger: RaspPi, RecNum: 98
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:12, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:13, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:13, Acq. 99, Trigger: RaspPi, RecNum: 99
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:14, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:14, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:14, Acq. 100, Trigger: RaspPi, RecNum: 100
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:15, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:16, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:16, Acq. 101, Trigger: RaspPi, RecNum: 101
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:17, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:19, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:19, Acq. 102, Trigger: RaspPi, RecNum: 102
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:20, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:25, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:25, Acq. 103, Trigger: RaspPi, RecNum: 103
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:26, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:31, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:31, Acq. 104, Trigger: RaspPi, RecNum: 104
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:32, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:33, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:33, Acq. 105, Trigger: RaspPi, RecNum: 105
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:34, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:34, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:34, Acq. 106, Trigger: RaspPi, RecNum: 106
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:35, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:36, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:36, Acq. 107, Trigger: RaspPi, RecNum: 107
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:37, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:37, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:37, Acq. 108, Trigger: RaspPi, RecNum: 108
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:38, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:39, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:39, Acq. 109, Trigger: RaspPi, RecNum: 109
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:40, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:40, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:40, Acq. 110, Trigger: RaspPi, RecNum: 110
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:41, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:41, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:41, Acq. 111, Trigger: RaspPi, RecNum: 111
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:42, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:43, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:43, Acq. 112, Trigger: RaspPi, RecNum: 112
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:44, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:44, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:44, Acq. 113, Trigger: RaspPi, RecNum: 113
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:46, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:46, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:46, Acq. 114, Trigger: RaspPi, RecNum: 114
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:47, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:47, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:47, Acq. 115, Trigger: RaspPi, RecNum: 115
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:48, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:48, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:48, Acq. 116, Trigger: RaspPi, RecNum: 116
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:49, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:50, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:50, Acq. 117, Trigger: RaspPi, RecNum: 117
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:51, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:51, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:51, Acq. 118, Trigger: RaspPi, RecNum: 118
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:52, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:53, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:53, Acq. 119, Trigger: RaspPi, RecNum: 119
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:53, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:57, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:22:57, Acq. 120, Trigger: RaspPi, RecNum: 120
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:22:59, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:01, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:01, Acq. 121, Trigger: RaspPi, RecNum: 121
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:02, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:08, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:08, Acq. 122, Trigger: RaspPi, RecNum: 122
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:09, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:10, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:10, Acq. 123, Trigger: RaspPi, RecNum: 123
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:11, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:12, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:12, Acq. 124, Trigger: RaspPi, RecNum: 124
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:13, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:13, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:13, Acq. 125, Trigger: RaspPi, RecNum: 125
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:14, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:15, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:15, Acq. 126, Trigger: RaspPi, RecNum: 126
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:16, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:16, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:16, Acq. 127, Trigger: RaspPi, RecNum: 127
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:17, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:17, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:17, Acq. 128, Trigger: RaspPi, RecNum: 128
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:19, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:19, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:19, Acq. 129, Trigger: RaspPi, RecNum: 129
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:19, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:20, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:20, Acq. 130, Trigger: RaspPi, RecNum: 130
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:21, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:22, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:22, Acq. 131, Trigger: RaspPi, RecNum: 131
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:22, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:23, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:23, Acq. 132, Trigger: RaspPi, RecNum: 132
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:24, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:24, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:24, Acq. 133, Trigger: RaspPi, RecNum: 133
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:25, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:26, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:26, Acq. 134, Trigger: RaspPi, RecNum: 134
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:27, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:27, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:27, Acq. 135, Trigger: RaspPi, RecNum: 135
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:29, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:29, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:29, Acq. 136, Trigger: RaspPi, RecNum: 136
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:30, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:30, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:30, Acq. 137, Trigger: RaspPi, RecNum: 137
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:32, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:38, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:38, Acq. 138, Trigger: RaspPi, RecNum: 138
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:39, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:45, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:45, Acq. 139, Trigger: RaspPi, RecNum: 139
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:46, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:47, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:47, Acq. 140, Trigger: RaspPi, RecNum: 140
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:48, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:48, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:48, Acq. 141, Trigger: RaspPi, RecNum: 141
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:49, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:50, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:50, Acq. 142, Trigger: RaspPi, RecNum: 142
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:51, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:51, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:51, Acq. 143, Trigger: RaspPi, RecNum: 143
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:52, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:53, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:53, Acq. 144, Trigger: RaspPi, RecNum: 144
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:54, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:54, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:54, Acq. 145, Trigger: RaspPi, RecNum: 145
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:56, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:56, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:56, Acq. 146, Trigger: RaspPi, RecNum: 146
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:57, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:57, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:57, Acq. 147, Trigger: RaspPi, RecNum: 147
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:58, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:23:58, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:23:59, Acq. 148, Trigger: RaspPi, RecNum: 148
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:00, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:00, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:00, Acq. 149, Trigger: RaspPi, RecNum: 149
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:01, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:01, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:01, Acq. 150, Trigger: RaspPi, RecNum: 150
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:02, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:03, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:03, Acq. 151, Trigger: RaspPi, RecNum: 151
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:04, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:04, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:04, Acq. 152, Trigger: RaspPi, RecNum: 152
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:06, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:06, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:06, Acq. 153, Trigger: RaspPi, RecNum: 153
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:07, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:07, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:07, Acq. 154, Trigger: RaspPi, RecNum: 154
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:08, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:13, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:13, Acq. 155, Trigger: RaspPi, RecNum: 155
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:14, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:16, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:17, Acq. 156, Trigger: RaspPi, RecNum: 156
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:18, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:21, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:21, Acq. 157, Trigger: RaspPi, RecNum: 157
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:22, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:23, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:23, Acq. 158, Trigger: RaspPi, RecNum: 158
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:24, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:25, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:25, Acq. 159, Trigger: RaspPi, RecNum: 159
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:25, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:26, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:26, Acq. 160, Trigger: RaspPi, RecNum: 160
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:27, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:27, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:28, Acq. 161, Trigger: RaspPi, RecNum: 161
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:29, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:29, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:29, Acq. 162, Trigger: RaspPi, RecNum: 162
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:30, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:30, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:30, Acq. 163, Trigger: RaspPi, RecNum: 163
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:31, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:32, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:32, Acq. 164, Trigger: RaspPi, RecNum: 164
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:33, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:33, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:33, Acq. 165, Trigger: RaspPi, RecNum: 165
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:34, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:34, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:34, Acq. 166, Trigger: RaspPi, RecNum: 166
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:36, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:36, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:36, Acq. 167, Trigger: RaspPi, RecNum: 167
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:37, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:37, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:37, Acq. 168, Trigger: RaspPi, RecNum: 168
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:38, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:39, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:39, Acq. 169, Trigger: RaspPi, RecNum: 169
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:40, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:40, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:40, Acq. 170, Trigger: RaspPi, RecNum: 170
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:41, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:42, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:42, Acq. 171, Trigger: RaspPi, RecNum: 171
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:43, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:44, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:44, Acq. 172, Trigger: RaspPi, RecNum: 172
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:46, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:51, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:51, Acq. 173, Trigger: RaspPi, RecNum: 173
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:52, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:57, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:57, Acq. 174, Trigger: RaspPi, RecNum: 174
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:58, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:24:59, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:24:59, Acq. 175, Trigger: RaspPi, RecNum: 175
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:00, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:00, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:00, Acq. 176, Trigger: RaspPi, RecNum: 176
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:01, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:02, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:02, Acq. 177, Trigger: RaspPi, RecNum: 177
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:03, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:03, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:03, Acq. 178, Trigger: RaspPi, RecNum: 178
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:05, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:05, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:05, Acq. 179, Trigger: RaspPi, RecNum: 179
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:06, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:06, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:06, Acq. 180, Trigger: RaspPi, RecNum: 180
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:07, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:07, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:07, Acq. 181, Trigger: RaspPi, RecNum: 181
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:09, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:09, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:09, Acq. 182, Trigger: RaspPi, RecNum: 182
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:10, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:10, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:10, Acq. 183, Trigger: RaspPi, RecNum: 183
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:12, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:13, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:14, Acq. 184, Trigger: RaspPi, RecNum: 184
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:15, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:15, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:15, Acq. 185, Trigger: RaspPi, RecNum: 185
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:16, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:17, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:17, Acq. 186, Trigger: RaspPi, RecNum: 186
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:18, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:19, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:19, Acq. 187, Trigger: RaspPi, RecNum: 187
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:20, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:20, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:20, Acq. 188, Trigger: RaspPi, RecNum: 188
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:21, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:21, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:21, Acq. 189, Trigger: RaspPi, RecNum: 189
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:23, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:39, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:39, Acq. 190, Trigger: Manual, RecNum: 190
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:40, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:40, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:40, Acq. 191, Trigger: Manual, RecNum: 191
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:41, Ready
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:46, Acquiring
+[INFO      ] (Dummy-4   ), 2017/08/08 01:25:46, Acq. 192, Trigger: Manual, RecNum: 192
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:25:47, Ready
+[INFO      ] (Dummy-4   ), 2017/08/08 01:35:51, Shutting down...
+[DEBUG     ] (Dummy-4   ), 2017/08/08 01:35:52, Shutdown

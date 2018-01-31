@@ -1,0 +1,46 @@
+{
+	"Configuration":{
+		"InstrumentInfo": {
+			"name": "ICI Thermal Cam",
+			"model": "9640P"
+		},
+		"Initialization": {
+			"calibrationfolder": "Cal"
+		},
+		"Data": {
+			"outputfileprefix": "2017-08-08_010545_ICI_Thermal_Cam",
+			"destination": "",
+			"absolutepath": "/home/pi/MoDaCS_Data/2017-08-08_010543/",
+			"inst": "ici_thermal"
+		},
+		"Trigger": {
+			"source": "Timed,*",
+			"interval": "900000"
+		}
+	},
+	"Header":{
+		"Model":"9640P",
+		"Serial Number":6001194,
+		"Height":480,
+		"Width":640,
+		"Size":307200,
+		"Images Captured":0
+	},
+	"Data":{
+		"0":[1502155134.425538, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011854.dat"],
+		"1":[1502155136.426422, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011856.dat"],
+		"2":[1502155137.852523, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011858.dat"],
+		"3":[1502155139.2525637, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011859.dat"],
+		"4":[1502155140.722189, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011900.dat"],
+		"5":[1502155142.155958, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011902.dat"],
+		"6":[1502155143.6539395, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011903.dat"],
+		"7":[1502155145.0850751, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011905.dat"],
+		"8":[1502155146.329926, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011906.dat"],
+		"9":[1502155147.687622, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011907.dat"],
+		"10":[1502155148.9533126, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011909.dat"],
+		"11":[1502155150.6282983, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011910.dat"],
+		"12":[1502155151.9182606, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011912.dat"],
+		"13":[1502155153.2063096, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011913.dat"],
+		"14":[1502155154.8548615, "/home/pi/MoDaCS_Data/2017-08-08_010543/Thermal/Thermal_20170808_011915.dat"]
+	}
+}
