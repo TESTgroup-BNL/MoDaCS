@@ -14,7 +14,7 @@ Currently being developed with:
 *Security note:* The remote monitoring/control interface is NOT secure in any way and should not be used on a public a network.  There is currently no authentication process and the protocol allows almost any Qt signal/slot in the application to be targeted.
 
 
-##MoDaCS Installation
+## MoDaCS Installation
 
 Requirements:
 
@@ -37,7 +37,7 @@ Optional:
 
 
 
-##Instrument Dependencies
+## Instrument Dependencies
 
 **Ocean Optics USB2000+**
 
@@ -100,7 +100,7 @@ OR
 
 - On Windows with Intel x86 or x64 processors, some packages use numpy-mkl, available precomplied here: [http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy](http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy)
 
-##Running MoDaCS
+## Running MoDaCS
 
 1. **Setup Run Configuration**
 
@@ -118,7 +118,7 @@ OR
 
 	Note:  It is recommended to start the client first so that all UI elements are initialized properly.  Starting the client after the server will still work without issue, but indicators will be invalid until explicitly updated by the server.  The client computer should have the same active instrument modules and instrument configurations as the server.
 
-##Run Configuration
+## Run Configuration
 ###([core/run_cfg.ini](core/run_cfg.ini))
 
 Sections:
@@ -201,8 +201,8 @@ For example:
     > [MainThread]  
     usb2000-pair = True
 
-#Instrument Configuration 
-###(instruments/\<instrument\>/inst_cfg.ini)
+# Instrument Configuration 
+### (instruments/\<instrument\>/inst_cfg.ini)
 
 While the majority of keys in instrument configurations are specific to their individual modules, below are the required and common ones.
 
