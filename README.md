@@ -87,24 +87,24 @@ Sections:
     
     For example:  
 
-    > [Data]  
-    Location = C:\\temp\\MoDaCS Data
-    AutoTransfer = True
-    SSH_User = pi
-    SSH_Password = <your password here>
+  > [Data]  
+  Location = C:\\temp\\MoDaCS Data  
+  AutoTransfer = True  
+  SSH_User = pi  
+  SSH_Password = <your password here>
 
 - **Event Handlers [Events]**
 
     This section should contain a list of the event handlers included in "event_handlers.py" and inputs and outputs they use, as well as “direct connetions”.  For example:  
 
-    > \#Event: Inputs (comma separated); Outputs (comma separated)  
-    > \#Direct Connection: Input -> Output  
-    
-    > [Events]  
-    shutterspeed: pixhawk.shutter; camerashutter.shutterspeed  
-    auto_trig: pixhawk.trigger->GlobalTrigger  
-    dig_trig: raspberrypi.digitalTrig->GlobalTrigger
-    fileName: user_input.fileName->ici_thermal.fileName
+  > \#Event: Inputs (comma separated); Outputs (comma separated)  
+  > \#Direct Connection: Input -> Output  
+  
+  > [Events]  
+  shutterspeed: pixhawk.shutter; camerashutter.shutterspeed  
+  auto_trig: pixhawk.trigger->GlobalTrigger  
+  dig_trig: raspberrypi.digitalTrig->GlobalTrigger  
+  fileName: user_input.fileName->ici_thermal.fileName  
 
 - **UI Options \[UI\] (optional)**
     
@@ -115,9 +115,9 @@ Sections:
 
     For example:
 
-    > [UI]  
-    Size = large
-    WaitForNTP = True
+  > [UI]  
+  Size = large  
+  WaitForNTP = True  
 
 - **Server Options  [Server]**
 
@@ -132,13 +132,13 @@ Sections:
     
 For example:
     
-    > [Server]  
-    Enabled = True
-    TCP_Server_IP = 192.168.1.101
-    TCP_Client_IP = 192.168.1.100
-    TCP_Server_Port = 9400
-    TCP_Client_Port = 9400
-    AllowControl = True
+  > [Server]  
+  Enabled = True  
+  TCP_Server_IP = 192.168.1.101  
+  TCP_Client_IP = 192.168.1.100  
+  TCP_Server_Port = 9400  
+  TCP_Client_Port = 9400  
+  AllowControl = True  
 
 - **Remote Client Options  [Client]**
 
@@ -153,14 +153,14 @@ For example:
  
 For example:
 
-    > [Client]  
-    Enabled = True
-    TCP_Server_IP = 192.168.1.101
-    TCP_Client_IP = 192.168.1.100
-    TCP_Server_Port = 9400
-    TCP_Client_Port = 9400 
-    ProvideControl = True
-    
+  > [Client]  
+  Enabled = True  
+  TCP_Server_IP = 192.168.1.101  
+  TCP_Client_IP = 192.168.1.100  
+  TCP_Server_Port = 9400  
+  TCP_Client_Port = 9400  
+  ProvideControl = True  
+
 Note on Server/Client configuration: TCP_Server_IP and TCP_Server_Port are mostly redundant and should almost always be the same for both the Server and Client modules.  The same applies to TCP_Client_IP and TCP_Client_Port.
 
 
@@ -168,7 +168,8 @@ Note on Server/Client configuration: TCP_Server_IP and TCP_Server_Port are mostl
 
     This section should be a list of instrument modules that (if set to True) will NOT be run in their own thread (and will instead stay in the main UI thread).  This can help to catch breakpoints when debugging in certain circumstances.  For example:
 
-    > [MainThread]  
-    usb2000-pair = True
+  > [MainThread]  
+  usb2000-pair = True  
 
-    
+
+[##Instrument Modules Information](README-Instruments.md)
