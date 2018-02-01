@@ -15,7 +15,7 @@ Currently being developed with:
 
 ## Tl;dr, show me some data! (Viewer Mode Quickstart)
 1.  Install ([Python 3](https://www.python.org/downloads/))
-2.  Install PyQt 5 and pyqtgraph (run "pip install pyqt5 pyqtgraph")
+2.  Install PyQt 5, pyqtgraph and numpy (run "pip install pyqt5 pyqtgraph numpy")
 3.  From the MoDaCS directory, run "python .\core\main.py -f .\ExampleData\RunData.json"
 
 ## MoDaCS Installation
@@ -42,7 +42,11 @@ Optional:
 
     Available from Adafruit: https://learn.adafruit.com/neopixels-on-raspberry-pi/software
 
-- *pyqtgraph* (allows Viewer Mode to work for most instruments with no other dependencies)
+- *pyqtgraph* (allows Viewer Mode to work for most instruments without all dependencies)
+
+    Available via pip
+	
+- *numpy* (allows Viewer Mode to work for most instruments without all dependencies)
 
     Available via pip
     
