@@ -58,30 +58,14 @@
      <widget class="QCheckBox" name="cb_correctNonlin">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>20</y>
+        <x>170</x>
+        <y>0</y>
         <width>121</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
        <string>Correct Nonlinearity</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="cb_correctDark">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>5</y>
-        <width>121</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Correct Dark Counts</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -129,12 +113,19 @@ Time (uS):</string>
        <number>10000</number>
       </property>
      </widget>
-     <zorder>cb_correctNonlin</zorder>
-     <zorder>cb_correctDark</zorder>
-     <zorder>label</zorder>
-     <zorder>sb_intTime</zorder>
-     <zorder>pltWidgetframe</zorder>
-     <zorder>pltWidgetframe</zorder>
+     <widget class="QPushButton" name="pb_DarkCurrent">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>20</y>
+        <width>91</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Set Dark Current</string>
+      </property>
+     </widget>
     </widget>
    </item>
    <item>

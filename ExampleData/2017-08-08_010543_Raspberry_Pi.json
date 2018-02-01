@@ -1,0 +1,23 @@
+{
+	"Configuration":{
+		"InstrumentInfo": {
+			"name": "Raspberry Pi",
+			"model": "2"
+		},
+		"Initialization": {
+			"triggerpin": "26",
+			"ledpin": "16"
+		},
+		"Data": {
+			"outputfileprefix": "2017-08-08_010543_Raspberry_Pi",
+			"destination": "",
+			"absolutepath": "/home/pi/MoDaCS_Data/2017-08-08_010543/",
+			"inst": "raspberrypi"
+		},
+		"Trigger": {
+			"source": "Data"
+		}
+	},
+	"Data":{
+	}
+}

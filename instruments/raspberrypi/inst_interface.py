@@ -1,20 +1,12 @@
 from time import sleep
 from PyQt5 import QtCore
 import threading, datetime, logging, subprocess
-try:
-    import RPi.GPIO as GPIO
-    usingRPi = True
-except:
-    try:
-        from GPIOEmulator.EmulatorGUI import GPIO
-    except:
-        pass
-    usingRPi = False
+
 
 
 class Inst_interface(QtCore.QObject):
     
-    #instLog = logger object
+    #inst_vars.inst_log = logger object
     #inst_cfg = config object
     #inst_wid = instrument widget
     
@@ -26,9 +18,25 @@ class Inst_interface(QtCore.QObject):
         
     #### Event functions ####
         
-    def init(self):
+    def init(self, inst_vars, jsonFF=None):
+        global GPIO     #This is very ugly and technically not allowed but makes it easy to prevent the emulator from
+                        # popping up without the instrument running (causing the emulator window to get stuck open).
+        try:
+            import RPi.GPIO as GPIO
+            self.usingRPi = True
+        except:
+            try:
+                from GPIOEmulator.EmulatorGUI import GPIO
+            except:
+                pass
+            self.usingRPi = False
+        
+        
+        self.inst_vars = inst_vars
+        
         self.listen = True
-        self.trigpin = int(self.inst_cfg["Initialization"]["triggerpin"])
+        self.trigpin = int(self.inst_vars.inst_cfg["Initialization"]["triggerpin"])
+        self.ledpin = int(self.inst_vars.inst_cfg["Initialization"]["ledpin"])
         try:
             GPIO.setmode(GPIO.BCM)
             sleep(0.1)
@@ -36,8 +44,10 @@ class Inst_interface(QtCore.QObject):
             pass
         try:
             GPIO.setup(self.trigpin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+            GPIO.setup(self.ledpin, GPIO.OUT)
+            GPIO.output(self.ledpin, True)
         except Exception as e:
-            self.instLog.warning(e)
+            self.inst_vars.inst_log.warning(e)
             
         #GPIO.add_event_detect(17, GPIO.RISING, callback=reset, bouncetime=300) 
         
@@ -45,7 +55,7 @@ class Inst_interface(QtCore.QObject):
             self.t_gpio = threading.Thread(target=self.gpio_monitor)
             self.t_gpio.start()   
         except Exception as e:
-            self.instLog.warning(e)
+            self.inst_vars.inst_log.warning(e)
 
         self.ui_signals["syncTimeSig"].connect(self.setTime)
         
@@ -54,26 +64,34 @@ class Inst_interface(QtCore.QObject):
         
     def close(self):
         self.listen = False
+        GPIO.cleanup()
         
     def gpio_monitor(self):
         triggered = False
-        self.instLog.info("Listening thread started.")
+        led = False
+        self.inst_vars.inst_log.info("Listening thread started.")
         while(self.listen == True):
-            if GPIO.input(self.trigpin) == False and triggered == False:
-                self.signals["digitalTrig"].emit("RaspPi")
-                sleep(1)
-                triggered = True
-            elif triggered == True:
-                triggered = False
-            sleep(.01)
-        self.instLog.info("Listening thread finished.")
+            for i in range(0,50):
+                if GPIO.input(self.trigpin) == False and triggered == False:
+                    self.signals["digitalTrig"].emit("RaspPi")
+                    sleep(1)
+                    triggered = True
+                elif triggered == True:
+                    triggered = False
+                sleep(.01)
+            if led:
+                led = False
+            else:
+                led = True
+            GPIO.output(self.ledpin, led)
+        self.inst_vars.inst_log.info("Listening thread finished.")
         
     def setTime(self, new_dt):
-        if usingRPi:
+        if self.usingRPi:
             subprocess.call('sudo date -s ' + new_dt.strftime('%Y-%m-%d'), shell=True)
             subprocess.call('sudo date -s ' + new_dt.strftime('%H:%M:%S'), shell=True)
         
-        self.instLog.info("Clock set: %s %s" % (new_dt.strftime('%Y-%m-%d'), new_dt.strftime('%H:%M:%S')))
+        self.inst_vars.inst_log.info("Clock set: %s %s" % (new_dt.strftime('%Y-%m-%d'), new_dt.strftime('%H:%M:%S')))
 
             
 class Ui_interface(QtCore.QObject):

@@ -1,0 +1,926 @@
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Triggers: Timed,*
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Interval: 900000
+[DEBUG     ] (MainThread), 2017/08/08 01:05:45, Creating instrument interface...
+[DEBUG     ] (MainThread), 2017/08/08 01:05:45, Interface ready
+[INFO      ] (Dummy-9   ), 2017/08/08 01:05:52, Init complete
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:05:52, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:18:54, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:18:54, Acq. 0, Trigger: RaspPi, RecNum: 0
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:18:54, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:18:56, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:18:56, Acq. 1, Trigger: RaspPi, RecNum: 1
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:18:56, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:18:56, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:18:56, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:18:56, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:18:57, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:18:57, Acq. 2, Trigger: RaspPi, RecNum: 2
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:18:57, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:18:58, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:18:59, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:18:59, Acq. 3, Trigger: RaspPi, RecNum: 3
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:18:59, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:18:59, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:00, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:00, Acq. 4, Trigger: RaspPi, RecNum: 4
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:00, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:00, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:00, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:02, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:02, Acq. 5, Trigger: RaspPi, RecNum: 5
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:02, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:02, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:02, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:03, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:03, Acq. 6, Trigger: RaspPi, RecNum: 6
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:03, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:03, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:04, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:04, Acq. 7, Trigger: RaspPi, RecNum: 7
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:04, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:04, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:05, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:05, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:05, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:06, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:06, Acq. 8, Trigger: RaspPi, RecNum: 8
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:06, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:06, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:07, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:07, Acq. 9, Trigger: RaspPi, RecNum: 9
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:07, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:07, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:07, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:08, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:08, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:08, Acq. 10, Trigger: RaspPi, RecNum: 10
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:09, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:10, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:10, Acq. 11, Trigger: RaspPi, RecNum: 11
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:10, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:10, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:10, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:10, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:10, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:10, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:11, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:11, Acq. 12, Trigger: RaspPi, RecNum: 12
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:11, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:11, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:12, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:13, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:13, Acq. 13, Trigger: RaspPi, RecNum: 13
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:13, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:14, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:14, Acq. 14, Trigger: RaspPi, RecNum: 14
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:14, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:14, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:14, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:15, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:16, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:16, Acq. 15, Trigger: RaspPi, RecNum: 15
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:16, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:22, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:22, Acq. 16, Trigger: RaspPi, RecNum: 16
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:22, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:29, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:29, Acq. 17, Trigger: RaspPi, RecNum: 17
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:29, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:29, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:31, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:31, Acq. 18, Trigger: RaspPi, RecNum: 18
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:31, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:31, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:31, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:31, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:33, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:33, Acq. 19, Trigger: RaspPi, RecNum: 19
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:33, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:33, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:34, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:34, Acq. 20, Trigger: RaspPi, RecNum: 20
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:34, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:34, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:34, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:34, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:35, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:35, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:36, Acq. 21, Trigger: RaspPi, RecNum: 21
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:36, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:36, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:36, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:37, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:37, Acq. 22, Trigger: RaspPi, RecNum: 22
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:37, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:38, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:38, Acq. 23, Trigger: RaspPi, RecNum: 23
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:39, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:40, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:40, Acq. 24, Trigger: RaspPi, RecNum: 24
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:40, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:40, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:40, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:41, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:41, Acq. 25, Trigger: RaspPi, RecNum: 25
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:41, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:43, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:43, Acq. 26, Trigger: RaspPi, RecNum: 26
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:43, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:44, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:44, Acq. 27, Trigger: RaspPi, RecNum: 27
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:44, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:45, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:45, Acq. 28, Trigger: RaspPi, RecNum: 28
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:45, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:45, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:46, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:47, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:47, Acq. 29, Trigger: RaspPi, RecNum: 29
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:47, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:48, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:48, Acq. 30, Trigger: RaspPi, RecNum: 30
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:48, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:49, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:50, Acq. 31, Trigger: RaspPi, RecNum: 31
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:50, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:50, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:50, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:50, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:51, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:51, Acq. 32, Trigger: RaspPi, RecNum: 32
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:52, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:59, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:19:59, Acq. 33, Trigger: RaspPi, RecNum: 33
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:19:59, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:19:59, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:06, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:06, Acq. 34, Trigger: RaspPi, RecNum: 34
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:06, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:06, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:08, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:08, Acq. 35, Trigger: RaspPi, RecNum: 35
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:08, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:08, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:10, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:10, Acq. 36, Trigger: RaspPi, RecNum: 36
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:10, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:10, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:11, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:11, Acq. 37, Trigger: RaspPi, RecNum: 37
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:11, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:11, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:11, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:12, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:12, Acq. 38, Trigger: RaspPi, RecNum: 38
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:13, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:13, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:13, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:13, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:13, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:13, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:14, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:14, Acq. 39, Trigger: RaspPi, RecNum: 39
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:14, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:14, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:14, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:14, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:14, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:14, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:15, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:15, Acq. 40, Trigger: RaspPi, RecNum: 40
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:15, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:17, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:17, Acq. 41, Trigger: RaspPi, RecNum: 41
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:17, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:17, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:17, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:17, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:18, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:18, Acq. 42, Trigger: RaspPi, RecNum: 42
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:18, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:21, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:22, Acq. 43, Trigger: RaspPi, RecNum: 43
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:22, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:22, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:22, Acq. 44, Trigger: RaspPi, RecNum: 45
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:22, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:22, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:22, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:22, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:22, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:22, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:22, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:23, Acq. 45, Trigger: RaspPi, RecNum: 45
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:23, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:23, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:23, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:23, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:23, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:23, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:23, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:23, Acq. 46, Trigger: RaspPi, RecNum: 46
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:23, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:24, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:24, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:24, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:24, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:24, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:24, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:24, Acq. 47, Trigger: RaspPi, RecNum: 47
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:25, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:25, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:26, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:26, Acq. 48, Trigger: RaspPi, RecNum: 48
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:26, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:26, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:26, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:26, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:26, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:27, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:27, Acq. 49, Trigger: RaspPi, RecNum: 49
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:27, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:27, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:27, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:27, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:28, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:29, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:29, Acq. 50, Trigger: RaspPi, RecNum: 50
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:29, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:35, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:35, Acq. 51, Trigger: RaspPi, RecNum: 51
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:35, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:42, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:42, Acq. 52, Trigger: RaspPi, RecNum: 52
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:42, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:43, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:43, Acq. 53, Trigger: RaspPi, RecNum: 53
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:43, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:43, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:44, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:44, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:45, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:45, Acq. 54, Trigger: RaspPi, RecNum: 54
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:45, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:45, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:45, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:46, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:46, Acq. 55, Trigger: RaspPi, RecNum: 55
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:47, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:48, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:48, Acq. 56, Trigger: RaspPi, RecNum: 56
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:48, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:48, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:48, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:49, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:49, Acq. 57, Trigger: RaspPi, RecNum: 57
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:49, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:49, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:50, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:51, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:51, Acq. 58, Trigger: RaspPi, RecNum: 58
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:51, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:51, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:51, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:51, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:52, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:52, Acq. 59, Trigger: RaspPi, RecNum: 59
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:52, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:52, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:52, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:52, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:52, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:53, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:53, Acq. 60, Trigger: RaspPi, RecNum: 60
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:53, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:54, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:55, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:55, Acq. 61, Trigger: RaspPi, RecNum: 61
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:55, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:55, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:55, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:55, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:55, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:55, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:56, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:56, Acq. 62, Trigger: RaspPi, RecNum: 62
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:56, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:56, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:58, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:58, Acq. 63, Trigger: RaspPi, RecNum: 63
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:20:58, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:58, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:59, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:20:59, Acq. 64, Trigger: RaspPi, RecNum: 64
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:20:59, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:00, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:00, Acq. 65, Trigger: RaspPi, RecNum: 65
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:01, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:02, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:02, Acq. 66, Trigger: RaspPi, RecNum: 66
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:02, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:02, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:02, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:02, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:02, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:02, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:03, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:04, Acq. 67, Trigger: RaspPi, RecNum: 67
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:04, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:04, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:11, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:11, Acq. 68, Trigger: RaspPi, RecNum: 68
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:12, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:18, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:18, Acq. 69, Trigger: RaspPi, RecNum: 69
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:19, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:20, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:20, Acq. 70, Trigger: RaspPi, RecNum: 70
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:20, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:21, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:22, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:22, Acq. 71, Trigger: RaspPi, RecNum: 71
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:22, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:22, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:22, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:22, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:23, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:23, Acq. 72, Trigger: RaspPi, RecNum: 72
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:23, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:23, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:24, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:25, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:25, Acq. 73, Trigger: RaspPi, RecNum: 73
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:25, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:25, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:26, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:26, Acq. 74, Trigger: RaspPi, RecNum: 74
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:26, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:28, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:28, Acq. 75, Trigger: RaspPi, RecNum: 75
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:28, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:28, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:28, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:28, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:28, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:28, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:29, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:29, Acq. 76, Trigger: RaspPi, RecNum: 76
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:29, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:30, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:30, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:30, Acq. 77, Trigger: RaspPi, RecNum: 77
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:31, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:31, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:31, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:31, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:32, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:32, Acq. 78, Trigger: RaspPi, RecNum: 78
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:32, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:32, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:33, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:33, Acq. 79, Trigger: RaspPi, RecNum: 79
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:33, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:33, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:34, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:34, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:34, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:34, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:35, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:35, Acq. 80, Trigger: RaspPi, RecNum: 80
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:35, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:35, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:35, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:35, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:36, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:36, Acq. 81, Trigger: RaspPi, RecNum: 81
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:36, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:36, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:37, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:38, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:38, Acq. 82, Trigger: RaspPi, RecNum: 82
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:38, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:38, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:38, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:39, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:39, Acq. 83, Trigger: RaspPi, RecNum: 83
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:39, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:39, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:40, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:41, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:41, Acq. 84, Trigger: RaspPi, RecNum: 84
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:41, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:41, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:47, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:47, Acq. 85, Trigger: RaspPi, RecNum: 85
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:47, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:54, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:54, Acq. 86, Trigger: RaspPi, RecNum: 86
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:54, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:54, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:55, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:56, Acq. 87, Trigger: RaspPi, RecNum: 87
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:56, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:56, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:57, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:57, Acq. 88, Trigger: RaspPi, RecNum: 88
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:57, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:57, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:58, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:58, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:21:59, Acq. 89, Trigger: RaspPi, RecNum: 89
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:59, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:21:59, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:21:59, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:00, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:00, Acq. 90, Trigger: RaspPi, RecNum: 90
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:00, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:01, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:01, Acq. 91, Trigger: RaspPi, RecNum: 91
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:01, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:01, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:01, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:02, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:03, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:03, Acq. 92, Trigger: RaspPi, RecNum: 92
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:03, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:03, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:04, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:04, Acq. 93, Trigger: RaspPi, RecNum: 93
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:04, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:04, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:04, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:05, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:06, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:06, Acq. 94, Trigger: RaspPi, RecNum: 94
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:06, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:06, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:07, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:07, Acq. 95, Trigger: RaspPi, RecNum: 95
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:07, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:07, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:08, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:08, Acq. 96, Trigger: RaspPi, RecNum: 96
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:08, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:08, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:09, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:09, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:09, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:09, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:10, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:10, Acq. 97, Trigger: RaspPi, RecNum: 97
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:10, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:10, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:11, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:11, Acq. 98, Trigger: RaspPi, RecNum: 98
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:11, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:13, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:13, Acq. 99, Trigger: RaspPi, RecNum: 99
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:13, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:14, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:14, Acq. 100, Trigger: RaspPi, RecNum: 100
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:14, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:16, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:16, Acq. 101, Trigger: RaspPi, RecNum: 101
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:16, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:16, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:19, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:19, Acq. 102, Trigger: RaspPi, RecNum: 102
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:19, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:19, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:19, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:20, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:25, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:25, Acq. 103, Trigger: RaspPi, RecNum: 103
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:25, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:25, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:31, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:31, Acq. 104, Trigger: RaspPi, RecNum: 104
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:31, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:31, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:33, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:33, Acq. 105, Trigger: RaspPi, RecNum: 105
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:33, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:33, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:34, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:34, Acq. 106, Trigger: RaspPi, RecNum: 106
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:34, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:34, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:35, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:36, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:36, Acq. 107, Trigger: RaspPi, RecNum: 107
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:36, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:36, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:36, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:37, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:37, Acq. 108, Trigger: RaspPi, RecNum: 108
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:37, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:39, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:39, Acq. 109, Trigger: RaspPi, RecNum: 109
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:39, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:40, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:40, Acq. 110, Trigger: RaspPi, RecNum: 110
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:40, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:40, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:41, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:41, Acq. 111, Trigger: RaspPi, RecNum: 111
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:42, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:42, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:42, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:42, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:43, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:43, Acq. 112, Trigger: RaspPi, RecNum: 112
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:43, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:43, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:43, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:43, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:43, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:43, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:44, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:44, Acq. 113, Trigger: RaspPi, RecNum: 113
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:45, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:46, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:46, Acq. 114, Trigger: RaspPi, RecNum: 114
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:46, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:46, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:46, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:46, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:46, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:46, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:47, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:47, Acq. 115, Trigger: RaspPi, RecNum: 115
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:47, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:48, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:48, Acq. 116, Trigger: RaspPi, RecNum: 116
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:49, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:49, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:49, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:50, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:50, Acq. 117, Trigger: RaspPi, RecNum: 117
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:50, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:50, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:50, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:50, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:51, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:51, Acq. 118, Trigger: RaspPi, RecNum: 118
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:51, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:51, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:52, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:53, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:53, Acq. 119, Trigger: RaspPi, RecNum: 119
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:53, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:53, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:22:53, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:53, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:57, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:22:57, Acq. 120, Trigger: RaspPi, RecNum: 120
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:22:58, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:00, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:01, Acq. 121, Trigger: RaspPi, RecNum: 121
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:01, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:01, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:08, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:08, Acq. 122, Trigger: RaspPi, RecNum: 122
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:08, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:08, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:10, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:10, Acq. 123, Trigger: RaspPi, RecNum: 123
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:10, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:11, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:12, Acq. 124, Trigger: RaspPi, RecNum: 124
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:12, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:13, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:13, Acq. 125, Trigger: RaspPi, RecNum: 125
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:13, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:13, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:13, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:13, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:13, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:14, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:15, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:15, Acq. 126, Trigger: RaspPi, RecNum: 126
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:15, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:15, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:15, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:16, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:16, Acq. 127, Trigger: RaspPi, RecNum: 127
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:16, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:16, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:17, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:17, Acq. 128, Trigger: RaspPi, RecNum: 128
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:17, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:17, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:17, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:18, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:18, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:18, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:19, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:19, Acq. 129, Trigger: RaspPi, RecNum: 129
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:19, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:19, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:19, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:20, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:20, Acq. 130, Trigger: RaspPi, RecNum: 130
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:20, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:20, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:20, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:21, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:22, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:22, Acq. 131, Trigger: RaspPi, RecNum: 131
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:22, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:23, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:23, Acq. 132, Trigger: RaspPi, RecNum: 132
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:23, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:24, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:24, Acq. 133, Trigger: RaspPi, RecNum: 133
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:24, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:25, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:25, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:26, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:26, Acq. 134, Trigger: RaspPi, RecNum: 134
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:26, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:26, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:26, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:27, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:27, Acq. 135, Trigger: RaspPi, RecNum: 135
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:27, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:27, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:27, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:27, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:28, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:28, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:29, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:29, Acq. 136, Trigger: RaspPi, RecNum: 136
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:29, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:29, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:30, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:30, Acq. 137, Trigger: RaspPi, RecNum: 137
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:31, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:38, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:38, Acq. 138, Trigger: RaspPi, RecNum: 138
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:38, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:45, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:45, Acq. 139, Trigger: RaspPi, RecNum: 139
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:45, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:45, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:47, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:47, Acq. 140, Trigger: RaspPi, RecNum: 140
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:47, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:48, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:48, Acq. 141, Trigger: RaspPi, RecNum: 141
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:48, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:48, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:49, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:50, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:50, Acq. 142, Trigger: RaspPi, RecNum: 142
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:50, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:51, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:51, Acq. 143, Trigger: RaspPi, RecNum: 143
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:51, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:51, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:52, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:53, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:53, Acq. 144, Trigger: RaspPi, RecNum: 144
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:53, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:53, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:53, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:53, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:54, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:54, Acq. 145, Trigger: RaspPi, RecNum: 145
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:54, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:54, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:56, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:56, Acq. 146, Trigger: RaspPi, RecNum: 146
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:56, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:56, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:57, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:57, Acq. 147, Trigger: RaspPi, RecNum: 147
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:57, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:57, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:57, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:58, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:58, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:23:58, Acq. 148, Trigger: RaspPi, RecNum: 148
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:59, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:59, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:23:59, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:23:59, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:00, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:00, Acq. 149, Trigger: RaspPi, RecNum: 149
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:00, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:00, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:01, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:01, Acq. 150, Trigger: RaspPi, RecNum: 150
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:01, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:01, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:01, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:02, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:03, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:03, Acq. 151, Trigger: RaspPi, RecNum: 151
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:03, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:03, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:03, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:04, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:04, Acq. 152, Trigger: RaspPi, RecNum: 152
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:04, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:04, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:06, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:06, Acq. 153, Trigger: RaspPi, RecNum: 153
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:06, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:06, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:07, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:07, Acq. 154, Trigger: RaspPi, RecNum: 154
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:07, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:13, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:13, Acq. 155, Trigger: RaspPi, RecNum: 155
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:13, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:13, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:16, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:16, Acq. 156, Trigger: RaspPi, RecNum: 156
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:17, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:21, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:21, Acq. 157, Trigger: RaspPi, RecNum: 157
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:21, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:23, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:23, Acq. 158, Trigger: RaspPi, RecNum: 158
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:23, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:23, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:25, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:25, Acq. 159, Trigger: RaspPi, RecNum: 159
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:25, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:25, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:25, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:26, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:26, Acq. 160, Trigger: RaspPi, RecNum: 160
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:26, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:26, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:26, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:27, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:27, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:27, Acq. 161, Trigger: RaspPi, RecNum: 161
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:28, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:29, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:29, Acq. 162, Trigger: RaspPi, RecNum: 162
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:29, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:29, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:29, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:30, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:30, Acq. 163, Trigger: RaspPi, RecNum: 163
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:30, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:31, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:32, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:32, Acq. 164, Trigger: RaspPi, RecNum: 164
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:32, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:32, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:33, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:33, Acq. 165, Trigger: RaspPi, RecNum: 165
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:33, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:33, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:34, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:34, Acq. 166, Trigger: RaspPi, RecNum: 166
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:35, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:36, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:36, Acq. 167, Trigger: RaspPi, RecNum: 167
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:36, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:36, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:36, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:37, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:37, Acq. 168, Trigger: RaspPi, RecNum: 168
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:37, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:39, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:39, Acq. 169, Trigger: RaspPi, RecNum: 169
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:39, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:39, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:39, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:39, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:40, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:40, Acq. 170, Trigger: RaspPi, RecNum: 170
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:40, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:40, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:41, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:42, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:42, Acq. 171, Trigger: RaspPi, RecNum: 171
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:42, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:42, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:44, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:44, Acq. 172, Trigger: RaspPi, RecNum: 172
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:44, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:45, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:51, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:51, Acq. 173, Trigger: RaspPi, RecNum: 173
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:51, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:52, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:57, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:57, Acq. 174, Trigger: RaspPi, RecNum: 174
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:57, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:59, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:24:59, Acq. 175, Trigger: RaspPi, RecNum: 175
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:24:59, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:24:59, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:00, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:00, Acq. 176, Trigger: RaspPi, RecNum: 176
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:00, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:00, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:00, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:01, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:01, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:01, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:02, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:02, Acq. 177, Trigger: RaspPi, RecNum: 177
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:02, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:02, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:02, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:03, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:03, Acq. 178, Trigger: RaspPi, RecNum: 178
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:03, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:04, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:05, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:05, Acq. 179, Trigger: RaspPi, RecNum: 179
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:05, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:06, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:06, Acq. 180, Trigger: RaspPi, RecNum: 180
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:06, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:06, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:07, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:07, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:07, Acq. 181, Trigger: RaspPi, RecNum: 181
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:08, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:09, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:09, Acq. 182, Trigger: RaspPi, RecNum: 182
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:09, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:10, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:11, Acq. 183, Trigger: RaspPi, RecNum: 183
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:11, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:11, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:13, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:13, Acq. 184, Trigger: RaspPi, RecNum: 184
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:14, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:14, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:15, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:15, Acq. 185, Trigger: RaspPi, RecNum: 185
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:15, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:15, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:16, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:17, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:17, Acq. 186, Trigger: RaspPi, RecNum: 186
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:17, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:19, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:19, Acq. 187, Trigger: RaspPi, RecNum: 187
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:19, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:20, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:20, Acq. 188, Trigger: RaspPi, RecNum: 188
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:20, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:20, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:21, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:21, Acq. 189, Trigger: RaspPi, RecNum: 189
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:22, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:22, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:39, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:39, Acq. 190, Trigger: Manual, RecNum: 190
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:39, Partial or no data received, retrying capture
+[WARNING   ] (Dummy-9   ), 2017/08/08 01:25:39, Partial or no data received, retrying capture
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:39, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:40, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:40, Acq. 191, Trigger: Manual, RecNum: 191
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:40, Ready
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:46, Acquiring
+[INFO      ] (Dummy-9   ), 2017/08/08 01:25:46, Acq. 192, Trigger: Manual, RecNum: 192
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:25:46, Ready
+[INFO      ] (Dummy-9   ), 2017/08/08 01:35:51, Shutting down...
+[DEBUG     ] (Dummy-9   ), 2017/08/08 01:35:51, Shutdown

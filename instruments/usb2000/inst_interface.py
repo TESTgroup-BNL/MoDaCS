@@ -21,7 +21,15 @@ class Inst_interface(QtCore.QObject):
     ui_outputs = ["updatePlot"]
         
     #### Required Functions ####
-    def init(self):
+    def init(self, inst_vars):
+        
+        self.inst_cfg = inst_vars.inst_cfg
+        self.instLog = inst_vars.inst_log
+        self.inst_wid = inst_vars.inst_wid
+        self.inst_n = inst_vars.inst_n
+        self.inst_path = inst_vars.inst_path
+        
+        
         #Read config
         self.int_time = int(self.inst_cfg["Initialization"]["IntegrationTime"])
         self.correct_dark = bool(self.inst_cfg["Initialization"]["CorrectDarkCounts"])

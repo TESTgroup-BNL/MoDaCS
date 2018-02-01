@@ -38,3 +38,4 @@ class testthing(QObject):
     
     def input(self, data, name):
         logging.info("hello from testthing, %s: %s" % (name, int(QThread.currentThreadId())))
+        

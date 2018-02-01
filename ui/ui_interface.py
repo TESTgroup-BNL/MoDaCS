@@ -1,9 +1,14 @@
 #Qt Imports
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtCore import QDir
+
 #System Imports
-import importlib, logging, pickle
+import importlib, logging, pickle, subprocess
 from time import time, strftime, sleep, localtime
+import sys
+from os import execv, fsync
+
 #MoDaCS Imports
 import ui.inst_ui_frame_dock
 import remote
@@ -13,14 +18,16 @@ class UI_interface(QtCore.QObject):
     
     remote_event_Sig = QtCore.pyqtSignal(object)
     remote_ui_updateTime = QtCore.pyqtSignal(object)
+    displayRec = QtCore.pyqtSignal(int)
     
-    def __init__(self, main_app, cp, active_insts, inst_list):
+    def __init__(self, main_app, cp, active_insts, inst_list, displayOnly=False):
         super().__init__()
         
         self.active_insts = active_insts
         self.inst_list = inst_list
         self._rCount = 0
         self._sCount = 0
+        self.run_cfg = cp
 
         try:
             if str.lower(cp["Remote"]["Protocol"]) == "udp":
@@ -44,7 +51,8 @@ class UI_interface(QtCore.QObject):
                 self.ui_large = True
                 
         if self.ui_large:
-            from ui.ui_large import Ui_MainWindow
+            #from ui.ui_large import Ui_MainWindow
+            from ui.ui_dataview import Ui_MainWindow
         else:
             from ui.ui import Ui_MainWindow
         
@@ -69,10 +77,15 @@ class UI_interface(QtCore.QObject):
         self.ui.treeWidget.resize(0, 0) #Set size to minimum
         self.ui.treeWidget.setColumnWidth(1, 75)
         self.ui.treeWidget.setColumnWidth(0, 180)   
+
         
         if self.ui_large:
             self.ui.tbl_Instruments.cellDoubleClicked.connect(lambda: self.ui_showinstUI(self.get_selected_inst()))
+            self.ui.cb_realtime.stateChanged.connect(self.toggle_realtime)
+            self.ui.tbl_GlobalRecs.setColumnWidth(0,35)   
+            self.ui.tbl_GlobalRecs.currentCellChanged.connect(self.selectGlobalRec)               
             self.ui.actionQuit.triggered.connect(main_app.close)
+            self.ui.menuView.addAction(self.ui.dw_GlobalRecs.toggleViewAction())
             self.ui.menuView.addAction(self.ui.dw_Conns.toggleViewAction())
             self.ui.menuView.addAction(self.ui.dw_MasterLog.toggleViewAction())
             self.ui.mdiArea.setViewMode(1)
@@ -80,6 +93,9 @@ class UI_interface(QtCore.QObject):
             self.ui.actionTabbed_Mode.triggered.connect(lambda state=0: self.ui.mdiArea.setViewMode(state))
             self.ui.actionTile_Horizontally.triggered.connect(self.ui.mdiArea.tileSubWindows)
             self.ui.actionTile_Cascade.triggered.connect(self.ui.mdiArea.cascadeSubWindows)
+            self.ui.actionLoad_Records.triggered.connect(main_app.loadRecs)
+            self.ui.actionSwAcq.triggered.connect(main_app.switchToAcq)
+
         else:
             self.ui.tbl_Instruments.setVisible(False)
             self.ui.tabWidget.currentChanged.connect(self.ui_tabChange)
@@ -91,6 +107,12 @@ class UI_interface(QtCore.QObject):
         self.ui.btn_Stop_In.released.connect(lambda: self.ui_Trig_In("Stop"))
         self.ui.btn_ManTrig_In.released.connect(lambda: self.ui_Trig_In("Individual"))
         self.ui.btn_InstRst.released.connect(lambda: self.ui_Reset())
+        
+        
+        if displayOnly and self.ui_large:
+            self.ui.dockWidget_Top.setVisible(False)
+            self.ui.actionSwAcq.setEnabled(True)
+            
         
         if self.client.enabled or self.server.enabled:
             #Client and Server
@@ -125,6 +147,7 @@ class UI_interface(QtCore.QObject):
             self.remote_ui_updateTime.connect(self.ui_updateTime)
             self.remote_event_Sig.connect(self.ui_remote_event) 
             #self.client.connectionSig.connect(self.ui_update_net_client)
+            self.client.clientConnectSig.connect(self.resetGlobalRecs)
             if self.client.provideControl:
                 self.ui.btn_ManTrig.released.connect(lambda: self.client.controlServer.sendSig.emit("main_app.ui_int.ui.btn_ManTrig.released", None))
                 self.client.controlServer.dataSentSig.connect(self.ui_update_net_S)
@@ -401,9 +424,10 @@ class UI_interface(QtCore.QObject):
         r = self.ui.tbl_Instruments.rowCount()
         self.ui.tbl_Instruments.insertRow(r)
         self.inst_list[r] = inst
-        
+
         item = QtWidgets.QTableWidgetItem(cp_inst["InstrumentInfo"]["Name"])
         item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        #item.checkState(True)
         self.ui.tbl_Instruments.setItem(r, 0, item)
         #self.ui.tbl_Instruments.setItem(r, 1, QtWidgets.QTableWidgetItem(cp_inst["InstrumentInfo"]["Model"]))
         self.ui.tbl_Instruments.setItem(r, 1, QtWidgets.QTableWidgetItem("0"))
@@ -427,7 +451,7 @@ class UI_interface(QtCore.QObject):
         item.setToolTip(item.text())
         
     def ui_tabChange(self, t):
-        if t == 0 or t == 4:
+        if t == 0 or t == 4 or t == 5:
             self.ui.tbl_Instruments.setVisible(False)
         else:
             self.ui.tbl_Instruments.setVisible(True)
@@ -446,4 +470,29 @@ class UI_interface(QtCore.QObject):
     def ui_updateTime(self, time_val):
         self.ui.lcdTime.display(strftime("%H"+":"+"%M"+":"+"%S", time_val))
         
+        
+    def ui_addGlobalRec(self, recnum, ts, source):
+        r = self.ui.tbl_GlobalRecs.rowCount()
+        self.ui.tbl_GlobalRecs.insertRow(r)
+
+        #item = QtWidgets.QTableWidgetItem(str(recnum))
+        #item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+
+        self.ui.tbl_GlobalRecs.setItem(r, 0, QtWidgets.QTableWidgetItem(str(recnum)))
+        self.ui.tbl_GlobalRecs.setItem(r, 1, QtWidgets.QTableWidgetItem(ts))
+        self.ui.tbl_GlobalRecs.setItem(r, 2, QtWidgets.QTableWidgetItem(source))
+        
+    def toggle_realtime(self, state):
+        if state == QtCore.Qt.Checked:
+            self.ui.tbl_GlobalRecs.setCurrentCell(-1,-1)
+            self.displayRec.emit(-1)
+
+    def selectGlobalRec(self, row, col, old_row, old_col):
+        if row >= 0:
+            if self.ui.cb_realtime.checkState() == QtCore.Qt.Checked:
+                self.ui.cb_realtime.setCheckState(QtCore.Qt.Unchecked)
+            self.displayRec.emit(row)
+            
+    def resetGlobalRecs(self):
+        self.ui.tbl_GlobalRecs.setRowCount(0)
         

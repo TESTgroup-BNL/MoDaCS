@@ -16,8 +16,8 @@ import numpy
 
 class Inst_interface(QtCore.QObject):
     
-    #instLog = logger object
-    #inst_cfg = config object
+    #inst_vars.inst_log = logger object
+    #inst_vars.inst_cfg = config object
     #inst_wid = instrument widget
     #inst_n = acquisition count
     #instPath = instrument's root folder
@@ -30,23 +30,28 @@ class Inst_interface(QtCore.QObject):
         
     #### Event functions ####
         
-    def init(self):
+    def init(self, inst_vars, jsonFF):
+        
+        self.inst_vars = inst_vars
+        self.jsonFF = jsonFF
+        self.filePrefix = "Thermal_"
+        
         sleep(1)
 
         #Init camera   
         try:
-            libpath = path.join(self.instPath, 'ici9000Pythonlib_v2.so')
+            libpath = path.join(self.inst_vars.inst_path, 'ici9000Pythonlib_v2.so')
             self.tc = ctypes.cdll.LoadLibrary(libpath) 
             self.tc.loadCal.argtypes = [ctypes.c_char_p]
             self.tc.getSN.restype = ctypes.c_long
             self.tc.getImage.argtypes = [ctypes.POINTER(ctypes.c_float)]
         except Exception as e:
-            self.instLog.error("Error importing library: %s" % e)
+            self.inst_vars.inst_log.error("Error importing library: %s" % e)
             
         try:
             self.tc.startCam()
         except Exception as e:
-            self.instLog.error("Error starting thermal cam: %s" % e)
+            self.inst_vars.inst_log.error("Error starting thermal cam: %s" % e)
         
         try:
             
@@ -61,30 +66,28 @@ class Inst_interface(QtCore.QObject):
             self.datbuf = (ctypes.c_float * self.size)()
             
              #Load calibration
-            self.calPath = path.join(self.instPath, self.inst_cfg["Initialization"]["CalibrationFolder"])
+            self.calPath = path.join(self.inst_vars.inst_path, self.inst_vars.inst_cfg["Initialization"]["CalibrationFolder"])
             self.tc.loadCal(self.calPath.encode())
         except Exception as e:
             raise Exception("Error setting up thermal camera: %s" % e)
         
         #Create output file
-        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], "Data", self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
-        self.imgPath = path.join(self.inst_cfg["Data"]["absolutePath"], "Thermal")
+        self.dataFile = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Data", self.inst_vars.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.imgPath = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Thermal")
         makedirs(path.dirname(self.dataFile), exist_ok=True)
         makedirs(self.imgPath, exist_ok=True)
         
-        self.jsonFF = JSONFileField(self.dataFile)
-        self.jsonFF.addElement("Configuration", {s:dict(self.inst_cfg.items(s)) for s in self.inst_cfg.sections()})
         self.jsonFF.addField("Header")
-        self.jsonFF["Header"]["Model"] = self.inst_cfg["InstrumentInfo"]["Model"]
+        self.jsonFF["Header"]["Model"] = self.inst_vars.inst_cfg["InstrumentInfo"]["Model"]
         self.jsonFF["Header"]["Serial Number"] = self.tc.getSN()
         self.jsonFF["Header"]["Height"] = self.height
         self.jsonFF["Header"]["Width"] = self.width
-        self.jsonFF.addField("Data", fieldType=list)
+        self.jsonFF["Header"]["Size"] = self.size
 
         
     def acquire(self):
         #Call instrument acquisition method
-        #imageFile = path.join(self.inst_cfg["Data"]["absolutePath"], str(strftime("%Y-%m-%d_%H%M%S") + "Image_" + str(self.inst_n) + ".x16"))
+        #imageFile = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], str(strftime("%Y-%m-%d_%H%M%S") + "Image_" + str(self.inst_n) + ".x16"))
         self.datbuf[0] = 0
         
         trys = 0
@@ -95,11 +98,11 @@ class Inst_interface(QtCore.QObject):
                 break
             else:
                 trys += 1
-                self.instLog.warning("Partial or no data received, retrying capture")
+                self.inst_vars.inst_log.warning("Partial or no data received, retrying capture")
 
         #Save metadata
-        imgFile = path.join(self.imgPath, "Thermal_" + strftime("%Y%m%d_%H%M%S") + ".dat")
-        self.jsonFF["Data"].write(imgFile, recnum=self.globalTrigCount, timestamp=t, compact=True)
+        imgFile = path.join(self.imgPath, self.filePrefix + strftime("%Y%m%d_%H%M%S") + ".dat")
+        self.jsonFF["Data"].write(imgFile, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
         
         #Save binary
         with open(imgFile, 'wb') as out_file:
@@ -110,11 +113,42 @@ class Inst_interface(QtCore.QObject):
         self.ui_signals["updateImage"].emit(self.imgbuf)
         
     def close(self):
-        self.jsonFF["Header"]["Images Captured"] = self.inst_n
-        self.jsonFF.close()
+        self.jsonFF["Header"]["Images Captured"] = self.inst_vars.inst_n
         self.tc.stopCam()
         
+    
+    def displayRec(self, recNum):
+   
+        print("Display thermal image ", recNum)
+        try:
+            cachedData = self.jsonFF.read_jsonFFcached(self.jsonFF["Data"], recNum, self.inst_vars.inst_n, self.inst_vars.globalTrigCount)
+            cachedHeader = self.jsonFF.read_jsonFFcached(self.jsonFF["Header"], recNum, self.inst_vars.inst_n, self.inst_vars.globalTrigCount)
+        except KeyError:
+            return
         
+        imgPath = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Thermal")
+        
+        imgFile = cachedData[str(recNum)][1]     #Get filename
+        
+        imgFile = path.join(imgPath, path.split(imgFile)[1])
+        self.height = cachedHeader["Height"]
+        self.width = cachedHeader["Width"]
+        self.size = cachedHeader["Size"]
+        
+        if (not hasattr(self, "databuf")) or (not hasattr(self, "imgbuf")):
+            self.imgbuf = numpy.zeros((self.height, self.width), numpy.float)
+            self.datbuf = (ctypes.c_float * self.size)()
+        
+        #Load binary
+        with open(imgFile, 'rb') as in_file:
+            in_file.readinto(self.datbuf)
+            
+        #Update display
+        self.imgbuf = numpy.reshape(self.datbuf, (self.height, self.width))
+        self.ui_signals["updateImage"].emit(self.imgbuf)
+        
+    def fileName(self, val):
+        self.filePrefix = val
 
 class Ui_interface(QtCore.QObject):
       

@@ -1,49 +1,73 @@
-from time import sleep, strftime
+#System Imports
+import logging, json, random
+from time import sleep, strftime, time
+from os.path import isabs
+from os import makedirs
+
+#Qt Imports
 from PyQt5 import QtCore, QtGui
+
+#MoDaCS Imports
+from inst_common import Inst_jsonFF
+
+#Other Imports
 try:
     import RPi.GPIO as GPIO
     usingRPi = True
 except:
     from GPIOEmulator.EmulatorGUI import GPIO
     usingRPi = False
-from os.path import isabs
-from os import makedirs
-import logging
-import random
 import pyqtgraph as pg
 
+
 class Inst_interface(QtCore.QObject):
-    
-    #instLog = logger object
-    #inst_cfg = config object
-    
+
     inputs = []
     outputs = []
     
     ui_inputs = []
     ui_outputs = ["specData"]
         
-    def init(self):
-        self.sp = Spec(self.inst_cfg)       #Call instrument init
-        self.sp.open()
-        self.ui_signals["specData"].connect(lambda: print("TEST"))
+    def init(self, inst_vars, jsonFF):
+        
+        self.inst_vars = inst_vars
+        self.jsonFF = jsonFF
+
+        self.sp = Spec(self.inst_vars.inst_cfg)       #Call instrument init
+        self.sp.open()   
         
         
     def acquire(self):
         data = self.sp.get_spec()
+        self.jsonFF["Data"].write(data, recnum=self.inst_vars.globalTrigCount, timestamp=time())
         
-        aq_type = self.inst_cfg["Acquisition"]["Aq_Type"].replace(" ", "").split(",")
+        aq_type = self.inst_vars.inst_cfg["Acquisition"]["Aq_Type"].replace(" ", "").split(",")
         
         #Update UI
-        self.ui_signals["specData"].emit(data)
+        if self.inst_vars.realtime:
+            self.ui_signals["specData"].emit(data)
         
         if "Save" in aq_type:
             if not data == None:
                 self.sp.writeData(data)
+                                
+                
+    def displayRec(self, recNum):
+        
+        try:
+            cachedData = self.jsonFF.read_jsonFFcached(self.jsonFF["Data"], recNum, self.inst_vars.inst_n, self.inst_vars.globalTrigCount)
+        except KeyError:
+            pass
+        
+        try:
+            self.ui_signals["specData"].emit(cachedData[str(recNum)][1])
+        except Exception as e:
+            self.inst_vars.inst_log.info("Error displaying record " + str(recNum) + ": " + str(e))
+
         
     def close(self):
         self.sp.shutdown()
-        self.instLog.info("Spec shutdown")    
+        self.inst_vars.inst_log.info("Spec shutdown")    
         
         
 class Ui_interface(QtCore.QObject):

@@ -1,0 +1,22 @@
+# Autodetect text files
+* text=auto
+
+# ...Unless the name matches the following
+# overriding patterns
+
+# Definitively text files
+*.txt text
+*.py text
+*.md text
+*.ini text
+*.ui text
+*.cpp
+*.h
+
+# Ensure those won't be messed up with
+*.jpg binary
+*.png binary
+*.gif binary
+*.pdf binary
+*.dat binary
+*.bin binary

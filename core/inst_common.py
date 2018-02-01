@@ -1,15 +1,19 @@
 #System Imports
 from time import time, strftime
-import logging, configparser, importlib, traceback, sys
+import logging, configparser, importlib, traceback, sys, json
 from os import makedirs, path
+from collections import namedtuple
 
 #Qt Imports
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import pyqtSignal
 from util import QSignalHandler, Sig
 
+#MoDaCS Imports
+from util import JSONFileField
+
     
-def inst_init(self, instlist, globalPath, mainthreadlist):
+def inst_init(self, instlist, globalPath, mainthreadlist, displayOnly, instrumentPaths):
     
     logging.info("Loading Instruments...")
     
@@ -17,14 +21,18 @@ def inst_init(self, instlist, globalPath, mainthreadlist):
     for inst in instlist:
         if str.lower(instlist[inst]) == "true":
             try:                    
-                client_only = (self.ui_int.client.enabled and (not self.ui_int.server.enabled))
+                client_only = ((self.ui_int.client.enabled and (not self.ui_int.server.enabled)) or (displayOnly == True))
                 mainthread = None
                 if inst in mainthreadlist:
                     if bool(mainthreadlist[inst]) == True:
                         mainthread = self.thread()
 
                 #Create inst objects
-                self.active_insts[inst] = Inst_obj(globalPath, inst, client_only, self.getGlobalTrigCount, mainthread)
+                if displayOnly:
+                    instPath = instrumentPaths[inst]
+                else:
+                    instPath = None
+                self.active_insts[inst] = Inst_obj(globalPath, inst, client_only, self.getGlobalTrigCount, mainthread, displayOnly=displayOnly, instPath=instPath)
                 self.active_insts[inst].index = index
                 self.inst_list.append(inst)
                 
@@ -32,10 +40,11 @@ def inst_init(self, instlist, globalPath, mainthreadlist):
                     self.runningThreads.watchThread(self.active_insts[inst].inst_thread)
                     self.active_insts[inst].inst_thread.started.connect(self.active_insts[inst].init)         #make sure object init when thread starts
 
-                cp_inst = self.active_insts[inst].cp_inst
-
-                self.inst_addedSig.emit(cp_inst, inst)
+                self.inst_addedSig.emit(self.active_insts[inst].cp_inst, inst)
                 self.finishedSig.connect(self.active_insts[inst].finishedSig)
+                
+                if hasattr(self.active_insts[inst].interface, "displayRec"):       #Connect global record display handler if it exists
+                    self.ui_int.displayRec.connect(self.active_insts[inst].displayRec)
 
                 #if len(self.active_insts[inst].trig_mode) > 0:
                 #logging.debug("global trig connected to %s" % inst)
@@ -52,6 +61,52 @@ def inst_init(self, instlist, globalPath, mainthreadlist):
             index += 1
 
     logging.info("%d/%d instruments active.\n" % (len(self.active_insts), len(instlist)))
+
+
+class Inst_jsonFF(JSONFileField):
+
+    def __init__(self, inst_cfg, readOnly=False):
+        
+        #self.tCount_prop = tCount_prop
+        #self.globalTrigCount = globalTrigCount
+        self.dataCache = {}
+        self.readOnly = readOnly
+        
+        #Create/load output file
+        self.dataFile = path.join(inst_cfg["Data"]["absolutePath"], inst_cfg["Data"]["outputFilePrefix"] + ".json")
+
+        if not readOnly:
+            makedirs(path.dirname(self.dataFile), exist_ok=True)
+        
+        super().__init__(self.dataFile, fileOnly=readOnly)
+
+        if not readOnly:
+            self.addElement("Configuration", {s:dict(inst_cfg.items(s)) for s in inst_cfg.sections()})
+            self.addField("Data", fieldType=object)
+        
+    def read_jsonFFcached(self, field, recNum, tCount_prop, globalTrigCount): 
+        if self.readOnly:
+            return field
+        
+        #Only re-read the full field if there's new data/new data is needed
+        try:
+            if self.last_tCount_prop == tCount_prop and ((recNum <= self.last_globalTrig) or self.last_globalTrig == 0):
+                return self.dataCache[field]
+        except:
+            pass
+        
+        self.dataCache[field] = field.readAll()       
+        self.last_tCount_prop = tCount_prop
+        self.last_globalTrig = globalTrigCount
+        
+        return self.dataCache[field]
+    
+class Inst_vars():
+
+    def __init__(self, **kwargs):
+        for arg in kwargs:
+            self.arg = arg
+        #self.inst_vars = namedtuple("inst_vars", ["inst_cfg", "inst_log", "inst_n", "inst_path", "inst_wid", "realtime", "globalTrigCount"]) #Inst_vars()
 
 
 
@@ -109,7 +164,7 @@ class Inst_obj(QtCore.QObject):
             self.statusSig.emit([self.inst, e_str])
             self.errorSig.emit(self.inst, e)
         
-    def __init__(self, globalPath, inst, client_only, getGlobalTrigCount, mainthread=None):     #Inst object init - this is the same for all instruments
+    def __init__(self, globalPath, inst, client_only, getGlobalTrigCount, mainthread=None, displayOnly=False, instPath=None):     #Inst object init - this is the same for all instruments
         super().__init__()
        
         self.ready = False
@@ -119,61 +174,105 @@ class Inst_obj(QtCore.QObject):
         self.inst = inst
         self.client_only = client_only
         self.initDone = False
+        self.globalPath = globalPath
+        self.instPath = instPath
         self.getGlobalTrigCount = getGlobalTrigCount
-                                            
+        self.displayOnly = displayOnly 
+        self.mainthread = False   
+        
         #Create inst threads
         if not client_only:
             if mainthread is not None:
+                self.mainthread = True
                 self.inst_thread = mainthread
             else:
                 self.inst_thread = QtCore.QThread()
-                self.inst_thread.name = inst
+                self.inst_thread.setObjectName(inst)
                 self.moveToThread(self.inst_thread)                 #move the inst object to its thread
                 
             self.finishedSig.connect(self.finished)             #make sure thread exits when inst is closed
             self.uiReadySig.connect(self.init)                  #Re-init after instrument restart
-        
-
-        #Read inst config
+       
+        #Get inst config and setup paths
         cp_inst = configparser.ConfigParser()
-        cp_inst.read(path.join('.', 'instruments', inst, 'inst_cfg.ini'))
         
-        self.cp_inst = cp_inst
-        
-        #Setup data storage directory
-        if not cp_inst.has_option("Data", "Destination"):
-            dataPath = path.join(globalPath, cp_inst["InstrumentInfo"]["Name"].replace(" ", "_"))  #Using global location and default instrument directory
-        elif path.isabs(cp_inst["Data"]["Destination"]):
-            dataPath = cp_inst["Data"]["Destination"]                               #Using absolute path from instrument config
+        if displayOnly:
+            self.uiReadySig.connect(self.init)
+            
+            try:
+                with open(instPath + ".json") as rdJSON:
+                    runData = json.load(rdJSON)
+                
+                #Read inst config
+                cp_inst.read_dict(runData["Configuration"])
+
+                #Change path to saved data location            
+                if cp_inst.has_option("Data", "Destination"):
+                    cp_inst["Data"]["absolutePath"] = path.join(globalPath, cp_inst["Data"]["Destination"])        #Using global location and relative directory from instrument config
+                else:
+                    cp_inst["Data"]["absolutePath"] = globalPath
+                    
+
+            except Exception as e:
+                print("Error loading instrument configuration data: ", str(e))
+                raise
+            
         else:
-            dataPath = path.join(globalPath, cp_inst["Data"]["Destination"])        #Using global location and relative directory from instrument config
+            #Read inst config
+            cp_inst.read(path.join('.', 'instruments', inst, 'inst_cfg.ini'))
+
+            #Setup data storage directory
+            if not cp_inst.has_option("Data", "Destination"):
+                dataPath = path.join(globalPath, cp_inst["InstrumentInfo"]["Name"].replace(" ", "_"))  #Using global location and default instrument directory
+            elif path.isabs(cp_inst["Data"]["Destination"]):
+                dataPath = cp_inst["Data"]["Destination"]                               #Using absolute path from instrument config
+            else:
+                dataPath = path.join(globalPath, cp_inst["Data"]["Destination"])        #Using global location and relative directory from instrument config
+            
+            makedirs(dataPath, exist_ok=True)
+            if not cp_inst.has_section("Data"):
+                cp_inst.add_section("Data")
+            cp_inst["Data"]["absolutePath"] = dataPath
+            cp_inst["Data"]["outputFilePrefix"] = str(strftime("%Y-%m-%d_%H%M%S_" + cp_inst["InstrumentInfo"]["Name"].replace(" ", "_")))
+            
+            cp_inst["Data"]["inst"] = inst
+            
+        self.cp_inst = cp_inst    
         
-        makedirs(dataPath, exist_ok=True)
-        if not cp_inst.has_section("Data"):
-            cp_inst.add_section("Data")
-        cp_inst["Data"]["absolutePath"] = dataPath
-        cp_inst["Data"]["outputFilePrefix"] = str(strftime("%Y-%m-%d_%H%M%S_" + cp_inst["InstrumentInfo"]["Name"].replace(" ", "_")))
         
         #Setup inst log
         iLog = logging.getLogger(cp_inst["InstrumentInfo"]["Name"].replace(" ", "_"))
-        logPath = path.join(dataPath, cp_inst["Data"]["outputFilePrefix"] + "_Log.txt")
-                
-        formatter = logging.Formatter('[%(levelname)-10s] (%(threadName)-10s), %(asctime)s, %(message)s') # 
-        formatter.datefmt = '%Y/%m/%d %I:%M:%S'
-        fileHandler = logging.FileHandler(logPath, mode='w')
-        fileHandler.setFormatter(formatter)
-        iLog.setLevel(logging.DEBUG)
-        iLog.addHandler(fileHandler)
+        
+        if displayOnly:
+            self.logPath = path.join(cp_inst["Data"]["absolutePath"], cp_inst["Data"]["outputFilePrefix"] + "_Log.txt")
+        
+        if not (client_only or displayOnly):        
+            self.logPath = path.join(dataPath, cp_inst["Data"]["outputFilePrefix"] + "_Log.txt") 
+            formatter = logging.Formatter('[%(levelname)-10s] (%(threadName)-10s), %(asctime)s, %(message)s') # 
+            formatter.datefmt = '%Y/%m/%d %I:%M:%S'
+            fileHandler = logging.FileHandler(self.logPath, mode='w')
+            fileHandler.setFormatter(formatter)
+            iLog.setLevel(logging.DEBUG)
+            iLog.addHandler(fileHandler)
         
         sh = logging.StreamHandler()
         formatter = logging.Formatter("[%(levelname)-10s] (%(threadName)-10s), %(asctime)s,        [" + inst + "]: %(message)s")
         sh.setFormatter(formatter)
         iLog.addHandler(sh)
         iLog.propagate = False
-    
+        
+           
         #Setup internal objects and trigger params
+        self.inst_vars = Inst_vars()
+        self.inst_vars.inst_cfg = cp_inst
+        self.inst_vars.inst_log = iLog
+        self.inst_vars.inst_n = 0
+        self.inst_vars.inst_path = path.join("instruments", self.inst)
+        self.inst_vars.inst_wid = None
+        self.inst_vars.realtime = True
+        self.inst_vars.globalTrigCount = 0
+               
         self.index = 0
-        self.inst_cfg = cp_inst
         self.instLog = iLog
         
         try:
@@ -210,12 +309,18 @@ class Inst_obj(QtCore.QObject):
             inst_mod = importlib.import_module("instruments." + self.inst + ".inst_interface")
         except Exception as e:
             self.error = "Interface init error: " + str(e)
-            raise e
+            raise e    
+        
         self.interface = inst_mod.Inst_interface()
-        self.interface.instLog = self.instLog
-        self.interface.inst_cfg = self.inst_cfg
-        self.interface.inst_n = 0
-        self.interface.instPath = path.join("instruments", self.inst)
+        
+        #self.interface.instLog = self.instLog
+        #self.interface.inst_cfg = self.inst_cfg
+        #self.interface.inst_n = 0
+        #self.interface.instPath = path.join("instruments", self.inst)
+        
+        #self.interface.create_jsonFF = self.create_jsonFF
+        #self.interface.read_jsonFFcached = self.read_jsonFFcached
+        #self.interface.realtime = True
         
         #Setup inst signals and input sub
         self.interface.signals = {}
@@ -251,33 +356,47 @@ class Inst_obj(QtCore.QObject):
         return r_str
         
     def init(self):
-        if self.uiReady and self.inst_thread.isRunning() and (not self.initDone):
-            self.initDone = True
-            try:
-                self.interface.init()        #Call instrument init
-            except ImportError as e:
-                traceback.print_exc(file=sys.stdout)
-                self.instLog.warning("Import error: " + str(e))
-                pass
-            except Exception as e:
-                traceback.print_exc(file=sys.stdout)
-                self.error = "Init error: " + str(e)
-                return
-            self.instLog.info("Init complete")
-            self.status = "Ready"
+        
+        if self.displayOnly:
+            self.interface.inst_vars = self.inst_vars
+            self.jsonFF = Inst_jsonFF(self.inst_vars.inst_cfg, readOnly=True)
+            self.interface.jsonFF = self.jsonFF
             
-            #Init timed triggers
-            if "Timed" in self.trig_mode:
-                self.t = QtCore.QTimer(self)
-                self.t.setInterval(self.trig_int)
-                self.t.timeout.connect(lambda: self.triggerSig.emit("Timed"))
+            #Read existing log
+            with open(self.logPath , 'r') as logFile_in:
+                self.logupdateSig.emit(logFile_in.read()) #logFile.read())
+            
+        else:    
+            if self.uiReady and self.inst_thread.isRunning() and (not self.initDone):
+                self.initDone = True
+                try:
+                    self.jsonFF = Inst_jsonFF(self.inst_vars.inst_cfg)      #Create JSON output
+                    self.interface.init(self.inst_vars, self.jsonFF)        #Call instrument init
+                except ImportError as e:
+                    traceback.print_exc(file=sys.stdout)
+                    self.instLog.warning("Import error: " + str(e))
+                    pass
+                except Exception as e:
+                    traceback.print_exc(file=sys.stdout)
+                    self.error = "Init error: " + str(e)
+                    return
+                
+                self.instLog.info("Init complete")
+                self.status = "Ready"
+                
+                #Init timed triggers
+                if "Timed" in self.trig_mode:
+                    self.t = QtCore.QTimer(self)
+                    self.t.setInterval(self.trig_int)
+                    self.t.timeout.connect(lambda: self.triggerSig.emit("Timed"))
         
     def close(self):
         self.initDone = False
         try:
             self.interface.close()
         except Exception as e:
-            self.warning = "Close error: " + str(e) #Warning instead of error to prevent shutdown hangs 
+            self.warning = "Close error: " + str(e) #Warning instead of error to prevent shutdown hangs
+        self.jsonFF.close() 
         self.status = "Shutdown"
         
     def reset(self):
@@ -304,15 +423,15 @@ class Inst_obj(QtCore.QObject):
         #self.init_UI_Sigs()
         #self.init()
 
-    def trigger(self,source):
+    def trigger(self, source):
         if source in self.trig_mode or "*" in self.trig_mode:
             if self.ready or source=="Individual":
                 self.status = "Acquiring"
                 
-                try:
-                    self.globalTrigCount = self.getGlobalTrigCount()
-                    self.interface.globalTrigCount = self.globalTrigCount
-                    self.instLog.info("Acq. %i, Trigger: %s, RecNum: %i" % (self.tCount_prop, source, self.globalTrigCount))
+                try: 
+                    self.inst_vars.globalTrigCount = self.getGlobalTrigCount()
+                    #self.interface.globalTrigCount = globalTrigCount
+                    self.instLog.info("Acq. %i, Trigger: %s, RecNum: %i" % (self.tCount_prop, source, self.inst_vars.globalTrigCount))
                     self.interface.acquire()                          #Call instrument acquisition method
                     self.tCount()                                     #Increment acquisition counter
 
@@ -323,6 +442,21 @@ class Inst_obj(QtCore.QObject):
                 self.status = "Ready"
             else:
                 self.instLog.info("Trigger, Inst not ready")
+                
+    def displayRec(self, recNum):
+        try:
+            if recNum == -1:
+                if self.tCount_prop > 1:
+                    recNum = self.tCount_prop - 1
+                else:
+                    return  #No record to display
+                self.inst_vars.realtime = True
+            else:
+                self.inst_vars.realtime = False
+            self.interface.displayRec(recNum)
+        except Exception as e:
+            self.instLog.info("Error loading record " + str(recNum) + ": " + str(e))
+        return
             
     def t_Start(self):
         self.t.start()
@@ -350,9 +484,13 @@ class Inst_obj(QtCore.QObject):
     def finished(self):
         self.instLog.info("Shutting down...")
         self.close()
-        try:
-            self.inst_thread.quit()
-            self.inst_thread.wait()
-        except Exception as e:
-            self.instLog.warning("Error quitting thread: %s" % e) 
+        
+        if not self.mainthread:
+            try:
+                self.inst_thread.quit()
+                self.inst_thread.wait()
+            except Exception as e:
+                self.instLog.warning("Error quitting thread: %s" % e)
+        else:
+            self.instLog.info("Shutdown (pending Main Thread)")
 

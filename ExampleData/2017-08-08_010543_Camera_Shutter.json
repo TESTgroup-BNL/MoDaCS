@@ -1,0 +1,47 @@
+{
+	"Configuration":{
+		"InstrumentInfo": {
+			"name": "Camera Shutter",
+			"model": "Test",
+			"lens": "TestLens"
+		},
+		"Initialization": {
+			"focusdelay": "0.25",
+			"shutterpin": "5",
+			"shutterdelay": "0.5",
+			"focuspin": "6"
+		},
+		"Data": {
+			"outputfileprefix": "2017-08-08_010543_Camera_Shutter",
+			"destination": "",
+			"absolutepath": "/home/pi/MoDaCS_Data/2017-08-08_010543/",
+			"inst": "camerashutter"
+		},
+		"Trigger": {
+			"source": "Timed, *",
+			"interval": "1000"
+		}
+	},
+	"Header":{
+		"Model":"Test",
+		"Lens":"TestLens",
+		"Images Captured":0
+	},
+	"Data":{
+		"0":[1502155134.4246893, "Image 0"],
+		"1":[1502155136.2298398, "Image 0"],
+		"2":[1502155137.8027928, "Image 0"],
+		"3":[1502155139.2123637, "Image 0"],
+		"4":[1502155140.6044116, "Image 0"],
+		"5":[1502155142.0186493, "Image 0"],
+		"6":[1502155143.4157553, "Image 0"],
+		"7":[1502155144.830448, "Image 0"],
+		"8":[1502155146.2069347, "Image 0"],
+		"9":[1502155147.5129998, "Image 0"],
+		"10":[1502155148.9549506, "Image 0"],
+		"11":[1502155150.3456395, "Image 0"],
+		"12":[1502155151.7876995, "Image 0"],
+		"13":[1502155153.2032442, "Image 0"],
+		"14":[1502155154.6529093, "Image 0"]
+	}
+}

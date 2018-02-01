@@ -1,5 +1,5 @@
 #Qt Imports
-from PyQt5 import QtNetwork, QtWidgets
+from PyQt5 import QtNetwork, QtWidgets, QtCore
 from PyQt5.QtCore import pyqtSignal, QObject, QThread
 #System Imports
 import logging, pickle, ast
@@ -25,7 +25,7 @@ class Server(QObject):
 
                 #Create server thread
                 self.thread = QThread()
-                self.thread.name = "Server(" + self.target_IP + ":" + str(self.port) + ")"
+                self.thread.setObjectName("Server(" + self.target_IP + ":" + str(self.port) + ")")
                 self.moveToThread(self.thread)                 #move to new thread
                 main_app.runningThreads.watchThread(self.thread)
                 main_app.finishedSig.connect(self.thread.quit) #make sure thread exits when inst is closed
@@ -89,7 +89,7 @@ class Client(QObject):
                 
                 #Create client thread
                 self.thread = QThread()
-                self.thread.name = "Client(" + self.server_IP + ":" + str(self.port) + ")"
+                self.thread.setObjectName("Client(" + self.server_IP + ":" + str(self.port) + ")")
                 self.moveToThread(self.thread)                 #move to new thread
                 main_app.runningThreads.watchThread(self.thread)
                 main_app.finishedSig.connect(self.thread.quit) #make sure thread exits when inst is closed
@@ -208,6 +208,7 @@ class TCPConnection(QObject):
     sendSig = pyqtSignal(str, object)
     dataRecievedSig = pyqtSignal(str, int, int)
     dataSentSig = pyqtSignal(str, int, int)
+    clientConnectSig = pyqtSignal()
     
     def __init__(self, cp, main_app, active_insts, mode="server"):
         super().__init__()
@@ -227,12 +228,12 @@ class TCPConnection(QObject):
         try:
             if str.lower(cp["Enabled"]) == "true":
                 self.server_IP = cp["TCP_Server_IP"]
+                self.port = int(cp["TCP_Server_Port"])                
                 self.server_addr = QtNetwork.QHostAddress(self.server_IP)
-                self.port = int(cp["TCP_Server_Port"])                   
-
+                
                 #Create server thread
                 self.thread = QThread()
-                self.thread.name = "TCP Connection(" + self.server_IP + ":" + str(self.port) + ")"
+                self.thread.setObjectName("TCP Connection(" + self.server_IP + ":" + str(self.port) + ")")
                 self.moveToThread(self.thread)                 #move to new thread
                 main_app.runningThreads.watchThread(self.thread)
                 main_app.finishedSig.connect(self.close)       #make sure thread exits when inst is closed
@@ -289,26 +290,30 @@ class TCPConnection(QObject):
             self.tcpclient = QtNetwork.QTcpSocket(self)
             self.tcpclient.setSocketOption(QtNetwork.QAbstractSocket.LowDelayOption, 1)
             self.tcpclient.readyRead.connect(lambda: self.processIncoming(self.tcpclient))
-            self.tcpclient.disconnected.connect(self.waitForConnect)
+            self.tcpclient.disconnected.connect(self.tryConnect)
+            self.tcpclient.connected.connect(self.connectionMade)
             if self.provideControl:
                 self.sock.append(self.tcpclient)
                 self.sendSig.connect(self.send)
-            self.waitForConnect()
+            self.try_timer = QtCore.QTimer(self)
+            self.try_timer.timeout.connect(self.tryConnect)
+            #self.try_timer.start(10000)
+            self.firstTry = True
+            self.tryConnect()
         
-    def waitForConnect(self):
-        while(1):
-            QtWidgets.QApplication.processEvents()
-            if self.thread.isInterruptionRequested():
-                return
-            self.tcpclient.connectToHost(self.server_addr, self.port)
-            if self.tcpclient.waitForConnected(100000):
-                break
-            else:
-                self.tcpclient.abort()
+    def tryConnect(self):
+            if not self.firstTry:
                 logging.warning("Timeout connecting to remote server.  Trying again...")
-            
+                self.tcpclient.abort()
+            else:
+                self.try_timer.start(10000)
+            self.tcpclient.connectToHost(self.server_addr, self.port)
+                
+    def connectionMade(self):
+        self.try_timer.stop()
+        self.firstTry = True
         logging.info("Client started.  Listening from %s on port %i." % (self.server_IP, self.port))
-        return
+        self.clientConnectSig.emit()
         
     def addConnection(self):
         print("Connection pending...")
@@ -321,7 +326,8 @@ class TCPConnection(QObject):
             s.readyRead.connect(lambda s=s: self.processIncoming(s))
             
     def removeConnection(self, s):
-        print("Client disconnected")
+        #print("Client disconnected")
+        logging.info("Client disconnected: %s %s:%s" % (s.peerName(), s.peerAddress().toString(), s.peerPort()))
         try:
             s.close()
         except:

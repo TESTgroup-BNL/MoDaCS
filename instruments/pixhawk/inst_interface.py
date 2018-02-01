@@ -12,8 +12,8 @@ from util import JSONFileField
 
 class Inst_interface(QtCore.QObject):
     
-    #instLog = logger object
-    #inst_cfg = config object
+    #inst_vars.inst_log = logger object
+    #inst_vars.inst_cfg = config object
     
     inputs = ["test"]
     outputs = ["trigger", "shutter"]
@@ -23,17 +23,20 @@ class Inst_interface(QtCore.QObject):
 
     #### Common event functions ####
         
-    def init(self):
+    def init(self, inst_vars, jsonFF):
+        
+        self.inst_vars = inst_vars
+        
         try:
             importlib.reload(dronekit)
         except:
             import dronekit
         #from dronekit import connect, VehicleMode
         
-        self.instLog.info("Waiting for Pixhawk to initialize...")
+        self.inst_vars.inst_log.info("Waiting for Pixhawk to initialize...")
         sleep(2)   #Wait for Pixhawk to finish booting
-        connection_string = self.inst_cfg["Initialization"]["Connection"]
-        self.instLog.info("Connecting to vehicle on: %s" % (connection_string,))
+        connection_string = self.inst_vars.inst_cfg["Initialization"]["Connection"]
+        self.inst_vars.inst_log.info("Connecting to vehicle on: %s" % (connection_string,))
     
         try:
             self.vehicle = dronekit.connect(connection_string, wait_ready=False, baud=57600, heartbeat_timeout=5)
@@ -49,15 +52,15 @@ class Inst_interface(QtCore.QObject):
         try:
             mission_list = self.download_mission()
         except Exception as e:
-            self.instLog.error("Error downloading flight plan")
+            self.inst_vars.inst_log.error("Error downloading flight plan")
         try:
             home = self.vehicle.home_location
             if home is None:
-                self.instLog.warning("Home location not set")
+                self.inst_vars.inst_log.warning("Home location not set")
                 home = dronekit.LocationGlobal(0,0,0)
                 
             if mission_list is not None:
-                self.save_mission(path.join(self.inst_cfg["Data"]["absolutePath"], self.inst_cfg["Data"]["outputFilePrefix"] + "_mission.waypoints"), mission_list)
+                self.save_mission(path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], self.inst_vars.inst_cfg["Data"]["outputFilePrefix"] + "_mission.waypoints"), mission_list)
                 d["Flight Plan"] = []
                 d["Flight Plan"].append([0,1,0,16,0,0,0,0,home.lat,home.lon,home.alt,1])
                 for cmd in mission_list:
@@ -65,19 +68,19 @@ class Inst_interface(QtCore.QObject):
                     d["Flight Plan"].append([cmd.seq,cmd.current,cmd.frame,cmd.command,cmd.param1,cmd.param2,cmd.param3,cmd.param4,cmd.x,cmd.y,cmd.z,cmd.autocontinue])
                 #print(d)
         #except TypeError:
-        #    self.instLog.warning("No flight plan loaded")
+        #    self.inst_vars.inst_log.warning("No flight plan loaded")
         except Exception as e:
-            self.instLog.error("Error saving flight plan: %s" % e)
+            self.inst_vars.inst_log.error("Error saving flight plan: %s" % e)
 
-        self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], "Data", self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.dataFile = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Data", self.inst_vars.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
         makedirs(path.dirname(self.dataFile), exist_ok=True)
         self.jsonFF = JSONFileField(self.dataFile)
-        self.jsonFF.addElement("Configuration", {s:dict(self.inst_cfg.items(s)) for s in self.inst_cfg.sections()})
+        self.jsonFF.addElement("Configuration", {s:dict(self.inst_vars.inst_cfg.items(s)) for s in self.inst_vars.inst_cfg.sections()})
         self.jsonFF.addElement("Header", d)
         self.jsonFF.addField("Data", fieldType=list)
 
         try:
-            self.ui_signals["ui.btn_test.released"].connect(lambda: self.instLog.info("Button pressed!"))
+            self.ui_signals["ui.btn_test.released"].connect(lambda: self.inst_vars.inst_log.info("Button pressed!"))
         except Exception as e:
             raise e
         
@@ -115,7 +118,7 @@ class Inst_interface(QtCore.QObject):
 #                print("%s: %s" % attr_name, data)   
         
         except Exception as e:
-            self.instLog.error("Failed to setup callback: %s" % e)
+            self.inst_vars.inst_log.error("Failed to setup callback: %s" % e)
         
     def acquire(self):
         
@@ -126,15 +129,15 @@ class Inst_interface(QtCore.QObject):
         d["EKF OK"] = self.vehicle.ekf_ok
         d["Last Heartbeat"] = self.vehicle.last_heartbeat
         d["GPS"] = self.vehicle.gps_0
-        d["Gimbal"] = {"pitch": self.vehicle.gimbal.pitch, "roll": self.vehicle.gimbal.roll, "yaw": self.vehicle.gimbal.yaw}
+        #d["Gimbal"] = {"pitch": self.vehicle.gimbal.pitch, "roll": self.vehicle.gimbal.roll, "yaw": self.vehicle.gimbal.yaw}
         d["Attitude"] = self.vehicle.attitude
-        d["Channels"] = self.vehicle.channels.values()
+        #d["Channels"] = self.vehicle.channels.values()
         d["Air Speed"] = self.vehicle.airspeed
         d["Ground Speed"] = self.vehicle.groundspeed
         d["Heading"] = self.vehicle.heading
         d["Global Location"] = self.vehicle.location.global_frame
     
-        self.jsonFF["Data"].write(d, recnum=self.globalTrigCount, timestamp=time())
+        self.jsonFF["Data"].write(d, recnum=self.inst_vars.globalTrigCount, timestamp=time(), compact=True)
 
         
     def close(self):

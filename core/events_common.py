@@ -6,10 +6,10 @@ from PyQt5 import QtCore
 import event_handlers
 
 
-def events_init(self, cp_events):
+def events_init(self, cp_events, displayOnly):
   
     logging.info("Loading Events...")
-    client_only = (self.ui_int.client.enabled and (not self.ui_int.server.enabled))
+    client_only = ((self.ui_int.client.enabled and (not self.ui_int.server.enabled)) or (displayOnly == True))
     
     for ev, value in cp_events.items():
         try:          
@@ -46,7 +46,7 @@ class Event_obj(QtCore.QObject):
         self.QueuedUniqueConnection = QtCore.Qt.QueuedConnection | QtCore.Qt.UniqueConnection
         
         self.event_thread = QtCore.QThread()                     #Create event thread
-        self.event_thread.name = ev
+        self.event_thread.setObjectName(ev)
         self.moveToThread(self.event_thread)
         self.finishedSig.connect(self.event_thread.quit)     #make sure thread exits when inst is closed
 

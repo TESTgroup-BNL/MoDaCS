@@ -1,5 +1,5 @@
 #System Imports
-import json, ast, logging, os
+import json, ast, logging, os, traceback
 #from objgraph import InstanceType
 from array import array
 
@@ -10,7 +10,7 @@ from asyncore import read
 
         
 class JSONFileField():
-    def __init__(self, filename=None, fieldname=None, parent=None, fieldType=object, compact=False, removeTemp=True):
+    def __init__(self, filename=None, fieldname=None, parent=None, fieldType=object, compact=False, removeTemp=True, fileOnly=False):
         self.subfields = {}
         self.subelements = {}
         self.level = 1
@@ -20,34 +20,40 @@ class JSONFileField():
         self.indt = ''
         self.removeTempFiles = removeTemp
         self.isCompact = compact
+        self.parent = parent
+        self.fileOnly = fileOnly
         
-        if parent is None and filename is None:
-            raise Exception('No path or parent specified, no data will be written')
-            return None
-        try:
-            self.dataFile = parent.dataFile + '_' + fieldname
-            self.rootFile = parent.dataFile
-            self.level = parent.level + 1
-        except:  
-            self.dataFile = filename
-            self.rootFile = filename
+        if self.fileOnly:
+            with open(filename, 'r') as in_file:
+                self.fileData = json.load(in_file)
         
-        if self.isCompact:
-            self.newLine = ''
-            self.indt = ''
-            self.parentindt = ''
-        else:
-            self.newLine = '\n'
-            self.indt = '\t'*self.level
-            self.parentindt = '\t'*(self.level - 1)
-        self.startdelimiter = self.newLine
-        
-        
-        self.isOpen = True
-        #if not self.predefined:
-        with open(self.dataFile, 'w') as out_file:
-            out_file.write(self.brackets[self.fieldType]['start'])
-
+        else:          
+            if parent is None and filename is None:
+                raise Exception('No path or parent specified, no data will be written')
+                return None
+            try:
+                self.dataFile = parent.dataFile + '_' + fieldname
+                self.rootFile = parent.dataFile
+                self.level = parent.level + 1
+            except:  
+                self.dataFile = filename
+                self.rootFile = filename
+            
+            if self.isCompact:
+                self.newLine = ''
+                self.indt = ''
+                self.parentindt = ''
+            else:
+                self.newLine = '\n'
+                self.indt = '\t'*self.level
+                self.parentindt = '\t'*(self.level - 1)
+            self.startdelimiter = self.newLine
+            
+            
+            self.isOpen = True
+            #if not self.predefined:
+            with open(self.dataFile, 'w') as out_file:
+                out_file.write(self.brackets[self.fieldType]['start'])
     
     def write(self, d, recnum=None, timestamp=None, compact=None, prefix=''):
         if not self.isOpen:
@@ -70,11 +76,17 @@ class JSONFileField():
                 #else:
                 out_file.write(self.startdelimiter + self.indt + out_data)
             elif timestamp is None:
-                out_file.write(self.startdelimiter + self.indt + '[' + str(recnum) + ', ' + out_data + ']')
+                if self.fieldType == list:
+                    out_file.write(self.startdelimiter + self.indt + '[' + str(recnum) + ', ' + out_data + ']')
+                else:
+                    out_file.write(self.startdelimiter + self.indt + '"' + str(recnum) + '":' + out_data)
             elif recnum is None:
                 out_file.write(self.startdelimiter + self.indt + '[' + str(timestamp) + ', ' + out_data + ']')
             else:
-                out_file.write(self.startdelimiter + self.indt + '[' + str(timestamp) + ', ' + str(recnum) + ', ' + out_data + ']')
+                if self.fieldType == list:
+                    out_file.write(self.startdelimiter + self.indt + '[' + str(recnum) + ', ' + str(timestamp) + ', ' + out_data + ']')
+                else:
+                    out_file.write(self.startdelimiter + self.indt + '"' + str(recnum) + '":[' + str(timestamp) + ', ' + out_data + ']')
                 
         if self.startdelimiter == self.newLine or self.startdelimiter == '':
             self.startdelimiter = ',' + self.startdelimiter
@@ -128,17 +140,26 @@ class JSONFileField():
             else:
                 self._closeSubFields(out_file)
         else:
-            raise Warning('Field already closed.')      
+            print('Field already closed.')
         
         
     def readField(self, field):
+        
+        if self.fileOnly:
+            return field
+        
         with open(field.dataFile, 'r') as in_file:
             data = in_file.read()
         if field.isOpen:
             data += (self.newLine + field.brackets[field.fieldType]['end'])
-        return data
+            
+        return json.loads(data)
     
     def readAll(self):
+        
+        if self.fileOnly:
+            return self.fileData
+              
         out = ''
         first = True
         data = self.readField(self)
@@ -162,6 +183,10 @@ class JSONFileField():
     
         
     def __getitem__(self,key):
+        
+        if self.fileOnly:
+            return self.fileData[key]
+        
         try:
             return self.subfields[key]
         except:
@@ -172,6 +197,7 @@ class JSONFileField():
         
     def __setitem__(self, key, value):
         return self.addElement(key, data=value)
+    
         
 
 class QSignalHandler(logging.Handler):          #logging handler that emits all log entries through a specified signal
@@ -250,3 +276,10 @@ class SBlock:
         
     def __exit__(self, *args):
         self.target.blockSignals(False) 
+        
+        
+def my_excepthook(type, value, traceb):
+    #print('Unhandled error:', type, value, traceb)
+    for l in traceback.format_exception(type, value, traceb):
+        print(l)
+    #print(traceback.format_exception(type, value, traceb))  

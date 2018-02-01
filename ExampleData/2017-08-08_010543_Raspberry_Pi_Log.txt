@@ -1,0 +1,8 @@
+[INFO      ] (MainThread), 2017/08/08 01:05:43, Triggers: Data
+[DEBUG     ] (MainThread), 2017/08/08 01:05:43, Creating instrument interface...
+[DEBUG     ] (MainThread), 2017/08/08 01:05:43, Interface ready
+[INFO      ] (Thread-2  ), 2017/08/08 01:05:47, Listening thread started.
+[INFO      ] (Dummy-3   ), 2017/08/08 01:05:48, Init complete
+[DEBUG     ] (Dummy-3   ), 2017/08/08 01:05:48, Ready
+[INFO      ] (Dummy-3   ), 2017/08/08 01:35:51, Shutting down...
+[DEBUG     ] (Dummy-3   ), 2017/08/08 01:35:51, Shutdown

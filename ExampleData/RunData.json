@@ -1,0 +1,106 @@
+{
+	"Configuration":{
+		"Server": {
+			"tcp_server_port": "9400",
+			"allowcontrol": "True",
+			"enabled": "True",
+			"tcp_server_ip": "192.168.1.101"
+		},
+		"Active_Insts": {
+			"usb2000-pair": "True",
+			"ici_thermal": "True",
+			"raspberrypi": "True",
+			"pixhawk": "True",
+			"camerashutter": "True",
+			"spectrometer": "False"
+		},
+		"MainThread": {},
+		"Data": {
+			"location": "/home/pi/MoDaCS_Data"
+		},
+		"Client": {
+			"tcp_server_port": "9400",
+			"providecontrol": "True",
+			"enabled": "False",
+			"tcp_server_ip": "192.168.1.101"
+		},
+		"UI": {
+			"size": "small",
+			"waitforntp": "True"
+		},
+		"Events": {
+			"shutterspeed": "pixhawk.shutter; camerashutter.shutterspeed",
+			"auto_trig": "pixhawk.trigger->GlobalTrigger",
+			"dig_trig": "raspberrypi.digitalTrig->GlobalTrigger"
+		}
+	},
+	"InstrumentPaths":{
+		"camerashutter":"/home/pi/MoDaCS_Data/2017-08-08_010543/2017-08-08_010543_Camera_Shutter",
+		"pixhawk":"/home/pi/MoDaCS_Data/2017-08-08_010543/2017-08-08_010543_Pixhawk",
+		"raspberrypi":"/home/pi/MoDaCS_Data/2017-08-08_010543/2017-08-08_010543_Raspberry_Pi",
+		"usb2000-pair":"/home/pi/MoDaCS_Data/2017-08-08_010543/2017-08-08_010543_USB2000+_Pair",
+		"ici_thermal":"/home/pi/MoDaCS_Data/2017-08-08_010543/2017-08-08_010545_ICI_Thermal_Cam"
+	},
+	"globalRecs":{
+		"0":[
+			"01:18:54",
+			"RaspPi"
+		],
+		"1":[
+			"01:18:56",
+			"RaspPi"
+		],
+		"2":[
+			"01:18:57",
+			"RaspPi"
+		],
+		"3":[
+			"01:18:59",
+			"RaspPi"
+		],
+		"4":[
+			"01:19:00",
+			"RaspPi"
+		],
+		"5":[
+			"01:19:01",
+			"RaspPi"
+		],
+		"6":[
+			"01:19:03",
+			"RaspPi"
+		],
+		"7":[
+			"01:19:04",
+			"RaspPi"
+		],
+		"8":[
+			"01:19:06",
+			"RaspPi"
+		],
+		"9":[
+			"01:19:07",
+			"RaspPi"
+		],
+		"10":[
+			"01:19:08",
+			"RaspPi"
+		],
+		"11":[
+			"01:19:10",
+			"RaspPi"
+		],
+		"12":[
+			"01:19:11",
+			"RaspPi"
+		],
+		"13":[
+			"01:19:13",
+			"RaspPi"
+		],
+		"14":[
+			"01:19:14",
+			"RaspPi"
+		]
+	}
+}

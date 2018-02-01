@@ -1,0 +1,31 @@
+[INFO      ] (Dummy-1   ), 2017/08/08 01:05:43, Server started.  Listening on 192.168.1.101, port 9400.
+[INFO      ] (Dummy-1   ), 2017/08/08 01:05:43, New client connected:  192.168.1.100:50995
+[INFO      ] (MainThread), 2017/08/08 01:05:43, Loading Instruments...
+[INFO      ] (MainThread), 2017/08/08 01:05:43, Instrument Loaded: Camera Shutter, Model: Test, Thread: <PyQt5.QtCore.QThread object at 0x6ce52d00>
+[INFO      ] (MainThread), 2017/08/08 01:05:43, Instrument Loaded: Pixhawk, Model: PX4, Thread: <PyQt5.QtCore.QThread object at 0x6ce6da80>
+[INFO      ] (MainThread), 2017/08/08 01:05:43, Instrument Loaded: Raspberry Pi, Model: 2, Thread: <PyQt5.QtCore.QThread object at 0x6ce7fc60>
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Instrument Loaded: USB2000+ Pair, Model: OceanOptics, Thread: <PyQt5.QtCore.QThread object at 0x6b3d20d0>
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Instrument Loaded: ICI Thermal Cam, Model: 9640P, Thread: <PyQt5.QtCore.QThread object at 0x6b3d2710>
+[INFO      ] (MainThread), 2017/08/08 01:05:45, 5/6 instruments active.
+
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Loading Events...
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Event Loaded: shutterspeed, Inputs: ['pixhawk.shutter'], Outputs: [' camerashutter.shutterspeed']
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Connection made: pixhawk.trigger -> GlobalTrigger
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Connection made: raspberrypi.digitalTrig -> GlobalTrigger
+[INFO      ] (MainThread), 2017/08/08 01:05:45, 3/3 events/connections loaded.
+
+[INFO      ] (MainThread), 2017/08/08 01:05:45, Loading instrument UIs...
+[INFO      ] (MainThread), 2017/08/08 01:05:47, 5/5 instrument UIs loaded.
+
+[INFO      ] (Dummy-1   ), 2017/08/08 01:05:50, New client connected:  192.168.1.100:51000
+[INFO      ] (MainThread), 2017/08/08 01:35:51, Remotely initiated shutdown...
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Stopping 9 thread(s)
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Waiting for 8 thread(s)
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Waiting for 7 thread(s)
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Waiting for 6 thread(s)
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Waiting for 5 thread(s)
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Waiting for 4 thread(s)
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Waiting for 3 thread(s)
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Waiting for 2 thread(s)
+[DEBUG     ] (MainThread), 2017/08/08 01:35:51, Waiting for 1 thread(s)
+[INFO      ] (MainThread), 2017/08/08 01:35:52, Done.
