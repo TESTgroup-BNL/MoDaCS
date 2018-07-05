@@ -4,7 +4,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 #System Imports
 from time import sleep, time
 from os import path, makedirs
-import importlib
+from datetime import datetime
+import importlib, json
 
 #MoDaCS Imports
 from inst_common import Inst_jsonFF
@@ -98,8 +99,24 @@ class Inst_interface(QtCore.QObject):
         self.refs = {}
         self.refs_avg = {}
         
-        #Define dark current variables
+        #Define dark current variable and attempt to load
         self.darkCurrent = {}
+        dc_filePath = path.join(self.inst_vars.inst_path, 'DarkCurrent.json')
+        try:
+            self.inst_vars.inst_log.info("Reading saved dark current values...")
+            dc_file = open(dc_filePath, 'r')
+            dc_data = json.load(dc_file)
+            dc_file.close()
+
+            for dc_int_time_str, dc_itm in dc_data.items():
+                dc_int_time = int(dc_int_time_str)
+                dc_dt = datetime.fromtimestamp(dc_itm["Timestamp"])
+                self.darkCurrent[dc_int_time] = dc_itm["intensities"]
+                options = dc_itm["Options"]
+                self.inst_vars.inst_log.info("%i uS from %s %s" % (dc_int_time, dc_dt.strftime('%Y-%m-%d'), dc_dt.strftime('%H:%M:%S')))
+                self.jsonFF["DarkCurrent"].write({"Downward":self.darkCurrent[dc_int_time]["Downward"], "Upward":self.darkCurrent[dc_int_time]["Upward"], "Options":options}, recnum=dc_int_time, timestamp=dc_dt, compact=True)
+        except IOError:
+            self.inst_vars.inst_log.warning("No dark current data available.  Measure to correct in real-time.")
         
         #Set up UI  
         self.ui_signals["ui.sb_intTime.valueChanged"].connect(self.intTimeChanged)
@@ -169,6 +186,20 @@ class Inst_interface(QtCore.QObject):
             self.inst_vars.inst_log.info("Set dark current integration time %i uS" % self.int_time)
             self.jsonFF["DarkCurrent"].write({"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Options":options}, recnum=self.int_time, timestamp=t, compact=True)
             
+            #Create output file & header
+            dc_filePath = path.join(self.inst_vars.inst_path, 'DarkCurrent.json')
+            try:
+                dc_file = open(dc_filePath, 'r')
+                dc_data = json.load(dc_file)
+                dc_file.close()
+            except IOError:
+                dc_data = {}
+            dc_file = open(dc_filePath, 'w')
+            dc_data[self.int_time] = {"Timestamp": t, "Options":options, "intensities": intensities}
+            json.dump(dc_data, dc_file)
+            dc_file.close()
+            self.inst_vars.inst_log.info("Dark current data saved in %s for integration time %i uS." % (dc_filePath, self.int_time))
+            
         else:
             #Raw spec data is always saved without any dark current correction.  Reflectance is calculated with dark current correction if available.
             #Spec plots are always displayed with dark current correction if available BUT SAVED AS RAW, UNCORRECTED
@@ -226,7 +257,7 @@ class Inst_interface(QtCore.QObject):
 
         try:
             cachedData = self.jsonFF.read_jsonFFcached(self.jsonFF["Data"], recNum, self.inst_vars.inst_n, self.inst_vars.globalTrigCount)
-        except KeyError:
+        except KeyError as e:
             return
         
         try:

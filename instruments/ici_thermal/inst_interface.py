@@ -91,26 +91,27 @@ class Inst_interface(QtCore.QObject):
         self.datbuf[0] = 0
         
         trys = 0
-        while  trys < 3:
+        while  trys < 10:
             t = time()
             self.tc.getImage(self.datbuf)
             if not self.datbuf[0] == 0:
+                #Save metadata
+                imgFile = path.join(self.imgPath, self.filePrefix + strftime("%Y%m%d_%H%M%S") + ".dat")
+                self.jsonFF["Data"].write(imgFile, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
+                
+                #Save binary
+                with open(imgFile, 'wb') as out_file:
+                    out_file.write(self.datbuf)
+                    
+                #Update display
+                self.imgbuf = numpy.reshape(self.datbuf, (self.height, self.width))
+                self.ui_signals["updateImage"].emit(self.imgbuf)
                 break
             else:
                 trys += 1
                 self.inst_vars.inst_log.warning("Partial or no data received, retrying capture")
 
-        #Save metadata
-        imgFile = path.join(self.imgPath, self.filePrefix + strftime("%Y%m%d_%H%M%S") + ".dat")
-        self.jsonFF["Data"].write(imgFile, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
-        
-        #Save binary
-        with open(imgFile, 'wb') as out_file:
-            out_file.write(self.datbuf)
-            
-        #Update display
-        self.imgbuf = numpy.reshape(self.datbuf, (self.height, self.width))
-        self.ui_signals["updateImage"].emit(self.imgbuf)
+
         
     def close(self):
         self.jsonFF["Header"]["Images Captured"] = self.inst_vars.inst_n
