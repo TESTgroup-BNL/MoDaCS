@@ -68,6 +68,7 @@ class SFTP_Client(QObject):
     def sftpDone(self):
         self.sock.writeDatagram("SFTP Done".encode(), QtNetwork.QHostAddress(self.run_cfg["Client"]["TCP_Server_IP"]), int(self.run_cfg["Client"]["TCP_Server_Port"])+1)
         self.sock.close()
+        QtWidgets.QMessageBox.information(None, "SFTP Transfer", "SFTP transfer finished!")
         return
     
     def download_dir(self, remote_dir, local_dir, sftp, dl_prog=None):
@@ -82,7 +83,7 @@ class SFTP_Client(QObject):
         
         for i, item in enumerate(dir_items):
             if dl_prog.wasCanceled():
-                print("Transfer cancelled.")
+                print("Transfer canceled.")
                 return
             dl_prog.setLabelText(remote_dir + "\n" + item.filename)
 
