@@ -282,7 +282,7 @@ class Inst_obj(QtCore.QObject):
         except:
             iLog.warning("Error reading trigger parameters, defaulting to use any sources ('*')")
             self.trig_mode = "*"
-        
+
         if "Timed" in self.trig_mode:
             try:
                 self.trig_int = int(trig_params["Interval"])    
@@ -381,14 +381,21 @@ class Inst_obj(QtCore.QObject):
                     self.error = "Init error: " + str(e)
                     return
                 
+                #Init timed triggers
+                self.runContinuous = False
+                self.continuous = False
+                if "Timed" in self.trig_mode:
+                    if self.trig_int == 0:
+                        self.continuous = True
+                        self.runContinuous = True
+                        self.instLog.info("Continuous trigger enabled")
+                    else:
+                        self.t = QtCore.QTimer(self)
+                        self.t.setInterval(self.trig_int)
+                        self.t.timeout.connect(lambda: self.triggerSig.emit("Timed"))
+                        
                 self.instLog.info("Init complete")
                 self.status = "Ready"
-                
-                #Init timed triggers
-                if "Timed" in self.trig_mode:
-                    self.t = QtCore.QTimer(self)
-                    self.t.setInterval(self.trig_int)
-                    self.t.timeout.connect(lambda: self.triggerSig.emit("Timed"))
         
     def close(self):
         self.initDone = False
@@ -424,7 +431,7 @@ class Inst_obj(QtCore.QObject):
         #self.init()
 
     def trigger(self, source):
-        if source in self.trig_mode or "*" in self.trig_mode:
+        if source in self.trig_mode or "*" in self.trig_mode or source == "Manual":
             if self.ready or source=="Individual":
                 self.status = "Acquiring"
                 
@@ -440,6 +447,10 @@ class Inst_obj(QtCore.QObject):
                     return
                 
                 self.status = "Ready"
+                
+                QtWidgets.QApplication.processEvents()
+                if self.runContinuous:
+                    self.triggerSig.emit("Timed")
             else:
                 self.instLog.info("Trigger, Inst not ready")
                 
@@ -466,18 +477,25 @@ class Inst_obj(QtCore.QObject):
         
     def uiAction(self,action):
         if action == "Start":
-            try:
-                self.t.start()
-                self.instLog.info("Timed trigger started.")
-            except:
-                self.instLog.warning("No timer set up; not started.")
+            if self.continuous:
+                self.runContinuous = True
+                self.triggerSig.emit("Timed")
+            else:
+                try:
+                    self.t.start()
+                    self.instLog.info("Timed trigger started.")
+                except:
+                    self.instLog.warning("No timer set up; not started.")
 
         elif action == "Stop":
-            try:
-                self.t.stop()
-                self.instLog.info("Timed trigger stopped.")
-            except:
-                self.instLog.warning("No timer set up; not stopped.")
+            if self.continuous:
+                self.runContinuous = False
+            else:
+                try:
+                    self.t.stop()
+                    self.instLog.info("Timed trigger stopped.")
+                except:
+                    self.instLog.warning("No timer set up; not stopped.")
         else:
             self.trigger(action)
             
