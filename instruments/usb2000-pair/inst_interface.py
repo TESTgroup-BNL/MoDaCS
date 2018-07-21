@@ -114,7 +114,8 @@ class Inst_interface(QtCore.QObject):
                 self.darkCurrent[dc_int_time] = dc_itm["intensities"]
                 options = dc_itm["Options"]
                 self.inst_vars.inst_log.info("%i uS from %s %s" % (dc_int_time, dc_dt.strftime('%Y-%m-%d'), dc_dt.strftime('%H:%M:%S')))
-                self.jsonFF["DarkCurrent"].write({"Downward":self.darkCurrent[dc_int_time]["Downward"], "Upward":self.darkCurrent[dc_int_time]["Upward"], "Options":options}, recnum=dc_int_time, timestamp=dc_dt, compact=True)
+                self.jsonFF["DarkCurrent"].write({"Downward":self.darkCurrent[dc_int_time]["Downward"], "Upward":self.darkCurrent[dc_int_time]["Upward"], "Options":options}, recnum=dc_int_time, timestamp=dc_itm["Timestamp"], compact=True)
+                self.correctDark = True
         except IOError:
             self.inst_vars.inst_log.warning("No dark current data available.  Measure to correct in real-time.")
         
@@ -178,7 +179,7 @@ class Inst_interface(QtCore.QObject):
                 self.refs[self.int_time].append(ref_temp)
                 
             self.refs_avg[self.int_time] = self.avgSamples(self.refs[self.int_time])
-
+            self.upward_ref_interp = interp(self.wavelengths["Downward"], self.wavelengths["Upward"], self.refs_avg[self.int_time]["Upward"])
             self.ui_signals["updatePlot"].emit([self.refs_avg[self.int_time], True, len(self.refs[self.int_time]), self.wavelengths])  #Note: using the 'Downward' list is purely arbitrary since both lists will be the same length, we just need the length of either one
 
         elif setDark:
@@ -204,19 +205,20 @@ class Inst_interface(QtCore.QObject):
             #Raw spec data is always saved without any dark current correction.  Reflectance is calculated with dark current correction if available.
             #Spec plots are always displayed with dark current correction if available BUT SAVED AS RAW, UNCORRECTED
         
+            #Updated 7-16-18 Nome to disable display
             output = {}
             if hasattr(self, 'refs_avg'):
                 #Calculate reflectance
                 if self.correctDark:
                     corrected_intensities = self.doCorrectDark(intensities, self.darkCurrent, self.int_time)
                     #print(corrected_intensities)
-                    reflec = self.calcReflectance(self.wavelengths, self.refs_avg[self.int_time], corrected_intensities)
+                    reflec = self.calcReflectance(self.wavelengths, self.refs_avg[self.int_time], corrected_intensities, self.upward_ref_interp)
                     #Update UI
-                    self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
+                    #self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
                 else:
-                    reflec = self.calcReflectance(self.wavelengths, self.refs_avg[self.int_time], intensities)
+                    reflec = self.calcReflectance(self.wavelengths, self.refs_avg[self.int_time], intensities, self.upward_ref_interp)
                     #Update UI
-                    self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
+                    #self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
                     
                 #Save data
                 ### python >=3.5 only ### self.jsonFF["Data"].write({**intensities, **{"Reflectance":list(reflec)}}, timestamp=t, compact=True)
@@ -232,10 +234,11 @@ class Inst_interface(QtCore.QObject):
                 if self.correctDark:
                     corrected_intensities = self.doCorrectDark(intensities, self.darkCurrent, self.int_time)
                     #Update UI
-                    self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
+                    #self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
                 else:
+                    pass
                     #Update UI
-                    self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
+                    #self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
 
     def close(self):
         #self.jsonwriter.close()
@@ -301,7 +304,8 @@ class Inst_interface(QtCore.QObject):
                         self.refs[self.int_time].append(ref)                    
                             
                 self.refs_avg[self.int_time] = self.avgSamples(self.refs[self.int_time])
-
+                self.upward_ref_interp = interp(self.wavelengths["Downward"], self.wavelengths["Upward"], self.refs_avg[self.int_time]["Upward"])
+                
                 self.ui_signals["updatePlot"].emit([self.refs_avg[self.int_time], True, len(self.refs[self.int_time]), self.wavelengths])  #Note: using the 'Downward' list is purely arbitrary since both lists will be the same length, we just need the length of either one
             
             #Set Intensities
@@ -323,12 +327,12 @@ class Inst_interface(QtCore.QObject):
 
     ### Other Instrument Functions/Classes ###
     
-    def calcReflectance(self, wavelengths, refs_avg, intensities):   
+    def calcReflectance(self, wavelengths, refs_avg, intensities, upward_ref_interp):   
         #print(intensities)
         #for key, intens in intensities.items():
         #    print("%s: %i intensities, %i wavelengths" % (key, len(intensities[key]), len(wavelengths[key])))
         upward_interp = interp(wavelengths["Downward"], wavelengths["Upward"], intensities["Upward"])
-        upward_ref_interp = interp(wavelengths["Downward"], wavelengths["Upward"], refs_avg["Upward"])
+        #upward_ref_interp = interp(wavelengths["Downward"], wavelengths["Upward"], refs_avg["Upward"])
         
         reflec = (upward_ref_interp/asarray(refs_avg["Downward"]))*(asarray(intensities["Downward"])/upward_interp)
         return reflec
@@ -525,7 +529,8 @@ class Ui_interface(QtCore.QObject):
                 else:
                     self.clearLayout(item.layout())        
         
-    def updatePlot(self, data):    
+    def updatePlot(self, data):
+ 
         intens = data[0]
         isRef = data[1]
         reflec = data[2]

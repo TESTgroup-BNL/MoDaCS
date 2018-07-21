@@ -44,6 +44,7 @@ class Event_obj(QtCore.QObject):
         self.signals = {}
         self.isDirect = False
         self.QueuedUniqueConnection = QtCore.Qt.QueuedConnection | QtCore.Qt.UniqueConnection
+        self.BlockingQueuedUniqueConnection = QtCore.Qt.BlockingQueuedConnection | QtCore.Qt.UniqueConnection
         
         self.event_thread = QtCore.QThread()                     #Create event thread
         self.event_thread.setObjectName(ev)
@@ -76,7 +77,7 @@ class Event_obj(QtCore.QObject):
             inputs[inputs_name] = inSig
             outputs[outputs_name] = "Direct"
             if dout[0] == "GlobalTrigger":
-                inSig.connect(lambda ev=ev, name=None, trig=self.globalTrigger : trig.emit(ev), self.QueuedUniqueConnection)
+                inSig.connect(lambda ev=ev, name=None, trig=self.globalTrigger : trig.emit(ev), self.BlockingQueuedUniqueConnection)
             else:
                 m_out = getattr(self.insts[dout[0]].interface, dout[1])          #Lookup output method; not a lambda function but works
                 inSig.connect(m_out, self.QueuedUniqueConnection)    #Connect signal to output
@@ -117,7 +118,7 @@ class Event_obj(QtCore.QObject):
             outputs[o] = outSig
             try:
                 if d[0] == "GlobalTrigger":
-                    outSig.connect(lambda ev=ev, trig=self.globalTrigger : trig.emit(ev), self.QueuedUniqueConnection)
+                    outSig.connect(lambda ev=ev, trig=self.globalTrigger : trig.emit(ev), self.BlockingQueuedUniqueConnection)
                 else:
                     input_m = getattr(self.insts[d[0]].interface, d[1])
                     outSig.connect(lambda val=None, ev=ev, input_m=input_m : input_m(val, ev), self.QueuedUniqueConnection)

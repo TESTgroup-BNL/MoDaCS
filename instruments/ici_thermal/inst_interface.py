@@ -72,7 +72,7 @@ class Inst_interface(QtCore.QObject):
             raise Exception("Error setting up thermal camera: %s" % e)
         
         #Create output file
-        self.dataFile = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Data", self.inst_vars.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.dataFile = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], self.inst_vars.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
         self.imgPath = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Thermal")
         makedirs(path.dirname(self.dataFile), exist_ok=True)
         makedirs(self.imgPath, exist_ok=True)
@@ -103,9 +103,9 @@ class Inst_interface(QtCore.QObject):
                 with open(imgFile, 'wb') as out_file:
                     out_file.write(self.datbuf)
                     
-                #Update display
-                self.imgbuf = numpy.reshape(self.datbuf, (self.height, self.width))
-                self.ui_signals["updateImage"].emit(self.imgbuf)
+                #Update display #Disabled 7-19-18 Nome
+                #self.imgbuf = numpy.reshape(self.datbuf, (self.height, self.width))
+                #self.ui_signals["updateImage"].emit(self.imgbuf)
                 break
             else:
                 trys += 1
@@ -173,6 +173,7 @@ class Ui_interface(QtCore.QObject):
         
         
     def updateImage(self, data):
+        #return
         self.imv.setImage(data.T)
     
     def clearLayout(self, layout):
