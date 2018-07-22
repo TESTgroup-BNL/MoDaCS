@@ -8,7 +8,10 @@ from PyQt5 import QtNetwork, QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal, QObject
 
 #Other Imports
-import paramiko
+try:
+    import paramiko
+except ImportError:
+    logging.warning("Paramiko not found; SFTP will not be functional.")
 
 
 class SFTP_Client(QObject):    
@@ -105,10 +108,11 @@ class SFTP_Server(QObject):
     
     sftp_finished = pyqtSignal()
     
-    def __init__(self, run_cfg, onFinished):
+    def __init__(self, run_cfg, onFinished, quit):
         super().__init__()
         self.run_cfg = run_cfg
-        self.sftp_finished.connect(onFinished)
+        self.quit = quit
+        #self.sftp_finished.connect(onFinished)
         logging.info("Starting SFTP transfer...")
         self.sock = QtNetwork.QUdpSocket(self)
         self.sock.readyRead.connect(lambda: self.checksftpDone()) 
@@ -125,4 +129,5 @@ class SFTP_Server(QObject):
             if data == "SFTP Done":
                 self.sftpEnabled = False
                 self.sock.close
-                self.sftp_finished.emit()
+                onFinished(self.run_cfg, self.quit)
+                #self.sftp_finished.emit()

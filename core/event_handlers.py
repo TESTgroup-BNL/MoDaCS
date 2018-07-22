@@ -39,3 +39,16 @@ class testthing(QObject):
     def input(self, data, name):
         logging.info("hello from testthing, %s: %s" % (name, int(QThread.currentThreadId())))
         
+        
+        
+def pre_init:
+    pass
+
+def post_init:
+    pass
+
+def client_post(run_config, atFinished):
+    print("Hi, I'm doing the post processing!")
+    
+    atFinsihed()
+    pass

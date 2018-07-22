@@ -62,12 +62,12 @@ class CameraShutter():
     
     def __init__(self, shutterpin, focuspin, shutterDelay, focusDelay):
         
-        global GPIO     #This is very ugly and technically not allowed but makes it easy to prevent the emulator from
-                        # popping up without the instrument running (causing the emulator window to get stuck open).
         try:
             import RPi.GPIO as GPIO
         except:
             try:
+                global GPIO     #This is very ugly and technically not allowed but makes it easy to prevent the emulator from
+                                #popping up without the instrument running (causing the emulator window to get stuck open).
                 from GPIOEmulator.EmulatorGUI import GPIO
             except:
                 raise
