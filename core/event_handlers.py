@@ -41,10 +41,10 @@ class testthing(QObject):
         
         
         
-def pre_init:
+def pre_init():
     pass
 
-def post_init:
+def post_init():
     pass
 
 def client_post(run_config, atFinished):

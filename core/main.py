@@ -26,7 +26,7 @@ from events_common import events_init
 import ui.ui_interface
 from util import QSignalHandler, RunningThreads, my_excepthook, JSONFileField
 import sftp
-from event_handlers import Startup_Shutdown
+import event_handlers
 
 
 class Main(QtWidgets.QMainWindow):
@@ -45,7 +45,7 @@ class Main(QtWidgets.QMainWindow):
         super().__init__()
         QtWidgets.QMainWindow.__init__(self)
         
-        Startup_Shutdown.pre_init()
+        event_handlers.pre_init()
         self.status_LED = StatusLED()
         self.status_LED.setLED.emit(255,0,0)
         
@@ -226,7 +226,7 @@ class Main(QtWidgets.QMainWindow):
             self.ui_int.server.controlClient.thread.start()
     
         #self.status_LED.setColor(0,255,0)
-        Startup_Shutdown.post_init()
+        event_handlers.post_init()
         self.status_LED.setBlink.emit(0,0,0,250,0,255,0,250,3)
 
     
@@ -399,7 +399,7 @@ class Main(QtWidgets.QMainWindow):
             pass
         if self.sftpEnabled and self.isServer and self.isRemoteShutdown:
             self.sftpEnabled = False
-            sftp_server = sftp.SFTP_Server(self.run_cfg, Startup_Shutdown.client_post, self.quit)
+            sftp_server = sftp.SFTP_Server(self.run_cfg, event_handlers.client_post, self.quit)
         else:
             self.readyToClose = True
             self.close()
