@@ -271,6 +271,7 @@ class Inst_obj(QtCore.QObject):
         self.inst_vars.inst_wid = None
         self.inst_vars.realtime = True
         self.inst_vars.globalTrigCount = 0
+        self.inst_vars.trigger_source = ""
                
         self.index = 0
         self.instLog = iLog
@@ -438,6 +439,7 @@ class Inst_obj(QtCore.QObject):
                 try:
                     QtWidgets.QApplication.processEvents()
                     self.inst_vars.globalTrigCount = self.getGlobalTrigCount()
+                    self.inst_vars.trigger_source = source
                     #self.interface.globalTrigCount = globalTrigCount
                     self.instLog.info("Acq. %i, Trigger: %s, RecNum: %i" % (self.tCount_prop, source, self.inst_vars.globalTrigCount))
                     self.interface.acquire()                          #Call instrument acquisition method

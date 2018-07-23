@@ -153,7 +153,11 @@ class Inst_interface(QtCore.QObject):
         for i in range(0, samps):
             intensitySamp = {}
             for key, spec in self.specs.items():
-                intensitySamp[key] = self.getIntensitiesList(spec)
+                try:
+                    intensitySamp[key] = self.getIntensitiesList(spec)
+                except Exception as e:
+                    #self.inst_vars.inst_log.error("Error getting data from %s spec: %s" % (e, key))
+                    raise Exception("Error getting data from %s spec: %s" % (e, key))
                 
             intensitySamps.append(intensitySamp)
             
@@ -233,12 +237,17 @@ class Inst_interface(QtCore.QObject):
                 
                 if self.correctDark:
                     corrected_intensities = self.doCorrectDark(intensities, self.darkCurrent, self.int_time)
-                    #Update UI
-                    #self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
+                    if self.inst_vars.trigger_source in ("Manual", "Individual"):
+                        #Update UI
+                        #self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
+                    else
+                        pass
                 else:
-                    pass
-                    #Update UI
-                    #self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
+                    if self.inst_vars.trigger_source in ("Manual", "Individual"):
+                        #Update UI
+                        #self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
+                    else:
+                        pass
 
     def close(self):
         #self.jsonwriter.close()
