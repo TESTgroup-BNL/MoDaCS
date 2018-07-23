@@ -2,7 +2,7 @@ import json, ast
 from os import path
 from datetime import datetime
 
-import simplekml
+import simplekml, logging
 
 
 
@@ -10,12 +10,13 @@ class BuildKML():
     
     def __init__(self, run_cfg):
         self.run_cfg = run_cfg
+        logging.info("Running post-processing...")
         
     
     def read_data(self):
-        print("Reading JSON data...")
+        logging.info("Reading JSON data...")
         
-        #data_root = self.run_cfg["Data"]["dataPath"]
+        #self.data_root = self.run_cfg["Data"]["dataPath"]
         self.data_root = self.run_cfg
         fname = path.join(self.data_root, "RunData.json")
         
@@ -25,18 +26,18 @@ class BuildKML():
         insts = self.runData["InstrumentPaths"]
         self.data = {}
         
-        print("Processing instrument data...")
+        logging.info("Processing instrument data...")
         
         for name, inst_path in insts.items():
-            print("\t%s" % name)
+            logging.info("\t%s" % name)
             inst_path = path.join(self.data_root, inst_path.split("/")[-1]) + ".json"
             if hasattr(Instruments, name):
                 self.data[name] = getattr(Instruments, name)(self, inst_path)
             else:
-                print("\tNo processing function found, skipping")
+                logging.info("\tNo processing function found, skipping")
             
     def build_kml(self):
-        print("Building KML output...")
+        logging.info("Building KML output...")
         kml = simplekml.Kml()
         ls = kml.newlinestring(name='Flight Path')
         ls.coords = self.data["pixhawk_v2"]["coords"]
@@ -54,7 +55,7 @@ class BuildKML():
             pnt.timestamp.when = datetime.fromtimestamp(self.data["pixhawk_v2"]["timestamps"][i]).strftime('%Y-%m-%dT%H:%M:%SZ')
             
         kml.save(path.join(self.data_root, "FlightPreview.kml"))
-        print("Done.")
+        logging.info("Done.")
             
         
         
@@ -82,9 +83,9 @@ class Instruments():
     
     
     
-if __name__ == '__main__':
+#if __name__ == '__main__':
     
-    buildkml = BuildKML(r"C:\Users\amcmahon\Desktop\Nome_2018_MoDaCS_Postprocessed\2018-07-14_035048")
-    buildkml.read_data()
-    buildkml.build_kml()
+#    buildkml = BuildKML(r"C:\Users\amcmahon\Desktop\Nome_2018_MoDaCS_Postprocessed\2018-07-14_035048")
+#    buildkml.read_data()
+#    buildkml.build_kml()
     

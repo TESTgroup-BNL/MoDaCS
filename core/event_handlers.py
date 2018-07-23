@@ -3,6 +3,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject, QThread
 #System Imports
 import logging
 
+
 class shutterspeed(QObject):
     output = pyqtSignal(object)
     
@@ -49,6 +50,5 @@ def post_init():
 
 def client_post(run_config, atFinished):
     print("Hi, I'm doing the post processing!")
-    
     atFinsihed()
     pass

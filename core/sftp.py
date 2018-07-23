@@ -12,7 +12,7 @@ try:
     import paramiko
 except ImportError:
     logging.warning("Paramiko not found; SFTP will not be functional.")
-
+import post_processing.kml as kml
 
 class SFTP_Client(QObject):    
     
@@ -66,6 +66,10 @@ class SFTP_Client(QObject):
         self.sftpDone()
         
         logging.info("Done with SFTP Transfer.")
+        
+        buildkml = kml.BuildKML(receivePath)
+        buildkml.read_data()
+        buildkml.build_kml()
         return
     
     def sftpDone(self):
@@ -129,5 +133,5 @@ class SFTP_Server(QObject):
             if data == "SFTP Done":
                 self.sftpEnabled = False
                 self.sock.close
-                onFinished(self.run_cfg, self.quit)
+                self.quit()
                 #self.sftp_finished.emit()
