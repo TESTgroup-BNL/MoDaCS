@@ -217,12 +217,14 @@ class Inst_interface(QtCore.QObject):
                     corrected_intensities = self.doCorrectDark(intensities, self.darkCurrent, self.int_time)
                     #print(corrected_intensities)
                     reflec = self.calcReflectance(self.wavelengths, self.refs_avg[self.int_time], corrected_intensities, self.upward_ref_interp)
-                    #Update UI
-                    #self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
+                    if self.inst_vars.trigger_source in ("Manual", "Individual"):
+                        #Update UI
+                        self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
                 else:
                     reflec = self.calcReflectance(self.wavelengths, self.refs_avg[self.int_time], intensities, self.upward_ref_interp)
-                    #Update UI
-                    #self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
+                    if self.inst_vars.trigger_source in ("Manual", "Individual"):
+                        #Update UI
+                        self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
                     
                 #Save data
                 ### python >=3.5 only ### self.jsonFF["Data"].write({**intensities, **{"Reflectance":list(reflec)}}, timestamp=t, compact=True)
@@ -239,13 +241,13 @@ class Inst_interface(QtCore.QObject):
                     corrected_intensities = self.doCorrectDark(intensities, self.darkCurrent, self.int_time)
                     if self.inst_vars.trigger_source in ("Manual", "Individual"):
                         #Update UI
-                        #self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
-                    else
+                        self.ui_signals["updatePlot"].emit([corrected_intensities, False, reflec, self.wavelengths])
+                    else:
                         pass
                 else:
                     if self.inst_vars.trigger_source in ("Manual", "Individual"):
                         #Update UI
-                        #self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
+                        self.ui_signals["updatePlot"].emit([intensities, False, reflec, self.wavelengths])
                     else:
                         pass
 
