@@ -16,8 +16,11 @@ class BuildKML():
     def read_data(self):
         logging.info("Reading JSON data...")
         
-        #self.data_root = self.run_cfg["Data"]["dataPath"]
-        self.data_root = self.run_cfg
+        if type(self.run_cfg) is str:
+            self.data_root = self.run_cfg
+        else:
+            self.data_root = self.run_cfg["Data"]["dataPath"]
+            
         fname = path.join(self.data_root, "RunData.json")
         
         with open(fname) as rdJSON:

@@ -65,7 +65,7 @@ if __name__ == '__main__':
         int_time = options["IntegrationTime"]
 
         #Set References
-        refs = {"Upward": [], "Downward": []}
+        refs = {} #{"Upward": [], "Downward": []}
         refs_avg = {}
         refs_temp = raw["References"]
 
@@ -73,10 +73,14 @@ if __name__ == '__main__':
 
             if ref[0] == int_time:
                 if correctDark:
-                    ref = doCorrectDark(ref[2], darkCurrent[int_time], ref[0])   
+                    r = doCorrectDark(ref[2], darkCurrent, ref[0])   
                 else:
-                    ref = ref[2]
-                refs[int_time].append(ref)                    
+                    r = ref[2]
+                try:
+                    refs[int_time].append(r)
+                except KeyError:
+                    refs[int_time] = []
+                    refs[int_time].append(r)
                         
             refs_avg[int_time] = avgSamples(refs[int_time])
             upward_ref_interp = interp(wavelengths["Downward"], wavelengths["Upward"], refs_avg[int_time]["Upward"])
@@ -89,10 +93,10 @@ if __name__ == '__main__':
             intensities = doCorrectDark(intensities, darkCurrent, int_time)
 
         #Calc Reflectance
-        reflec = calcReflectance(wavelengths, refs_avg[int_time], corrected_intensities, upward_ref_interp)
+        reflec = calcReflectance(wavelengths, refs_avg[int_time], intensities, upward_ref_interp)
 
-        output.append({"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Reflectance":list(reflec), "Options":options})
+        data_out[recNum] = {"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Reflectance":list(reflec), "Options":options}
         
-raw["Data"] = output
-with open(path+"_recalced", 'a') as out_file:
+raw["Data"] = data_out
+with open(in_path+"_recalced", 'a') as out_file:
     json.dump(raw, out_file)
