@@ -7,6 +7,4 @@ if (length(new.packages)) {
   print("installing : ")
   print(new.packages)
   install.packages(new.packages, repos = "http://cran.rstudio.com/")
-  
-  warning("If Maeswrap Package download fails, please refer to PEcAn documentation for download instructions")
 }
