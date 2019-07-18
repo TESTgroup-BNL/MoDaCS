@@ -231,9 +231,13 @@ class Main(QtWidgets.QMainWindow):
         return self.globalTrigCount
     
     def incGlobalTrigCount(self, source):
-            self.globalTrigCount += 1
-            self.ui_int.ui_addGlobalRec(self.globalTrigCount, strftime("%H"+":"+"%M"+":"+"%S", localtime()), source)
-            self.jsonFF["globalRecs"][str(self.globalTrigCount)] = [strftime("%H"+":"+"%M"+":"+"%S", localtime()), source]
+        self.globalTrigCount += 1
+        try:
+            logging.debug("Global trigger: %s, %i" % (source, self.globalTrigCount))
+        except Exception as e:
+            print(e)
+        self.ui_int.ui_addGlobalRec(self.globalTrigCount, strftime("%H"+":"+"%M"+":"+"%S", localtime()), source)
+        self.jsonFF["globalRecs"][str(self.globalTrigCount)] = [strftime("%H"+":"+"%M"+":"+"%S", localtime()), source]
             
     def loadRecs(self):
         self.newConfigFile = QtWidgets.QFileDialog.getOpenFileName(None, 'Open Global Record File', self.run_cfg["Data"]["location"], "JSON files (*.json)")
@@ -339,8 +343,10 @@ class Main(QtWidgets.QMainWindow):
         
         if mode is not "":
             self.shutdown_mode = mode
+            self.isRemoteShutdown = True
             logging.info("Remotely initiated shutdown...")
         else:
+            self.isRemoteShutdown = False
             logging.info("Shutting down...")
         
         self.status_LED.setLED.emit(255,0,255)
@@ -388,7 +394,7 @@ class Main(QtWidgets.QMainWindow):
             self.shut_timer.stop()
         except AttributeError:
             pass
-        if self.sftpEnabled and self.isServer:
+        if self.sftpEnabled and self.isServer and self.isRemoteShutdown:
             self.sftpEnabled = False
             sftp_server = sftp.SFTP_Server(self.run_cfg, self.quit)
         else:

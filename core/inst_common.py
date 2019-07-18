@@ -431,11 +431,12 @@ class Inst_obj(QtCore.QObject):
         #self.init()
 
     def trigger(self, source):
-        if source in self.trig_mode or "*" in self.trig_mode or source == "Manual":
+        if source in self.trig_mode or "*" in self.trig_mode or source == "Individual":
             if self.ready or source=="Individual":
                 self.status = "Acquiring"
                 
-                try: 
+                try:
+                    QtWidgets.QApplication.processEvents()
                     self.inst_vars.globalTrigCount = self.getGlobalTrigCount()
                     #self.interface.globalTrigCount = globalTrigCount
                     self.instLog.info("Acq. %i, Trigger: %s, RecNum: %i" % (self.tCount_prop, source, self.inst_vars.globalTrigCount))

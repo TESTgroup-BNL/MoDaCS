@@ -81,7 +81,7 @@ class CameraShutter():
             sleep(0.1)
         except:
             pass
-        try:    
+        try:   
             GPIO.setup(self.shutter, GPIO.OUT)
             GPIO.output(self.shutter, False)
             GPIO.setup(self.focus, GPIO.OUT)
