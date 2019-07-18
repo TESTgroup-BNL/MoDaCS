@@ -26,6 +26,7 @@ from events_common import events_init
 import ui.ui_interface
 from util import QSignalHandler, RunningThreads, my_excepthook, JSONFileField
 import sftp
+import event_handlers
 
 
 class Main(QtWidgets.QMainWindow):
@@ -43,7 +44,8 @@ class Main(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__()
         QtWidgets.QMainWindow.__init__(self)
-
+        
+        event_handlers.pre_init()
         self.status_LED = StatusLED()
         self.status_LED.setLED.emit(255,0,0)
         
@@ -224,6 +226,7 @@ class Main(QtWidgets.QMainWindow):
             self.ui_int.server.controlClient.thread.start()
     
         #self.status_LED.setColor(0,255,0)
+        event_handlers.post_init()
         self.status_LED.setBlink.emit(0,0,0,250,0,255,0,250,3)
 
     
@@ -373,11 +376,11 @@ class Main(QtWidgets.QMainWindow):
     def check_shutdown(self):
         self._i += 1
         
-        if self._i > 5 or self.runningThreads.active_threads == 0:
+        if self._i > 10 or self.runningThreads.active_threads == 0:
             logging.warning("Thread(s) blocked, attempting to force quit application.")
             self.quit()
             
-        elif self._i == 5:   #5 second timeout for stopping all threads
+        elif self._i == 10:   #5 second timeout for stopping all threads
             self._i += 1
             bad_threads = []
             for i in self.runningThreads.active_threads:
@@ -396,7 +399,7 @@ class Main(QtWidgets.QMainWindow):
             pass
         if self.sftpEnabled and self.isServer and self.isRemoteShutdown:
             self.sftpEnabled = False
-            sftp_server = sftp.SFTP_Server(self.run_cfg, self.quit)
+            sftp_server = sftp.SFTP_Server(self.run_cfg, event_handlers.client_post, self.quit)
         else:
             self.readyToClose = True
             self.close()
