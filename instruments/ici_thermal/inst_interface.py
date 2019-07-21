@@ -35,6 +35,7 @@ class Inst_interface(QtCore.QObject):
         self.inst_vars = inst_vars
         self.jsonFF = jsonFF
         self.filePrefix = "Thermal_"
+        self.updateDisplay = bool(self.inst_vars.inst_cfg["Initialization"]["UpdateDisplay"])
         
         sleep(1)
 
@@ -104,8 +105,13 @@ class Inst_interface(QtCore.QObject):
                     out_file.write(self.datbuf)
                     
                 #Update display #Disabled 7-19-18 Nome
-                #self.imgbuf = numpy.reshape(self.datbuf, (self.height, self.width))
-                #self.ui_signals["updateImage"].emit(self.imgbuf)
+                if self.inst_vars.trigger_source in ("Manual", "Individual") or self.updateDisplay == True:  
+                    #numpy.savez_compressed(imgstr, a=self.datbuf)                
+                    #self.imgbuf = numpy.frombuffer(self.datbuf, dtype=numpy.float)
+                    #self.imgbuf = numpy.reshape(datbuf, (480, 640))
+                    self.imgbuf = bytearray()
+                    self.imgbuf += self.datbuf
+                    self.ui_signals["updateImage"].emit(self.imgbuf)
                 break
             else:
                 trys += 1
@@ -173,8 +179,10 @@ class Ui_interface(QtCore.QObject):
         
         
     def updateImage(self, data):
-        #return
-        self.imv.setImage(data.T)
+        if self.ui_large:
+            data_buf = (ctypes.c_float * (640*480)).from_buffer_copy(data)
+            imgbuf = numpy.reshape(data_buf, (480, 640))
+            self.imv.setImage(imgbuf.T)
     
     def clearLayout(self, layout):
         if layout is not None:

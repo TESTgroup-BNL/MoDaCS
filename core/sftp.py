@@ -122,7 +122,7 @@ class SFTP_Server(QObject):
         self.sock.readyRead.connect(lambda: self.checksftpDone()) 
         self.sock.bind(QtNetwork.QHostAddress(self.run_cfg["Server"]["TCP_Server_IP"]), int(self.run_cfg["Server"]["TCP_Server_Port"])+1)
         start_str = "Start SFTP:" + self.run_cfg["Data"]["dataPath"]
-        self.sock.writeDatagram(start_str, QtNetwork.QHostAddress(self.run_cfg["Server"]["TCP_Client_IP"]), int(self.run_cfg["Server"]["TCP_Client_Port"])+1)
+        self.sock.writeDatagram(start_str.encode(), QtNetwork.QHostAddress(self.run_cfg["Server"]["TCP_Client_IP"]), int(self.run_cfg["Server"]["TCP_Client_Port"])+1)
 
     def checksftpDone(self):
         while self.sock.hasPendingDatagrams():

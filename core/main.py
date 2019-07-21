@@ -275,6 +275,7 @@ class Main(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         if self.readyToClose:
             self.status_LED.setLED.emit(0,0,0)
+            sleep(0.1)
             #print("Using Rasp Pi still? %s" % self.usingRasPi)
             if self.usingRasPi:
                 if self.shutdown_mode == "Restart\nMoDaCS":
