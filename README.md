@@ -15,8 +15,12 @@ Currently being developed with:
 
 ## Tl;dr, show me some data! (Viewer Mode Quickstart)
 1.  Install ([Python 3](https://www.python.org/downloads/))
-2.  Install PyQt 5, pyqtgraph and numpy (run "pip install pyqt5 pyqtgraph numpy")
-3.  From the MoDaCS directory, run "python .\core\main.py -f .\ExampleData\RunData.json"
+2.  Install PyQt 5, pyqtgraph and numpy
+    
+        pip install pyqt5 pyqtgraph numpy
+3.  From the MoDaCS directory, run:
+    
+        python .\core\main.py -f .\ExampleData\RunData.json
 
 ## MoDaCS Installation
 
@@ -36,14 +40,17 @@ Optional:
     Available via pip but depends on cryptography which has some binary dependencies.
     
     For Raspbain Buster:
+    
     	sudo pip3 install paramiko
     
-    For Raspbian Jessie:  
-    1. Run sudo apt-get update
-    2. Run sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
-    3. Run sudo pip (or pip3) install --upgrade setuptools
-    4. Run sudo pip (or pip3) install paramiko
-       Note: this step can take ~20 mins on some Rasp Pi 2 systems while it builds some of the cryptography dependencies
+    For Raspbian Jessie:
+    
+    	sudo apt-get update
+    	sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
+    	sudo pip (or pip3) install --upgrade setuptools
+    	sudo pip (or pip3) install paramiko
+		
+     Note: this step can take ~20 mins on some Rasp Pi 2 systems while it builds some of the cryptography dependencies
             
 - *neopixel* (for RGB feedback LED on Raspberry Pi)
 
