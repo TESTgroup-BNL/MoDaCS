@@ -7,8 +7,8 @@ This package is currently under development.
 The goal is to develop a framework that uses a central module/UI to coordinate data acquisition, synchronization with a UAS control system and data storage through a common interface and interchangeable, hardware specific software modules.  Utilizing this structure, the system can be easily reconfigured on the fly to meet the needs of a specific platform or operation, eliminating the need to redevelop complete acquisition systems for specific instrument/platform configurations.  As an instrument module library develops, adding new hardware to a platform will become as simple as enabling the corresponding software module.
 
 Currently being developed with:
-- Python 3.5
-- Qt 5.7 (not using any features past 5.3 for compatibility with default Raspbian Jessie Qt package)
+- Python 3.7
+- Qt 5.11
 
 
 *Security note:* The remote monitoring/control interface is NOT secure in any way and should not be used on a public a network.  There is currently no authentication process and the protocol allows almost any Qt signal/slot in the application to be targeted.
@@ -20,16 +20,23 @@ Currently being developed with:
 
 ## MoDaCS Installation
 
+Get everything at once for all current modules and instruments:
+
+	(sudo) pip3 install pyqt5, pyqtgraph, paramiko, simplekml, dronekit, seabreeze, pyusb, pynmea2, rpi_ws281x, adafruit-circuitpython-neopixel
+
 Requirements:
 
 - *python* (32-bit) >= 3.4 ([https://www.python.org/downloads/](https://www.python.org/downloads/))
-- *pyqt5* (available via pip on Windows or under the package name "python3-pyqt5" on Raspbian Jessie)
+- *pyqt5* (available via pip on Windows or under the package name "python3-pyqt5" on Raspbian)
 
 Optional:
 
 - *paramiko* (for SFTP)
 
     Available via pip but depends on cryptography which has some binary dependencies.
+    
+    For Raspbain Buster:
+    	sudo pip3 install paramiko
     
     For Raspbian Jessie:  
     1. Run sudo apt-get update
