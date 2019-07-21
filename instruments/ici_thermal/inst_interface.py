@@ -35,6 +35,7 @@ class Inst_interface(QtCore.QObject):
         self.inst_vars = inst_vars
         self.jsonFF = jsonFF
         self.filePrefix = "Thermal_"
+        self.updateDisplay = bool(self.inst_vars.inst_cfg["Initialization"]["UpdateDisplay"])
         
         sleep(1)
 
@@ -72,7 +73,7 @@ class Inst_interface(QtCore.QObject):
             raise Exception("Error setting up thermal camera: %s" % e)
         
         #Create output file
-        self.dataFile = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Data", self.inst_vars.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+        self.dataFile = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], self.inst_vars.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
         self.imgPath = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Thermal")
         makedirs(path.dirname(self.dataFile), exist_ok=True)
         makedirs(self.imgPath, exist_ok=True)
@@ -91,26 +92,32 @@ class Inst_interface(QtCore.QObject):
         self.datbuf[0] = 0
         
         trys = 0
-        while  trys < 3:
+        while  trys < 10:
             t = time()
             self.tc.getImage(self.datbuf)
             if not self.datbuf[0] == 0:
+                #Save metadata
+                imgFile = path.join(self.imgPath, self.filePrefix + strftime("%Y%m%d_%H%M%S") + ".dat")
+                self.jsonFF["Data"].write(imgFile, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
+                
+                #Save binary
+                with open(imgFile, 'wb') as out_file:
+                    out_file.write(self.datbuf)
+                    
+                #Update display #Disabled 7-19-18 Nome
+                if self.inst_vars.trigger_source in ("Manual", "Individual") or self.updateDisplay == True:  
+                    #numpy.savez_compressed(imgstr, a=self.datbuf)                
+                    #self.imgbuf = numpy.frombuffer(self.datbuf, dtype=numpy.float)
+                    #self.imgbuf = numpy.reshape(datbuf, (480, 640))
+                    self.imgbuf = bytearray()
+                    self.imgbuf += self.datbuf
+                    self.ui_signals["updateImage"].emit(self.imgbuf)
                 break
             else:
                 trys += 1
                 self.inst_vars.inst_log.warning("Partial or no data received, retrying capture")
 
-        #Save metadata
-        imgFile = path.join(self.imgPath, self.filePrefix + strftime("%Y%m%d_%H%M%S") + ".dat")
-        self.jsonFF["Data"].write(imgFile, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
-        
-        #Save binary
-        with open(imgFile, 'wb') as out_file:
-            out_file.write(self.datbuf)
-            
-        #Update display
-        self.imgbuf = numpy.reshape(self.datbuf, (self.height, self.width))
-        self.ui_signals["updateImage"].emit(self.imgbuf)
+
         
     def close(self):
         self.jsonFF["Header"]["Images Captured"] = self.inst_vars.inst_n
@@ -172,7 +179,10 @@ class Ui_interface(QtCore.QObject):
         
         
     def updateImage(self, data):
-        self.imv.setImage(data.T)
+        if self.ui_large:
+            data_buf = (ctypes.c_float * (640*480)).from_buffer_copy(data)
+            imgbuf = numpy.reshape(data_buf, (480, 640))
+            self.imv.setImage(imgbuf.T)
     
     def clearLayout(self, layout):
         if layout is not None:

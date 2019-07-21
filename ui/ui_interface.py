@@ -171,12 +171,12 @@ class UI_interface(QtCore.QObject):
                 
     def ui_update_net_R(self, host, port, l):
         self._rCount += l
-        self.ui.lbl_Rcount.setText(str(self._rCount))
+        self.ui.lbl_Rcount.setText("%.3f MB" % (self._rCount/(1024*1024)))
         self.ui.lbl_R_IP.setText(host + " on port " + str(port))
         
     def ui_update_net_S(self, host, port, l):
         self._sCount += l
-        self.ui.lbl_Scount.setText(str(self._sCount))
+        self.ui.lbl_Scount.setText("%.3f MB" % (self._sCount/(1024*1024)))
         self.ui.lbl_S_IP.setText(host + " on port " + str(port))
         
 #     def ui_update_net_server(self, host, port, l):

@@ -2,18 +2,18 @@ import time
 
 try:
     import RPi.GPIO as GPIO
-    from neopixel import *
+    import neopixel, board
     usingRasPi = True
     # LED strip configuration:
-    LED_COUNT      = 1      # Number of LED pixels.
-    LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
+    LED_COUNT      = 7      # Number of LED pixels.
+    LED_PIN        = board.D18      # GPIO pin connected to the pixels (18 uses PWM!).
     #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
     LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
-    LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
-    LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
+    LED_DMA        = 10       # DMA channel to use for generating signal (try 5)
+    LED_BRIGHTNESS = 1     # Set to 0 for darkest and 255 for brightest
     LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
     LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
-    LED_STRIP      = ws.WS2811_STRIP_GRB   # Strip type and colour ordering
+    LED_STRIP      = neopixel.GRB   # Strip type and colour ordering
 except:
     usingRasPi = False
 
@@ -36,9 +36,9 @@ class StatusLED(QObject):
     
     def init(self):
         # Create NeoPixel object with appropriate configuration.
-        self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
-        # Intialize the library (must be called once before other functions).
-        self.strip.begin()
+        self.strip = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness=LED_BRIGHTNESS, auto_write=False, pixel_order=LED_STRIP)
+        # Initialize the library (must be called once before other functions).
+        #self.strip.begin() (not anymore!)
         
         self.setLED.connect(self.setColor)
         self.setBlink.connect(self.blink)
@@ -47,7 +47,9 @@ class StatusLED(QObject):
 
     @pyqtSlot(int,int,int)
     def setColor(self, R, G, B):
-        self.strip.setPixelColor(0, Color(G,R,B))
+        #for i in range(LED_COUNT):
+        #    self.strip.setPixelColor(i, Color(G,R,B))
+        self.strip.fill((R,G,B))
         self.strip.show()
         
     @pyqtSlot(int,int,int,int,int,int,int,int,int)            
@@ -82,19 +84,20 @@ class StatusLED(QObject):
     def wheel(self, pos):
         """Generate rainbow colors across 0-255 positions."""
         if pos < 85:
-            return Color(pos * 3, 255 - pos * 3, 0)
+            return (pos * 3, 255 - pos * 3, 0)
         elif pos < 170:
             pos -= 85
-            return Color(255 - pos * 3, 0, pos * 3)
+            return (255 - pos * 3, 0, pos * 3)
         else:
             pos -= 170
-            return Color(0, pos * 3, 255 - pos * 3)
+            return (0, pos * 3, 255 - pos * 3)
 
     def rainbow(self, strip, wait_ms=10, iterations=1):
         """Draw rainbow that fades across all pixels at once."""
         for j in range(256*iterations):
-            for i in range(strip.numPixels()):
-                strip.setPixelColor(i, self.wheel((i+j) & 255))
+            #for i in range(LED_COUNT):
+            #    strip[i] = self.wheel(((i*int(255/LED_COUNT))+j) & 255)
+            strip.fill(self.wheel(j & 255))
             strip.show()
             time.sleep(wait_ms/1000.0)
     

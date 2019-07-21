@@ -27,18 +27,18 @@ class Inst_interface():
         except Exception as e:
             self.inst_vars.inst_log.warning(e)
         
-        self.jsonFF.addField("Header")
-        self.jsonFF["Header"]["Model"] = self.inst_vars.inst_cfg["InstrumentInfo"]["Model"]
-        self.jsonFF["Header"]["Lens"] = self.inst_vars.inst_cfg["InstrumentInfo"]["Lens"]
-        
-        datafile = self.dataFile = path.join(self.inst_cfg["Data"]["absolutePath"], "Data", self.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
-        makedirs(path.dirname(self.dataFile), exist_ok=True)
-        self.jsonFF = JSONFileField(datafile)
-        self.jsonFF.addField("Header")
-        self.jsonFF.addElement("Configuration", {s:dict(self.inst_cfg.items(s)) for s in self.inst_cfg.sections()})
-        self.jsonFF["Header"]["Model"] = self.inst_cfg["InstrumentInfo"]["Model"]
-        self.jsonFF["Header"]["Lens"] = self.inst_cfg["InstrumentInfo"]["Lens"]
-        self.jsonFF.addField("Data", fieldType=list)
+#         self.jsonFF.addField("Header")
+#         self.jsonFF["Header"]["Model"] = self.inst_vars.inst_cfg["InstrumentInfo"]["Model"]
+#         self.jsonFF["Header"]["Lens"] = self.inst_vars.inst_cfg["InstrumentInfo"]["Lens"]
+#         
+#         datafile = self.dataFile = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Data", self.inst_vars.inst_cfg["Data"]["outputFilePrefix"] + "_data.json")
+#         makedirs(path.dirname(self.dataFile), exist_ok=True)
+#         self.jsonFF = JSONFileField(datafile)
+#         self.jsonFF.addField("Header")
+#         self.jsonFF.addElement("Configuration", {s:dict(self.inst_vars.inst_cfg.items(s)) for s in self.inst_vars.inst_cfg.sections()})
+#         self.jsonFF["Header"]["Model"] = self.inst_vars.inst_cfg["InstrumentInfo"]["Model"]
+#         self.jsonFF["Header"]["Lens"] = self.inst_vars.inst_cfg["InstrumentInfo"]["Lens"]
+#         self.jsonFF.addField("Data", fieldType=list)
         
     def acquire(self):
         t = time()
@@ -62,12 +62,12 @@ class CameraShutter():
     
     def __init__(self, shutterpin, focuspin, shutterDelay, focusDelay):
         
-        global GPIO     #This is very ugly and technically not allowed but makes it easy to prevent the emulator from
-                        # popping up without the instrument running (causing the emulator window to get stuck open).
         try:
             import RPi.GPIO as GPIO
         except:
             try:
+                global GPIO     #This is very ugly and technically not allowed but makes it easy to prevent the emulator from
+                                #popping up without the instrument running (causing the emulator window to get stuck open).
                 from GPIOEmulator.EmulatorGUI import GPIO
             except:
                 raise
@@ -81,7 +81,7 @@ class CameraShutter():
             sleep(0.1)
         except:
             pass
-        try:    
+        try:   
             GPIO.setup(self.shutter, GPIO.OUT)
             GPIO.output(self.shutter, False)
             GPIO.setup(self.focus, GPIO.OUT)

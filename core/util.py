@@ -1,5 +1,7 @@
 #System Imports
 import json, ast, logging, os, traceback
+from os import path
+from glob import glob
 #from objgraph import InstanceType
 from array import array
 
@@ -26,11 +28,8 @@ class JSONFileField():
         if self.fileOnly:
             with open(filename, 'r') as in_file:
                 self.fileData = json.load(in_file)
-        
+       
         else:          
-            if parent is None and filename is None:
-                raise Exception('No path or parent specified, no data will be written')
-                return None
             try:
                 self.dataFile = parent.dataFile + '_' + fieldname
                 self.rootFile = parent.dataFile
@@ -49,9 +48,13 @@ class JSONFileField():
                 self.parentindt = '\t'*(self.level - 1)
             self.startdelimiter = self.newLine
             
-            
             self.isOpen = True
             #if not self.predefined:
+            
+            if parent is None and filename is None:
+                print('No path or parent specified, no data will be written')
+                return None
+                
             with open(self.dataFile, 'w') as out_file:
                 out_file.write(self.brackets[self.fieldType]['start'])
     
@@ -105,6 +108,74 @@ class JSONFileField():
     def addElement(self, elname, data, compact=None):
         if self.write(data, prefix='"' + elname + '":', compact=compact):
             self.subelements[elname] = type(data)
+            
+    def closeOpenFiles(self, in_dir, removeTemp=True):
+        f_list = glob(path.join(in_dir, "*.json_*"))
+        base_list = []
+        
+        for f in f_list:
+            base_file = f.split(".json")[0] + ".json"
+            if base_file not in base_list:
+                base_list.append(base_file)
+        print("Found %i unclosed files:\n" % len(base_list))
+        
+        for f in base_list:
+            print("\n--%s" % f)
+            self.closeSubFiles(f, removeTemp)
+          
+          
+    def closeSubFiles(self, base_file, removeTemp=True):
+        with open(base_file, 'r') as in_file:
+            fieldType = self.getFieldType(in_file)    
+            
+        with open(base_file, 'a') as out_file:     
+            sub_list = glob(base_file + "_*")
+            sub_fields = []
+            all_fields = {}
+            field_tree = {}
+            
+            if len(sub_list) > 0:
+                for s in sub_list:
+                    all_fields[s] = s.split(base_file)[1].split("_")[1:]
+                    #sub_fields[len(all_fields)] = s
+                    if len(all_fields[s]) == 1:
+                        sub_fields.append(s)
+                
+                print("\tSubfields of %s: %s" % (base_file, str(sub_fields)))
+                    
+           
+                for f in sub_fields:
+                    #print("%s depth: %i" % (s,l))
+                    self.closeSubFiles(f)
+                        
+                    name = all_fields[f][0]
+                    
+                    with open(f, 'r') as in_file:
+                        d = []
+                        out_file.write(self.startdelimiter + self.indt + '"' + name + '":')
+                        
+                        if self.startdelimiter == self.newLine or self.startdelimiter == '':
+                            self.startdelimiter = ',' + self.newLine
+
+                        d = in_file.read(1024*1024)
+                        while d:
+                            out_file.write(d)
+                            d = in_file.read(1024*1024)
+                    
+                    if removeTemp:
+                        os.remove(f)
+                
+            out_file.write(self.newLine + self.brackets[fieldType]['end'])
+            print("\Closed %s." % base_file)
+           
+    def getFieldType(self, in_file):
+        d = in_file.read(1)
+        in_file.seek(0)
+        if d == "{":
+            return object
+        else:
+            return list    
+    
         
     def _closeSubFields(self, out_file):
         first = True

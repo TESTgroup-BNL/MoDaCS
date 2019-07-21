@@ -8,8 +8,11 @@ from PyQt5 import QtNetwork, QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal, QObject
 
 #Other Imports
-import paramiko
-
+try:
+    import paramiko
+except ImportError:
+    logging.warning("Paramiko not found; SFTP will not be functional.")
+import post_processing.kml as kml
 
 class SFTP_Client(QObject):    
     
@@ -63,11 +66,16 @@ class SFTP_Client(QObject):
         self.sftpDone()
         
         logging.info("Done with SFTP Transfer.")
+        
+        buildkml = kml.BuildKML(receivePath)
+        buildkml.read_data()
+        buildkml.build_kml()
         return
     
     def sftpDone(self):
         self.sock.writeDatagram("SFTP Done".encode(), QtNetwork.QHostAddress(self.run_cfg["Client"]["TCP_Server_IP"]), int(self.run_cfg["Client"]["TCP_Server_Port"])+1)
         self.sock.close()
+        QtWidgets.QMessageBox.information(None, "SFTP Transfer", "SFTP transfer finished!")
         return
     
     def download_dir(self, remote_dir, local_dir, sftp, dl_prog=None):
@@ -82,7 +90,7 @@ class SFTP_Client(QObject):
         
         for i, item in enumerate(dir_items):
             if dl_prog.wasCanceled():
-                print("Transfer cancelled.")
+                print("Transfer canceled.")
                 return
             dl_prog.setLabelText(remote_dir + "\n" + item.filename)
 
@@ -104,16 +112,17 @@ class SFTP_Server(QObject):
     
     sftp_finished = pyqtSignal()
     
-    def __init__(self, run_cfg, onFinished):
+    def __init__(self, run_cfg, onFinished, quit):
         super().__init__()
         self.run_cfg = run_cfg
-        self.sftp_finished.connect(onFinished)
+        self.quit = quit
+        #self.sftp_finished.connect(onFinished)
         logging.info("Starting SFTP transfer...")
         self.sock = QtNetwork.QUdpSocket(self)
         self.sock.readyRead.connect(lambda: self.checksftpDone()) 
         self.sock.bind(QtNetwork.QHostAddress(self.run_cfg["Server"]["TCP_Server_IP"]), int(self.run_cfg["Server"]["TCP_Server_Port"])+1)
         start_str = "Start SFTP:" + self.run_cfg["Data"]["dataPath"]
-        self.sock.writeDatagram(start_str, QtNetwork.QHostAddress(self.run_cfg["Server"]["TCP_Client_IP"]), int(self.run_cfg["Server"]["TCP_Client_Port"])+1)
+        self.sock.writeDatagram(start_str.encode(), QtNetwork.QHostAddress(self.run_cfg["Server"]["TCP_Client_IP"]), int(self.run_cfg["Server"]["TCP_Client_Port"])+1)
 
     def checksftpDone(self):
         while self.sock.hasPendingDatagrams():
@@ -124,4 +133,5 @@ class SFTP_Server(QObject):
             if data == "SFTP Done":
                 self.sftpEnabled = False
                 self.sock.close
-                self.sftp_finished.emit()
+                self.quit()
+                #self.sftp_finished.emit()

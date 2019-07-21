@@ -66,8 +66,8 @@ class Inst_interface(QtCore.QObject):
                 datagram, host, port = self.sock.readDatagram(self.sock.pendingDatagramSize())
                 #self.dataRecievedSig.emit(host.toString(), int(port), len(datagram))
                 data = datagram.decode()
-                print(host.toString(), port, data)
-                self.out_file.write(data)
+                #print(host.toString(), port, data)
+                self.out_file.write(data + "\n")
                 self.current_meas.values = data.split(",")
                 self.ui_signals["updatePlot"].emit(self.current_meas.values)
         except Exception as e:
@@ -93,8 +93,8 @@ class Atm_Readings():
             self.__current_meas["RH"] = float(data[2])
             self.__current_meas["Pressure"] = float(data[3])
             self.__current_meas["Altitude"] = float(data[4])
-            self.__current_meas["Latitude"] = float(data[5])
-            self.__current_meas["Longitude"] = float(data[6])
+            self.__current_meas["Longitude"] = float(data[5])
+            self.__current_meas["Latitude"] = float(data[6])
         elif type(vals) == type([]):
             data = vals
             self.__current_meas["Time"] = float(data[0])
@@ -102,8 +102,8 @@ class Atm_Readings():
             self.__current_meas["RH"] = float(data[2])
             self.__current_meas["Pressure"] = float(data[3])
             self.__current_meas["Altitude"] = float(data[4])
-            self.__current_meas["Latitude"] = float(data[5])
-            self.__current_meas["Longitude"] = float(data[6])
+            self.__current_meas["Longitude"] = float(data[5])
+            self.__current_meas["Latitude"] = float(data[6])
         elif type(vals) == type({}):
             self.__current_meas = vals
             
@@ -227,7 +227,7 @@ class Ui_interface():
 
         def updatePlotItem(key, item):
             try:
-                if len(self.plt_data[key]) >= 30:
+                if len(self.plt_data[key]) >= 60:
                     self.plt_data[key][:-1] = self.plt_data[key][1:]  # shift data in the array one sample left
                     self.plt_data[key][-1] = item
                 else:
