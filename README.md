@@ -1,6 +1,7 @@
 # MoDaCS
 Modular Data Collection System
 
+[![DOI](https://zenodo.org/badge/62177519.svg)](https://zenodo.org/badge/latestdoi/62177519)
 
 This package is currently under development.
 
