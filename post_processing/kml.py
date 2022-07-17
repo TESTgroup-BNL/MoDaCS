@@ -1,3 +1,4 @@
+from genericpath import exists
 import json, ast, os
 from os import path
 from datetime import datetime
@@ -5,10 +6,14 @@ from datetime import datetime
 import simplekml, logging
 
 
-
 class BuildKML():
 
-    def __init__(self, run_cfg):
+    def __init__(self, run_cfg=None):
+        
+        if run_cfg is None:
+            logging.warning("No data download path provided, skipping post processing")
+            return
+        
         self.run_cfg = run_cfg
         self.build_dir = False
 
@@ -26,7 +31,7 @@ class BuildKML():
         logging.info("Reading JSON data...")
 
         if fname==None:
-            fname = fname.self
+            fname = self.fname
 
         try:
             with open(fname) as rdJSON:
@@ -61,21 +66,31 @@ class BuildKML():
             flight_start = self.splitall(self.data_root)[-1] #datetime.fromtimestamp(self.data["pixhawk_v2"]["timestamps"][i]).strftime('%Y-%m-%d_%H%M%S')
             logging.info("Building KML output for %s..." % flight_start)
 
+            locations = {}
+            for i_name, inst in self.data.items():
+                try:
+                    locations["timestamps"] = inst["timestamps"]
+                    locations["coords"] = inst["coords"]
+                    logging.info("Using location data from %s" % i_name)
+                    break
+                except (KeyError, TypeError):
+                    continue
+
             kml = simplekml.Kml()
             ls = kml.newlinestring(name=flight_start)
-            ls.coords = self.data["pixhawk_v2"]["coords"]
+            ls.coords = locations["coords"]
             ls.extrude = 1
             ls.altitudemode = simplekml.AltitudeMode.clamptoground
             ls.style.linestyle.width = 5
             ls.style.linestyle.color = simplekml.Color.lightblue
 
-            for i, coords in enumerate(self.data["pixhawk_v2"]["coords"]):
+            for i, coords in enumerate(locations["coords"]):
                 pnt = kml.newpoint(name="%i" % i)
                 pnt.coords = [coords]
                 pnt.style.iconstyle.scale = 0.8
                 pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/paddle/blu-blank.png'
                 pnt.style.labelstyle.scale = 0.8
-                pnt.timestamp.when = datetime.fromtimestamp(self.data["pixhawk_v2"]["timestamps"][i]).strftime('%Y-%m-%dT%H:%M:%SZ')
+                pnt.timestamp.when = datetime.fromtimestamp(locations["timestamps"][i]).strftime('%Y-%m-%dT%H:%M:%SZ')
 
             out_file_path = path.join(self.data_root, flight_start + ".kml")
             kml.save(out_file_path)
@@ -134,6 +149,25 @@ class Instruments():
             output["coords"].append((lon, lat))
             output["timestamps"].append(x[0])
 
+        return output
+
+    def pi_gps_ublox(self, inst_data_path):
+        with open(inst_data_path, 'r') as data_file:
+            data = json.load(data_file)
+        output = {}
+        output["coords"] = []
+        output["timestamps"] = []
+
+        for recNum in sorted(data["Data"].keys(), key=lambda k: int(k)):
+            #print(str(recNum))
+            x = data["Data"][recNum]
+            lat = x[1]["Global Location"]["lat"]
+            try:
+                lon = x[1]["Global Location"]["lon"]
+            except KeyError:
+                lon = x[1]["Global Location"]["long"]
+            output["coords"].append((lon, lat))
+            output["timestamps"].append(x[0])
         return output
 
     def USB2000pair(self, inst_data_path):

@@ -31,7 +31,6 @@ class Inst_interface(QtCore.QObject):
                 pass
             self.usingRPi = False
         
-        
         self.inst_vars = inst_vars
         
         self.listen = True
@@ -40,7 +39,9 @@ class Inst_interface(QtCore.QObject):
         try:
             GPIO.setmode(GPIO.BCM)
             sleep(0.1)
+            self.skipped_init = False
         except:
+            self.skipped_init = True
             pass
         try:
             GPIO.setup(self.trigpin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
@@ -64,7 +65,9 @@ class Inst_interface(QtCore.QObject):
         
     def close(self):
         self.listen = False
-        GPIO.cleanup()
+
+        if not self.skipped_init:
+            GPIO.cleanup()
         
     def gpio_monitor(self):
         triggered = False

@@ -73,23 +73,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>100</y>
+        <y>140</y>
         <width>291</width>
-        <height>111</height>
+        <height>71</height>
        </rect>
       </property>
       <property name="palette">
        <palette>
         <active>
-         <colorrole role="Light">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
-           </color>
-          </brush>
-         </colorrole>
          <colorrole role="Text">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
@@ -110,15 +101,6 @@
          </colorrole>
         </active>
         <inactive>
-         <colorrole role="Light">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
-           </color>
-          </brush>
-         </colorrole>
          <colorrole role="Text">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
@@ -139,15 +121,6 @@
          </colorrole>
         </inactive>
         <disabled>
-         <colorrole role="Light">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
-           </color>
-          </brush>
-         </colorrole>
          <colorrole role="Text">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
@@ -208,8 +181,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
-        <width>71</width>
+        <y>90</y>
+        <width>81</width>
         <height>41</height>
        </rect>
       </property>
@@ -404,6 +377,45 @@
        </property>
       </widget>
      </widget>
+     <widget class="QPushButton" name="btn_RemSD">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>90</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Remote SD</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_mode">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>90</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Mode</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_status">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>110</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Status</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -414,7 +426,7 @@
        <rect>
         <x>80</x>
         <y>90</y>
-        <width>51</width>
+        <width>81</width>
         <height>41</height>
        </rect>
       </property>
@@ -435,15 +447,6 @@ Trigger</string>
       <property name="palette">
        <palette>
         <active>
-         <colorrole role="Light">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
-           </color>
-          </brush>
-         </colorrole>
          <colorrole role="Text">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
@@ -464,15 +467,6 @@ Trigger</string>
          </colorrole>
         </active>
         <inactive>
-         <colorrole role="Light">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
-           </color>
-          </brush>
-         </colorrole>
          <colorrole role="Text">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
@@ -493,15 +487,6 @@ Trigger</string>
          </colorrole>
         </inactive>
         <disabled>
-         <colorrole role="Light">
-          <brush brushstyle="SolidPattern">
-           <color alpha="255">
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
-           </color>
-          </brush>
-         </colorrole>
          <colorrole role="Text">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
@@ -690,14 +675,14 @@ Trigger</string>
         <property name="wordWrap">
          <bool>false</bool>
         </property>
+        <attribute name="headerMinimumSectionSize">
+         <number>20</number>
+        </attribute>
         <attribute name="headerDefaultSectionSize">
          <number>200</number>
         </attribute>
         <attribute name="headerHighlightSections">
          <bool>false</bool>
-        </attribute>
-        <attribute name="headerMinimumSectionSize">
-         <number>20</number>
         </attribute>
         <attribute name="headerShowSortIndicator" stdset="0">
          <bool>false</bool>
@@ -721,7 +706,6 @@ Trigger</string>
          </property>
          <property name="font">
           <font>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -741,7 +725,6 @@ Trigger</string>
          </property>
          <property name="font">
           <font>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -761,7 +744,6 @@ Trigger</string>
          </property>
          <property name="font">
           <font>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -905,9 +887,9 @@ Trigger</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>20</y>
+      <y>30</y>
       <width>321</width>
-      <height>91</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="palette">
@@ -980,19 +962,19 @@ Trigger</string>
      <number>0</number>
     </property>
     <property name="columnCount">
-     <number>4</number>
+     <number>5</number>
     </property>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>72</number>
-    </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
      <number>18</number>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>72</number>
     </attribute>
     <attribute name="verticalHeaderVisible">
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
+     <number>26</number>
     </attribute>
     <attribute name="verticalHeaderHighlightSections">
      <bool>false</bool>
@@ -1011,6 +993,11 @@ Trigger</string>
     <column>
      <property name="text">
       <string>Acq#</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Interval (ms)</string>
      </property>
     </column>
     <column>

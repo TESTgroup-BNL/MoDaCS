@@ -6,13 +6,14 @@ from time import sleep
 #Qt Imports
 from PyQt5 import QtNetwork, QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.Qt import QMessageBox, QProgressBar
 
 #Other Imports
 try:
     import paramiko
 except ImportError:
     logging.warning("Paramiko not found; SFTP will not be functional.")
-import post_processing.kml as kml
+
 
 class SFTP_Client(QObject):    
     
@@ -20,6 +21,8 @@ class SFTP_Client(QObject):
         super().__init__()
         self.run_cfg = run_cfg
         self.sock = QtNetwork.QUdpSocket(self)
+        self.connected = False
+        self.receivePath = None
         
         try:
             self.downloadPath = self.run_cfg["Data"]["location"]
@@ -29,12 +32,40 @@ class SFTP_Client(QObject):
             logging.warning("Error in RunConfig: %s /nSFTP transfer aborted." % e)
             sleep(1)
             self.sftpDone()
-            return
+            return None
             
-        self.sock.readyRead.connect(lambda: self.checksftpReady()) 
+        #self.sock.readyRead.connect(lambda: self.checksftpReady()) 
         self.sock.bind(QtNetwork.QHostAddress(self.run_cfg["Client"]["TCP_Client_IP"]), int(self.run_cfg["Client"]["TCP_Client_Port"])+1)
+        
+        logging.info("Waiting for client...")
+        dl_connecting = QtWidgets.QProgressDialog("Waiting for client...", "Cancel", 0, 300, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
+        dl_connecting.setWindowTitle = "SFTP Transfer"
+        dl_connecting.setMinimumDuration(500)
+        dl_connecting_pb = QProgressBar()
+        dl_connecting_pb.setTextVisible(False)
+        dl_connecting_pb.setRange(0,300)
+        dl_connecting.setBar(dl_connecting_pb)    
+        
+        i = 0  
+        while(self.sock.hasPendingDatagrams() == False):
+            i += 1
+            dl_connecting.setValue(i)
+            if i > 300 or dl_connecting.wasCanceled():
+                logging.warning("SFTP connection timed out.")
+                if dl_connecting.wasCanceled():
+                    QtWidgets.QMessageBox.warning(None, "SFTP Transfer", "Connection timed out")
+                dl_connecting.reset()
+                return None
+            QtWidgets.QApplication.processEvents()
+            sleep(0.1)
+        
+        dl_connecting.reset()
+        self.checksftpReady()
+        
+        #return self.receivePath
                    
     def checksftpReady(self):
+        self.connected = True
         try:
             while self.sock.hasPendingDatagrams():
                 datagram, host, port = self.sock.readDatagram(self.sock.pendingDatagramSize())
@@ -67,9 +98,7 @@ class SFTP_Client(QObject):
         
         logging.info("Done with SFTP Transfer.")
         
-        buildkml = kml.BuildKML(receivePath)
-        buildkml.read_data()
-        buildkml.build_kml()
+        self.receivePath = receivePath
         return
     
     def sftpDone(self):
@@ -112,17 +141,24 @@ class SFTP_Server(QObject):
     
     sftp_finished = pyqtSignal()
     
-    def __init__(self, run_cfg, onFinished, quit):
+    def __init__(self, run_cfg):
         super().__init__()
         self.run_cfg = run_cfg
-        self.quit = quit
+
         #self.sftp_finished.connect(onFinished)
         logging.info("Starting SFTP transfer...")
         self.sock = QtNetwork.QUdpSocket(self)
-        self.sock.readyRead.connect(lambda: self.checksftpDone()) 
+        #self.sock.readyRead.connect(lambda: self.checksftpDone()) 
         self.sock.bind(QtNetwork.QHostAddress(self.run_cfg["Server"]["TCP_Server_IP"]), int(self.run_cfg["Server"]["TCP_Server_Port"])+1)
         start_str = "Start SFTP:" + self.run_cfg["Data"]["dataPath"]
         self.sock.writeDatagram(start_str.encode(), QtNetwork.QHostAddress(self.run_cfg["Server"]["TCP_Client_IP"]), int(self.run_cfg["Server"]["TCP_Client_Port"])+1)
+        
+        while(self.sock.hasPendingDatagrams() == False):     #no timeout, could be problematic
+            QtWidgets.QApplication.processEvents()
+            sleep(1)
+            
+        self.checksftpDone()
+
 
     def checksftpDone(self):
         while self.sock.hasPendingDatagrams():
@@ -133,5 +169,4 @@ class SFTP_Server(QObject):
             if data == "SFTP Done":
                 self.sftpEnabled = False
                 self.sock.close
-                self.quit()
                 #self.sftp_finished.emit()

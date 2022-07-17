@@ -5,7 +5,7 @@ from os import makedirs, path
 from collections import namedtuple
 
 #Qt Imports
-from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from util import QSignalHandler, Sig
 

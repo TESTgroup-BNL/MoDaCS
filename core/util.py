@@ -6,7 +6,7 @@ from glob import glob
 from array import array
 
 #Qt Imports
-from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from asyncore import read
 
