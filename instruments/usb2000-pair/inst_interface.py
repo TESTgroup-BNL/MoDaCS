@@ -1,11 +1,16 @@
 #Qt Imports
 from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    layout_test = QtGui.QVBoxLayout()
+except Exception:
+    QtGui = QtWidgets   #Compatibility hack
 
 #System Imports
 from time import sleep, time
 from os import path, makedirs
 from datetime import datetime
 import importlib, json
+import glob
 
 #MoDaCS Imports
 from inst_common import Inst_jsonFF
@@ -102,9 +107,12 @@ class Inst_interface(QtCore.QObject):
 
         #Define dark current variable and attempt to load
         self.darkCurrent = {}
-        dc_filePath = path.join(self.inst_vars.inst_path, 'DarkCurrent.json')
-        try:
-            self.inst_vars.inst_log.info("Reading saved dark current values...")
+        self.inst_vars.inst_log.info("Checking for saved dark current files...")
+        dc_filePaths = sorted(glob.glob(path.join(self.inst_vars.inst_path, 'DarkCurrent_*.json')))
+        try:        
+            dc_filePath = dc_filePaths[-1]
+            self.inst_vars.inst_log.info("Found %i files, using latest: %s" % (len(dc_filePaths), dc_filePath))
+            
             dc_file = open(dc_filePath, 'r')
             dc_data = json.load(dc_file)
             dc_file.close()
@@ -117,14 +125,14 @@ class Inst_interface(QtCore.QObject):
                 self.inst_vars.inst_log.info("%i uS from %s %s" % (dc_int_time, dc_dt.strftime('%Y-%m-%d'), dc_dt.strftime('%H:%M:%S')))
                 self.jsonFF["DarkCurrent"].write({"Downward":self.darkCurrent[dc_int_time]["Downward"], "Upward":self.darkCurrent[dc_int_time]["Upward"], "Options":options}, recnum=dc_int_time, timestamp=dc_itm["Timestamp"], compact=True)
                 self.correctDark = True
-        except IOError:
+        except (IOError, IndexError):
             self.inst_vars.inst_log.warning("No dark current data available.  Measure to correct in real-time.")
 
         #Set up UI
         self.ui_signals["ui.sb_intTime.valueChanged"].connect(self.intTimeChanged)
         self.ui_signals["ui.pb_DarkCurrent.released"].connect(self.setDarkCurrent)
         self.ui_signals["ui.cb_correctNonlin.stateChanged"].connect(self.correctNonlinChanged)
-        self.ui_signals["ui.pb_aqRef.released"].connect(lambda: self.acquire(getRef=True))
+        self.ui_signals["ui.pb_aqRef.released"].connect(self.setRefs)
         self.ui_signals["ui.pb_remlast.released"].connect(self.remLastRef)
         self.ui_signals["setWavelengths"].emit(self.wavelengths)
 
@@ -137,7 +145,7 @@ class Inst_interface(QtCore.QObject):
         #self.pool = Pool(2)
 
 
-    def acquire(self, getRef=False, setDark=False):
+    def acquire(self, getRef=False, setDark=False, darkFile=''):
 
         #Read intensities
         intensitySamps = [] #{"Upward": [], "Downward": []}
@@ -193,7 +201,7 @@ class Inst_interface(QtCore.QObject):
             self.jsonFF["DarkCurrent"].write({"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Options":options}, recnum=self.int_time, timestamp=t, compact=True)
 
             #Create output file & header
-            dc_filePath = path.join(self.inst_vars.inst_path, 'DarkCurrent.json')
+            dc_filePath = path.join(self.inst_vars.inst_path, darkFile)
             try:
                 dc_file = open(dc_filePath, 'r')
                 dc_data = json.load(dc_file)
@@ -301,19 +309,23 @@ class Inst_interface(QtCore.QObject):
             #Set References
             if not hasattr(self, 'refs_avg'):
                 #Define reference variables
-                self.refs = {"Upward": [], "Downward": []}
+                self.refs = {}
                 self.refs_avg = {}
                 refs_temp = self.jsonFF.readField(self.jsonFF["References"])
                 #Update UI
                 for ref in refs_temp:
                     if ref[0] == self.int_time:
                         if self.correctDark:
-                            ref = self.doCorrectDark(ref[2], self.darkCurrent, ref[0])
+                            ref_corrected = self.doCorrectDark(ref[2], self.darkCurrent, ref[0])
                         else:
-                            ref = ref[2]
+                            ref_corrected = ref[2]
 
                         #for key, intens in ref.items():    #Upward and Downward
-                        self.refs[self.int_time].append(ref)
+                        try:
+                            self.refs[self.int_time].append(ref_corrected)
+                        except KeyError:
+                            self.refs[self.int_time] = []
+                            self.refs[self.int_time].append(ref_corrected)
 
                 self.refs_avg[self.int_time] = self.avgSamples(self.refs[self.int_time])
                 self.upward_ref_interp = interp(self.wavelengths["Downward"], self.wavelengths["Upward"], self.refs_avg[self.int_time]["Upward"])
@@ -327,7 +339,8 @@ class Inst_interface(QtCore.QObject):
 
             #Set reflectance
             try:
-                reflec = cachedData[str(recNum)][1]["Reflectance"]
+                reflec = self.calcReflectance(self.wavelengths, self.refs_avg[self.int_time], intensities, self.upward_ref_interp)
+                #reflec = cachedData[str(recNum)][1]["Reflectance"]
             except KeyError:
                 reflec = None
 
@@ -374,10 +387,57 @@ class Inst_interface(QtCore.QObject):
             return intensities
         return new_intensities
 
+    def setRefs(self):
+        self.correctDark = True
+        self.inst_vars.inst_log.info("Setting reference values now!")
+
+        try:
+            int_start = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStart"])
+            int_end = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntEnd"])
+            int_step = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStep"])
+            ref_count = int(self.inst_vars.inst_cfg["Initialization"]["AutoRefCount"])
+            ref_target = float(self.inst_vars.inst_cfg["Initialization"]["AutoRefTarget"])
+
+            self.inst_vars.inst_log.info("(Auto ranging int times: %i:%i:%i)" % (int_start, int_end, int_step))
+
+            for i in range(int_start, int_end+int_step, int_step):
+                self.intTimeChanged(i)
+                for j in range(0,ref_count):
+                    self.acquire(getRef=True)
+            
+            self.inst_vars.inst_log.info("Auto setting (int time:max):")
+            int_times = sorted(self.refs_avg)
+            for int_time in int_times:
+                peak = max(self.refs_avg[int_time]["Downward"]) / 65535
+                self.inst_vars.inst_log.info("\t%i:%f" % (int_time, peak))
+                if peak > ref_target:
+                    target_time = int(int_time)-int_step
+                    self.inst_vars.inst_log.info("Found target: %i" % target_time)
+                    self.intTimeChanged(target_time)
+                    break
+
+        except KeyError:
+            self.inst_vars.inst_log.info("(Auto range params not set, using only current int time.)")
+            self.acquire(getRef=True)
+
     def setDarkCurrent(self):
         self.correctDark = True
         self.inst_vars.inst_log.info("Setting dark current values now!")
-        self.acquire(setDark=True)
+        darkFile = "DarkCurrent_" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".json"
+
+        try:
+            int_start = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStart"])
+            int_end = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntEnd"])
+            int_step = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStep"])
+            self.inst_vars.inst_log.info("(Auto ranging int times: %i:%i:%i)" % (int_start, int_end, int_step))
+
+            for i in range(int_start, int_end+int_step, int_step):
+                self.intTimeChanged(i)
+                self.acquire(setDark=True, darkFile=darkFile)
+
+        except KeyError:
+            self.inst_vars.inst_log.info("(Auto range not set, using only current int time.)")
+            self.acquire(setDark=True, darkFile="DarkCurrent.json")
 
     def correctNonlinChanged(self, value):
         if value == 0:
