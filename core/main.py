@@ -392,11 +392,11 @@ class Main(QtWidgets.QMainWindow):
     def check_shutdown(self):
         self._i += 1
         
-        if self._i > 10 or self.runningThreads.active_threads == 0:
+        if self._i > 30 or self.runningThreads.active_threads == 0:
             logging.warning("Thread(s) blocked, attempting to force quit application.")
             self.quit()
             
-        elif self._i == 10:   #5 second timeout for stopping all threads
+        elif self._i == 30:   #5 second timeout for stopping all threads
             self._i += 1
             bad_threads = []
             for i in self.runningThreads.active_threads:

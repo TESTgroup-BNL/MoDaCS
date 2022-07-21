@@ -5,7 +5,7 @@ try:
 except Exception:
     QtGui = QtWidgets   #Compatibility hack
 
-#System Imports
+#System Importspip
 from time import sleep, time
 from os import path, makedirs
 from datetime import datetime
@@ -30,7 +30,7 @@ class Inst_interface(QtCore.QObject):
 
     #UI Inputs and Outputs are forwarded to remote clients and can access to the ui class
     #but otherwise are the same as "standard" inputs and outputs
-    ui_inputs = ["ui.cb_correctNonlin.stateChanged", "ui.pb_DarkCurrent.released", "ui.sb_intTime.valueChanged", "ui.pb_aqRef.released", "ui.pb_remlast.released", "ui.pb_remlast.released"]
+    ui_inputs = ["ui.cb_correctNonlin.stateChanged", "ui.pb_DarkCurrent.released", "ui.sb_intTime.valueChanged", "ui.pb_aqRef.released", "ui.pb_remlast.released", "ui.pb_AutoRef.released", "ui.pb_ClearRefs.released"]
     ui_outputs = ["updatePlot", "setWavelengths", "updateIntTime", "updateNonlin"]
 
     #### Required Functions ####
@@ -134,6 +134,8 @@ class Inst_interface(QtCore.QObject):
         self.ui_signals["ui.cb_correctNonlin.stateChanged"].connect(self.correctNonlinChanged)
         self.ui_signals["ui.pb_aqRef.released"].connect(self.setRefs)
         self.ui_signals["ui.pb_remlast.released"].connect(self.remLastRef)
+        self.ui_signals["ui.pb_AutoRef.released"].connect(self.setRefsAuto)
+        self.ui_signals["ui.pb_ClearRefs.released"].connect(self.remAllRefs)
         self.ui_signals["setWavelengths"].emit(self.wavelengths)
 
          #Setup remote update connections
@@ -390,6 +392,11 @@ class Inst_interface(QtCore.QObject):
     def setRefs(self):
         self.correctDark = True
         self.inst_vars.inst_log.info("Setting reference values now!")
+        self.acquire(getRef=True)
+
+    def setRefsAuto(self):
+        self.correctDark = True
+        self.inst_vars.inst_log.info("Setting reference values now!")
 
         try:
             int_start = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStart"])
@@ -439,13 +446,6 @@ class Inst_interface(QtCore.QObject):
             self.inst_vars.inst_log.info("(Auto range not set, using only current int time.)")
             self.acquire(setDark=True, darkFile="DarkCurrent.json")
 
-    def correctNonlinChanged(self, value):
-        if value == 0:
-            self.correct_nonlin = False
-        else:
-            self.correct_nonlin = True
-        self.inst_vars.inst_log.info("Use nonlinearity correction: %i" % self.correct_nonlin)
-
     def remLastRef(self):
         try:
             #for key, ref in self.refs[self.int_time].items():
@@ -457,6 +457,23 @@ class Inst_interface(QtCore.QObject):
             intensities = self.avgSamples(self.refs[self.int_time])
         else:
             intensities = {"Upward": [], "Downward": []}
+        #Update UI
+        self.ui_signals["updatePlot"].emit([intensities, True, len(self.refs[self.int_time]),self.wavelengths])
+
+    def correctNonlinChanged(self, value):
+        if value == 0:
+            self.correct_nonlin = False
+        else:
+            self.correct_nonlin = True
+        self.inst_vars.inst_log.info("Use nonlinearity correction: %i" % self.correct_nonlin)
+
+    def remAllRefs(self):
+        try:
+            self.refs = {}
+        except:
+            pass
+
+        intensities = {"Upward": [], "Downward": []}
         #Update UI
         self.ui_signals["updatePlot"].emit([intensities, True, len(self.refs[self.int_time]),self.wavelengths])
 
