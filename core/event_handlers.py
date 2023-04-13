@@ -9,7 +9,7 @@ from post_processing.post_common import PostProcessing
 #App Event Imports
 from status_led import StatusLED
 import sftp
-import post_processing.kml as kml        
+
 
 class AppEvents():
         
@@ -65,13 +65,8 @@ class AppEvents():
         
     def post_processing(self, receivePath):
         post = PostProcessing(receivePath)
-        post.read_data(priority=["pi_gps_ublox","pixhawk_v2","ici_thermal"])
+        post.read_data() #priority=["pi_gps_ublox","pixhawk_v2","px4_ulog","ici_thermal","gphoto2_cam","kml_builder"])
 
-        buildkml = kml.BuildKML(receivePath)
-        buildkml.read_data()
-        buildkml.build_kml()
-        
-    
 
 
 class shutterspeed(QObject):

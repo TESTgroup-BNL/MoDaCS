@@ -10,15 +10,16 @@ class BuildKML():
 
     def __init__(self, run_cfg=None):
         
+        logging.basicConfig(level=logging.DEBUG)
+        self.post_log = logging.getLogger("Post_Processing")
+    
         if run_cfg is None:
-            logging.warning("No data download path provided, skipping post processing")
+            self.post_log.warning("No data download path provided, skipping post processing")
             return
         
         self.run_cfg = run_cfg
         self.build_dir = False
-
-        logging.basicConfig(level=logging.DEBUG)
-        logging.info("Running post-processing...")
+        self.post_log.info("Checking paths...")
 
         if type(self.run_cfg) is str:
             self.data_root = self.run_cfg
@@ -28,7 +29,7 @@ class BuildKML():
         self.fname = path.join(self.data_root, "RunData.json")
 
     def read_data(self, fname=None):
-        logging.info("Reading JSON data...")
+        self.post_log.info("\tReading JSON data...")
 
         if fname==None:
             fname = self.fname
@@ -37,68 +38,84 @@ class BuildKML():
             with open(fname) as rdJSON:
                 self.runData = json.load(rdJSON)
         except Exception as e:
-            logging.info("Error loading JSON data")
+            self.post_log.info("\tError loading JSON data")
             return str(e)
 
         insts = self.runData["InstrumentPaths"]
         self.data = {}
 
-        logging.info("Processing instrument data...")
+        self.post_log.info("\tProcessing instrument data...")
 
         for name, inst_path in insts.items():
-            logging.info("\t%s" % name)
+            self.post_log.info("\t\t%s" % name)
             inst_path = path.join(self.data_root, os.path.split(inst_path)[1]) + ".json"
-            if hasattr(Instruments, name):
+            func_name = name.replace("-","_")
+            if hasattr(Instruments, func_name):
                 try:
-                    self.data[name] = getattr(Instruments, name)(self, inst_path)
+                    self.data[name] = getattr(Instruments, func_name)(self, inst_path)
                 except FileNotFoundError as e:
-                    logging.info("\t\tMissing some flight data (or maybe a dashboard log), skipping flight")
+                    self.post_log.info("\t\t\tMissing some flight data (or maybe a dashboard log), skipping flight")
                     return str(e)
             else:
-                logging.info("\t\tNo processing function found, skipping instrument")
+                self.post_log.info("\t\t\tNo processing function found, skipping instrument")
 
         return None
 
-    def build_kml(self):
+    def build_kml(self, locations=None, images=None):
         #if data_root==None:
         #    data_root = self.data_root
         try:
             flight_start = self.splitall(self.data_root)[-1] #datetime.fromtimestamp(self.data["pixhawk_v2"]["timestamps"][i]).strftime('%Y-%m-%d_%H%M%S')
-            logging.info("Building KML output for %s..." % flight_start)
+            self.post_log.info("\tBuilding KML output for %s..." % flight_start)
 
-            locations = {}
-            for i_name, inst in self.data.items():
-                try:
-                    locations["timestamps"] = inst["timestamps"]
-                    locations["coords"] = inst["coords"]
-                    logging.info("Using location data from %s" % i_name)
-                    break
-                except (KeyError, TypeError):
-                    continue
+            if locations is None:
+                locations = {}
+                for i_name, inst in self.data.items():
+                    try:
+                        locations["timestamps"] = inst["timestamps"]
+                        locations["coords"] = inst["coords"]
+                        self.post_log.info("\tUsing location data from %s" % i_name)
+                        break
+                    except (KeyError, TypeError):
+                        continue
+
+            try:
+                locations["coords"] = [(lon, lat, alt) for ((lon, lat), alt) in zip(locations["coords"], locations["alt"])]
+                alt_mode = simplekml.AltitudeMode.absolute
+            except KeyError:
+                alt_mode = simplekml.AltitudeMode.clamptoground
 
             kml = simplekml.Kml()
             ls = kml.newlinestring(name=flight_start)
             ls.coords = locations["coords"]
             ls.extrude = 1
-            ls.altitudemode = simplekml.AltitudeMode.clamptoground
+            ls.style.polystyle.color = simplekml.Color.changealphaint(50, simplekml.Color.lightblue)
+            ls.altitudemode = alt_mode
             ls.style.linestyle.width = 5
             ls.style.linestyle.color = simplekml.Color.lightblue
 
             for i, coords in enumerate(locations["coords"]):
                 pnt = kml.newpoint(name="%i" % i)
                 pnt.coords = [coords]
+                pnt.altitudemode = alt_mode
                 pnt.style.iconstyle.scale = 0.8
-                pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/paddle/blu-blank.png'
+                pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/airports.png'
+                pnt.style.iconstyle.heading = locations["yaw"][i]
                 pnt.style.labelstyle.scale = 0.8
+                if images is not None:
+                    img_str = ""
+                    for img in images[i]:
+                        img_str += r"<tr><td><img width=100% src='file:///" + img + r"' /></td></tr>"
+                    pnt.balloonstyle.text = r"<![CDATA[ <table width=640px cellpadding=0 cellspacing=0>" + img_str + r"</table>]]>"
                 pnt.timestamp.when = datetime.fromtimestamp(locations["timestamps"][i]).strftime('%Y-%m-%dT%H:%M:%SZ')
 
             out_file_path = path.join(self.data_root, flight_start + ".kml")
             kml.save(out_file_path)
             if self.build_dir==True:
                 kml.save(path.join(self.starting_root, flight_start + ".kml"))
-            logging.info("Done.")
+            self.post_log.info("\tDone.")
         except KeyError:
-            logging.info("Missing info from instrument data, skipping flight")
+            self.post_log.info("\tMissing info from instrument data, skipping flight")
         return
 
     def reprocess_dir(self):
@@ -107,10 +124,10 @@ class BuildKML():
 
         #with open(path.join(root_temp, "Overview.kml", 'w') as self.build_dir_file:
         for root, subdirs, files in os.walk(self.starting_root):
-            logging.info("Looking in %s" % root)
+            self.post_log.info("Looking in %s" % root)
             if "RunData.json" in files:
                 self.data_root = root
-                logging.info("\tFound RunData.json")
+                self.post_log.info("\tFound RunData.json")
                 if self.read_data(path.join(root, "RunData.json")) is None:
                     self.build_kml()
 
@@ -170,7 +187,7 @@ class Instruments():
             output["timestamps"].append(x[0])
         return output
 
-    def USB2000pair(self, inst_data_path):
+    def USB2000_pair(self, inst_data_path):
         pass
 
     def ici_thermal(self, inst_data_path):

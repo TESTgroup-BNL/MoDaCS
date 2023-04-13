@@ -23,6 +23,7 @@ from events_common import events_init
 import ui.ui_interface
 from util import QSignalHandler, RunningThreads, my_excepthook, JSONFileField
 import event_handlers
+import post_processing.post_common as post_common
 import ntp_server
 
 class Main(QtWidgets.QMainWindow):
@@ -81,12 +82,12 @@ class Main(QtWidgets.QMainWindow):
               
         #Initialize config parser and logger
         cp = configparser.ConfigParser()
-        opts, args = getopt.getopt(sys.argv[1:],"hc:f:o", ["run_config="])
+        opts, args = getopt.getopt(sys.argv[1:],"hc:f:op:", ["run_config="])
         run_config = path.join('.', 'core', 'run_cfg.ini')
         try:
             for opt, arg in opts:
                 if opt in ("-h", "--help", "?", "help"):
-                    print("MoDaCS Main Module\n\nUsage: main.py [-c <run config file>]\n\nOptions:\n     -c, --run_config : Specifies an alternate run configuration file.  (Default is 'core\\run_cfg.ini'.)\n\n-o, --open : Prompts user to select an existing 'RunData.json' file to load data from\n\n-f, --file : Open a spcified 'RunData.json' file to load data from")
+                    print("MoDaCS Main Module\n\nUsage: main.py [-c <run config file>]\n\nOptions:\n     -c, --run_config : Specifies an alternate run configuration file.  (Default is 'core\\run_cfg.ini'.)\n\n-o, --open : Prompts user to select an existing 'RunData.json' file to load data from\n\n-f, --file : Open a spcified 'RunData.json' file to load data from\n\n-pb, --post_batch : Run post processing on every directory within the directory specified")
                     sys.exit()
                 if opt in ("-c", "--run_config"):
                     run_config = arg
@@ -94,6 +95,20 @@ class Main(QtWidgets.QMainWindow):
                     print(opt)
                     print(arg)
                     print(sys.argv)
+
+                if opt in ("-p", "--post_batch"):
+                    try:
+                        if not arg == "":
+                            batch_path = arg
+                        else:
+                            raise Exception
+                    except Exception:
+                        batch_path, typ = QtWidgets.QFileDialog.getOpenFileName(None, 'Open Global Record File', ".", "JSON files (*.json)")
+
+                    batch = post_common.BatchProcess(batch_path)
+                    batch.run_batch()
+                    sys.exit(app.exec_())
+
                 if opt in ("-f", "--file", "-o", "--open"):
                     self.displayOnly = True
                     try:
@@ -137,9 +152,14 @@ class Main(QtWidgets.QMainWindow):
             print("Error: run_cfg file missing or missing required keys")
             raise
         
+        try:
+            log_level = logging._nameToLevel[cp["UI"]["WaitForNTP"]]
+        except (KeyError, TypeError):
+            log_level = logging.INFO
+
         logging.basicConfig(
         filename=logFile,
-        level=logging.DEBUG,
+        level=log_level,
         format='[%(levelname)-10s] (%(threadName)-10s), %(asctime)s, %(message)s') #datefmt='%Y/%m/%d %I:%M:%S'
         
         if not self.displayOnly:
@@ -392,11 +412,11 @@ class Main(QtWidgets.QMainWindow):
     def check_shutdown(self):
         self._i += 1
         
-        if self._i > 10 or self.runningThreads.active_threads == 0:
+        if self._i > 30 or self.runningThreads.active_threads == 0:
             logging.warning("Thread(s) blocked, attempting to force quit application.")
             self.quit()
             
-        elif self._i == 10:   #5 second timeout for stopping all threads
+        elif self._i == 30:   #5 second timeout for stopping all threads
             self._i += 1
             bad_threads = []
             for i in self.runningThreads.active_threads:
