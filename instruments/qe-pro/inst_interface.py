@@ -5,12 +5,11 @@ try:
 except Exception:
     QtGui = QtWidgets   #Compatibility hack
 
-#System Importspip
+#System Imports
 from time import sleep, time
 from os import path, makedirs
 from datetime import datetime
 import importlib, json
-import glob
 
 #MoDaCS Imports
 from inst_common import Inst_jsonFF
@@ -30,7 +29,7 @@ class Inst_interface(QtCore.QObject):
 
     #UI Inputs and Outputs are forwarded to remote clients and can access to the ui class
     #but otherwise are the same as "standard" inputs and outputs
-    ui_inputs = ["ui.cb_correctNonlin.stateChanged", "ui.pb_DarkCurrent.released", "ui.sb_intTime.valueChanged", "ui.pb_aqRef.released", "ui.pb_remlast.released", "ui.pb_AutoRef.released", "ui.pb_ClearRefs.released"]
+    ui_inputs = ["ui.cb_correctNonlin.stateChanged", "ui.pb_DarkCurrent.released", "ui.sb_intTime.valueChanged", "ui.pb_aqRef.released", "ui.pb_remlast.released", "ui.pb_remlast.released"]
     ui_outputs = ["updatePlot", "setWavelengths", "updateIntTime", "updateNonlin"]
 
     #### Required Functions ####
@@ -39,8 +38,33 @@ class Inst_interface(QtCore.QObject):
         self.inst_vars = inst_vars
         self.jsonFF = jsonFF
 
+        import seabreeze
+        seabreeze.use('pyseabreeze')
         import seabreeze.spectrometers as sb
-
+        
+        try:
+            import RPi.GPIO as GPIO
+        except:
+            try:
+                global GPIO     #This is very ugly and technically not allowed but makes it easy to prevent the emulator from
+                                #popping up without the instrument running (causing the emulator window to get stuck open).
+                from GPIOEmulator.EmulatorGUI import GPIO
+            except:
+                raise
+        
+        try:
+            GPIO.setmode(GPIO.BCM)
+            sleep(0.1)
+        except:
+            pass
+        try:
+            self.fos = int(self.inst_vars.inst_cfg["Initialization"]["fos_pin"])
+            GPIO.setup(self.fos, GPIO.OUT)
+            GPIO.output(self.fos, False)
+        except:
+            pass
+        
+        
         #Read config
         self.int_time = int(self.inst_vars.inst_cfg["Initialization"]["IntegrationTime"])
         self.correctDark = False #bool(self.inst_vars.inst_cfg["Initialization"]["CorrectDarkCounts"])
@@ -54,30 +78,22 @@ class Inst_interface(QtCore.QObject):
             raise Exception("No devices found.")
             return
 
-        devs = {}
         try:
             for d in devices:
-                if self.inst_vars.inst_cfg["Initialization"]["UpwardDevice"] in str(d):
-                    devs["Upward"] = d
-                if self.inst_vars.inst_cfg["Initialization"]["DownwardDevice"] in str(d):
-                    devs["Downward"] = d
+                if self.inst_vars.inst_cfg["Initialization"]["Serial"] in str(d):
+                    dev = d
         except:
-            raise Exception("Upward and downward devices not defined, check inst_cfg.ini")
+            raise Exception("Device not defined, check inst_cfg.ini")
 
         try:
-            self.inst_vars.inst_log.info("Upward device:  %s" % devs["Upward"])
+            self.inst_vars.inst_log.info("Device:  %s" % dev)
         except:
-            raise Exception("Upward device not found!")
+            raise Exception("Device not found!")
+
+
 
         try:
-            self.inst_vars.inst_log.info("Downward device:  %s" % devs["Downward"])
-        except:
-            raise Exception("Downward device not found!")
-
-        self.specs = {}
-        try:
-            self.specs["Upward"] = sb.Spectrometer(devs["Upward"])
-            self.specs["Downward"] = sb.Spectrometer(devs["Downward"])
+            self.spec = sb.Spectrometer(dev)
         except:
             raise Exception("Error setting up Seabreeze interface")
 
@@ -85,12 +101,13 @@ class Inst_interface(QtCore.QObject):
         #Create header
         self.wavelengths = {}
         header = self.jsonFF.addField("Header")
-        for key, spec in self.specs.items():
-            h = header.addField(key)
-            h["Device"] = str(devs[key])
-            h["PixelCount"] = spec.pixels
-            h["Model"] = spec.model
-            self.wavelengths[key] = list(spec.wavelengths())
+        
+        h = header.addField("QEPro")
+        h["Device"] = str(dev)
+        h["PixelCount"] = self.spec.pixels
+        h["Model"] = self.spec.model
+        self.wavelengths = list(self.spec.wavelengths())
+        
         try:
             self.samplesPerPoint = int(self.inst_vars.inst_cfg["Initialization"]["SamplesPerPoint"])
         except KeyError:
@@ -105,37 +122,32 @@ class Inst_interface(QtCore.QObject):
         self.refs = {}
         self.refs_avg = {}
 
-        #Define dark current variable and attempt to load
+        ##Define dark current variable and attempt to load
         self.darkCurrent = {}
-        self.inst_vars.inst_log.info("Checking for saved dark current files...")
-        dc_filePaths = sorted(glob.glob(path.join(self.inst_vars.inst_path, 'DarkCurrent_*.json')))
-        try:        
-            dc_filePath = dc_filePaths[-1]
-            self.inst_vars.inst_log.info("Found %i files, using latest: %s" % (len(dc_filePaths), dc_filePath))
-            
-            dc_file = open(dc_filePath, 'r')
-            dc_data = json.load(dc_file)
-            dc_file.close()
-
-            for dc_int_time_str, dc_itm in dc_data.items():
-                dc_int_time = int(dc_int_time_str)
-                dc_dt = datetime.fromtimestamp(dc_itm["Timestamp"])
-                self.darkCurrent[dc_int_time] = dc_itm["intensities"]
-                options = dc_itm["Options"]
-                self.inst_vars.inst_log.info("%i uS from %s %s" % (dc_int_time, dc_dt.strftime('%Y-%m-%d'), dc_dt.strftime('%H:%M:%S')))
-                self.jsonFF["DarkCurrent"].write({"Downward":self.darkCurrent[dc_int_time]["Downward"], "Upward":self.darkCurrent[dc_int_time]["Upward"], "Options":options}, recnum=dc_int_time, timestamp=dc_itm["Timestamp"], compact=True)
-                self.correctDark = True
-        except (IOError, IndexError):
-            self.inst_vars.inst_log.warning("No dark current data available.  Measure to correct in real-time.")
+        dc_filePath = path.join(self.inst_vars.inst_path, 'DarkCurrent.json')
+        #try:
+        #    self.inst_vars.inst_log.info("Reading saved dark current values...")
+        #    dc_file = open(dc_filePath, 'r')
+        #    dc_data = json.load(dc_file)
+        #    dc_file.close()
+        #
+        #    for dc_int_time_str, dc_itm in dc_data.items():
+        #        dc_int_time = int(dc_int_time_str)
+        #        dc_dt = datetime.fromtimestamp(dc_itm["Timestamp"])
+        #        self.darkCurrent[dc_int_time] = dc_itm["intensities"]
+        #        options = dc_itm["Options"]
+        #        self.inst_vars.inst_log.info("%i uS from %s %s" % (dc_int_time, dc_dt.strftime('%Y-%m-%d'), dc_dt.strftime('%H:%M:%S')))
+        #        self.jsonFF["DarkCurrent"].write({"Downward":self.darkCurrent[dc_int_time]["Downward"], "Upward":self.darkCurrent[dc_int_time]["Upward"], "Options":options}, recnum=dc_int_time, timestamp=dc_itm["Timestamp"], compact=True)
+        #        self.correctDark = True
+        #except IOError:
+        #    self.inst_vars.inst_log.warning("No dark current data available.  Measure to correct in real-time.")
 
         #Set up UI
         self.ui_signals["ui.sb_intTime.valueChanged"].connect(self.intTimeChanged)
         self.ui_signals["ui.pb_DarkCurrent.released"].connect(self.setDarkCurrent)
         self.ui_signals["ui.cb_correctNonlin.stateChanged"].connect(self.correctNonlinChanged)
-        self.ui_signals["ui.pb_aqRef.released"].connect(self.setRefs)
+        self.ui_signals["ui.pb_aqRef.released"].connect(lambda: self.acquire(getRef=True))
         self.ui_signals["ui.pb_remlast.released"].connect(self.remLastRef)
-        self.ui_signals["ui.pb_AutoRef.released"].connect(self.setRefsAuto)
-        self.ui_signals["ui.pb_ClearRefs.released"].connect(self.remAllRefs)
         self.ui_signals["setWavelengths"].emit(self.wavelengths)
 
          #Setup remote update connections
@@ -147,7 +159,7 @@ class Inst_interface(QtCore.QObject):
         #self.pool = Pool(2)
 
 
-    def acquire(self, getRef=False, setDark=False, darkFile=''):
+    def acquire(self, getRef=False, setDark=False):
 
         #Read intensities
         intensitySamps = [] #{"Upward": [], "Downward": []}
@@ -157,24 +169,47 @@ class Inst_interface(QtCore.QObject):
 #         print(time()-st)
         t = time()
         if setDark:
-            samps = 20
+            samps = 3
+            #try:
+            #  self.spec.shutter_set_shutter_open(True, False)
+            #except Exception as e:
+            #  print(e)
         else:
+            #try:
+            #  self.spec.shutter_set_shutter_open(True, True)
+            #except Exception as e:
+            #  print(e)
             samps = self.samplesPerPoint
 
         for i in range(0, samps):
             intensitySamp = {}
-            for key, spec in self.specs.items():
+            for key in ["Upward", "Downward"]:
+                if key=="Upward":
+                    #self.spec.lamp_set_lamp_enable(True, True)
+                    GPIO.output(self.fos, True)
+                    sleep(1)
+                else:
+                    #self.spec.lamp_set_lamp_enable(True, True)
+                    GPIO.output(self.fos, False)
+                    sleep(1)
                 try:
-                    intensitySamp[key] = self.getIntensitiesList(spec)
+                    intensitySamp[key] = self.getIntensitiesList(self.spec)
                 except Exception as e:
                     #self.inst_vars.inst_log.error("Error getting data from %s spec: %s" % (e, key))
                     raise Exception("Error getting data from %s spec: %s" % (e, key))
 
+
             intensitySamps.append(intensitySamp)
 
         intensities = self.avgSamples(intensitySamps)
+        try:
+          tec_temp = self.spec.tec_get_temperature_C()
+          self.inst_vars.inst_log.info("TEC Temp (deg C): %f" % round(tec_temp,3))
+        except Exception as e:
+          print(e)
+          tec_temp = "NA"
 
-        options = {"IntegrationTime":self.int_time, "CorrectNonlinearity":self.correct_nonlin}
+        options = {"IntegrationTime":self.int_time, "CorrectNonlinearity":self.correct_nonlin, "Temp":tec_temp}
 
         #Save data
         if getRef:
@@ -194,7 +229,7 @@ class Inst_interface(QtCore.QObject):
                 self.refs[self.int_time].append(ref_temp)
 
             self.refs_avg[self.int_time] = self.avgSamples(self.refs[self.int_time])
-            self.upward_ref_interp = interp(self.wavelengths["Downward"], self.wavelengths["Upward"], self.refs_avg[self.int_time]["Upward"])
+            self.upward_ref_interp = self.refs_avg[self.int_time]["Upward"] #interp(self.wavelengths["Downward"], self.wavelengths["Upward"], self.refs_avg[self.int_time]["Upward"])
             self.ui_signals["updatePlot"].emit([self.refs_avg[self.int_time], True, len(self.refs[self.int_time]), self.wavelengths])  #Note: using the 'Downward' list is purely arbitrary since both lists will be the same length, we just need the length of either one
 
         elif setDark:
@@ -203,18 +238,19 @@ class Inst_interface(QtCore.QObject):
             self.jsonFF["DarkCurrent"].write({"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Options":options}, recnum=self.int_time, timestamp=t, compact=True)
 
             #Create output file & header
-            dc_filePath = path.join(self.inst_vars.inst_path, darkFile)
-            try:
-                dc_file = open(dc_filePath, 'r')
-                dc_data = json.load(dc_file)
-                dc_file.close()
-            except IOError:
-                dc_data = {}
-            dc_file = open(dc_filePath, 'w')
-            dc_data[self.int_time] = {"Timestamp": t, "Options":options, "intensities": intensities}
-            json.dump(dc_data, dc_file)
-            dc_file.close()
-            self.inst_vars.inst_log.info("Dark current data saved in %s for integration time %i uS." % (dc_filePath, self.int_time))
+            dc_filePath = path.join(self.inst_vars.inst_path, 'DarkCurrent.json')
+            #try:
+            #    dc_file = open(dc_filePath, 'r')
+            #    dc_data = json.load(dc_file)
+            #    dc_file.close()
+            #except IOError:
+            
+            #dc_data = {}
+            #dc_file = open(dc_filePath, 'w')
+            #dc_data[self.int_time] = {"Timestamp": t, "Options":options, "intensities": intensities}
+            #json.dump(dc_data, dc_file)
+            #dc_file.close()
+            #self.inst_vars.inst_log.info("Dark current data saved in %s for integration time %i uS." % (dc_filePath, self.int_time))
 
         else:
             #Raw spec data is always saved without any dark current correction.  Reflectance is calculated with dark current correction if available.
@@ -270,6 +306,12 @@ class Inst_interface(QtCore.QObject):
             except:
                 raise
         try:
+            GPIO.output(self.fos, False)
+            GPIO.cleanup()
+        except:
+            pass
+        
+        try:
             self.jsonFF.close()
         except Exception as e:
             self.inst_vars.inst_log.Info(str(e))
@@ -311,26 +353,22 @@ class Inst_interface(QtCore.QObject):
             #Set References
             if not hasattr(self, 'refs_avg'):
                 #Define reference variables
-                self.refs = {}
+                self.refs = {"Upward": [], "Downward": []}
                 self.refs_avg = {}
                 refs_temp = self.jsonFF.readField(self.jsonFF["References"])
                 #Update UI
                 for ref in refs_temp:
                     if ref[0] == self.int_time:
                         if self.correctDark:
-                            ref_corrected = self.doCorrectDark(ref[2], self.darkCurrent, ref[0])
+                            ref = self.doCorrectDark(ref[2], self.darkCurrent, ref[0])
                         else:
-                            ref_corrected = ref[2]
+                            ref = ref[2]
 
                         #for key, intens in ref.items():    #Upward and Downward
-                        try:
-                            self.refs[self.int_time].append(ref_corrected)
-                        except KeyError:
-                            self.refs[self.int_time] = []
-                            self.refs[self.int_time].append(ref_corrected)
+                        self.refs[self.int_time].append(ref)
 
                 self.refs_avg[self.int_time] = self.avgSamples(self.refs[self.int_time])
-                self.upward_ref_interp = interp(self.wavelengths["Downward"], self.wavelengths["Upward"], self.refs_avg[self.int_time]["Upward"])
+                self.upward_ref_interp = self.refs_avg[self.int_time]["Upward"] #interp(self.wavelengths["Downward"], self.wavelengths["Upward"], self.refs_avg[self.int_time]["Upward"])
 
                 self.ui_signals["updatePlot"].emit([self.refs_avg[self.int_time], True, len(self.refs[self.int_time]), self.wavelengths])  #Note: using the 'Downward' list is purely arbitrary since both lists will be the same length, we just need the length of either one
 
@@ -341,7 +379,6 @@ class Inst_interface(QtCore.QObject):
 
             #Set reflectance
             try:
-                #reflec = self.calcReflectance(self.wavelengths, self.refs_avg[self.int_time], intensities, self.upward_ref_interp)
                 reflec = cachedData[str(recNum)][1]["Reflectance"]
             except KeyError:
                 reflec = None
@@ -358,7 +395,7 @@ class Inst_interface(QtCore.QObject):
         #print(intensities)
         #for key, intens in intensities.items():
         #    print("%s: %i intensities, %i wavelengths" % (key, len(intensities[key]), len(wavelengths[key])))
-        upward_interp = interp(wavelengths["Downward"], wavelengths["Upward"], intensities["Upward"])
+        upward_interp = intensities["Upward"] #interp(wavelengths["Downward"], wavelengths["Upward"], intensities["Upward"])
         #upward_ref_interp = interp(wavelengths["Downward"], wavelengths["Upward"], refs_avg["Upward"])
 
         reflec = (upward_ref_interp/asarray(refs_avg["Downward"]))*(asarray(intensities["Downward"])/upward_interp)
@@ -368,13 +405,13 @@ class Inst_interface(QtCore.QObject):
         return list(spec.intensities(correct_dark_counts=self.correctDark, correct_nonlinearity=self.correct_nonlin))
 
     def intTimeChanged(self, newTime):
-        for spec in self.specs.values():
-            spec.integration_time_micros(newTime)
-            self.int_time = newTime
-            try:
-                self.ui_signals["updatePlot"].emit([self.refs_avg[self.int_time], True, len(self.refs[self.int_time]), self.wavelengths])  #Note: using the 'Downward' list is purely arbitrary since both lists will be the same length, we just need the length of either one
-            except KeyError:
-                self.ui_signals["updatePlot"].emit([{"Upward": [], "Downward": []}, True, 0, self.wavelengths])  #Note: using the 'Downward' list is purely arbitrary since both lists will be the same length, we just need the length of either one
+        #for spec in self.specs.values():
+        self.spec.integration_time_micros(newTime)
+        self.int_time = newTime
+        try:
+            self.ui_signals["updatePlot"].emit([self.refs_avg[self.int_time], True, len(self.refs[self.int_time]), self.wavelengths])  #Note: using the 'Downward' list is purely arbitrary since both lists will be the same length, we just need the length of either one
+        except KeyError:
+            self.ui_signals["updatePlot"].emit([{"Upward": [], "Downward": []}, True, 0, self.wavelengths])  #Note: using the 'Downward' list is purely arbitrary since both lists will be the same length, we just need the length of either one
 
         self.inst_vars.inst_log.info("Integration time changed to: %i uS" % newTime)
 
@@ -389,62 +426,17 @@ class Inst_interface(QtCore.QObject):
             return intensities
         return new_intensities
 
-    def setRefs(self):
-        self.correctDark = True
-        self.inst_vars.inst_log.info("Setting reference values now!")
-        self.acquire(getRef=True)
-
-    def setRefsAuto(self):
-        self.correctDark = True
-        self.inst_vars.inst_log.info("Setting reference values now!")
-
-        try:
-            int_start = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStart"])
-            int_end = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntEnd"])
-            int_step = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStep"])
-            ref_count = int(self.inst_vars.inst_cfg["Initialization"]["AutoRefCount"])
-            ref_target = float(self.inst_vars.inst_cfg["Initialization"]["AutoRefTarget"])
-
-            self.inst_vars.inst_log.info("(Auto ranging int times: %i:%i:%i)" % (int_start, int_end, int_step))
-
-            for i in range(int_start, int_end+int_step, int_step):
-                self.intTimeChanged(i)
-                for j in range(0,ref_count):
-                    self.acquire(getRef=True)
-            
-            self.inst_vars.inst_log.info("Auto setting (int time:max):")
-            int_times = sorted(self.refs_avg)
-            for int_time in int_times:
-                peak = max(self.refs_avg[int_time]["Downward"]) / 65535
-                self.inst_vars.inst_log.info("\t%i:%f" % (int_time, peak))
-                if peak > ref_target:
-                    target_time = int(int_time)-int_step
-                    self.inst_vars.inst_log.info("Found target: %i" % target_time)
-                    self.intTimeChanged(target_time)
-                    break
-
-        except KeyError:
-            self.inst_vars.inst_log.info("(Auto range params not set, using only current int time.)")
-            self.acquire(getRef=True)
-
     def setDarkCurrent(self):
         self.correctDark = True
         self.inst_vars.inst_log.info("Setting dark current values now!")
-        darkFile = "DarkCurrent_" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".json"
+        self.acquire(setDark=True)
 
-        try:
-            int_start = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStart"])
-            int_end = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntEnd"])
-            int_step = int(self.inst_vars.inst_cfg["Initialization"]["AutoIntStep"])
-            self.inst_vars.inst_log.info("(Auto ranging int times: %i:%i:%i)" % (int_start, int_end, int_step))
-
-            for i in range(int_start, int_end+int_step, int_step):
-                self.intTimeChanged(i)
-                self.acquire(setDark=True, darkFile=darkFile)
-
-        except KeyError:
-            self.inst_vars.inst_log.info("(Auto range not set, using only current int time.)")
-            self.acquire(setDark=True, darkFile="DarkCurrent.json")
+    def correctNonlinChanged(self, value):
+        if value == 0:
+            self.correct_nonlin = False
+        else:
+            self.correct_nonlin = True
+        self.inst_vars.inst_log.info("Use nonlinearity correction: %i" % self.correct_nonlin)
 
     def remLastRef(self):
         try:
@@ -457,23 +449,6 @@ class Inst_interface(QtCore.QObject):
             intensities = self.avgSamples(self.refs[self.int_time])
         else:
             intensities = {"Upward": [], "Downward": []}
-        #Update UI
-        self.ui_signals["updatePlot"].emit([intensities, True, len(self.refs[self.int_time]),self.wavelengths])
-
-    def correctNonlinChanged(self, value):
-        if value == 0:
-            self.correct_nonlin = False
-        else:
-            self.correct_nonlin = True
-        self.inst_vars.inst_log.info("Use nonlinearity correction: %i" % self.correct_nonlin)
-
-    def remAllRefs(self):
-        try:
-            self.refs = {}
-        except:
-            pass
-
-        intensities = {"Upward": [], "Downward": []}
         #Update UI
         self.ui_signals["updatePlot"].emit([intensities, True, len(self.refs[self.int_time]),self.wavelengths])
 
@@ -636,24 +611,24 @@ class Ui_interface(QtCore.QObject):
                     l = data[2]
                     self.ui.lbl_refcount.setNum(l)
                     if l > 0:
-                        self.refplot[key].setData(x=wls[key], y=inten)
+                        self.refplot[key].setData(x=wls, y=inten)
                     else:
                         self.refplot[key].setData(x=[], y=[])
                 else:
-                    self.specplot[key].setData(x=wls[key], y=inten)
+                    self.specplot[key].setData(x=wls, y=inten)
 
             if not isRef:
                 try:
-                    self.reflecplot.setData(x=wls["Downward"], y=reflec)
+                    self.reflecplot.setData(x=wls, y=reflec)
                     plotcount = len(self.cumulativeplots)
                     self.cumulativeplots.append(self.pw_cumulative.plot(pen=pg.mkPen(plotcount, width=1)))
-                    self.cumulativeplots[plotcount].setData(x=wls["Downward"], y=reflec)
+                    self.cumulativeplots[plotcount].setData(x=wls, y=reflec)
                 except:
                     pass
 
     def setWavelengths(self, wls):
         self.wls = wls
-        x_range = (min([min(wls["Upward"]), min(wls["Downward"])]), max([max(wls["Upward"]), max(wls["Downward"])]))
+        x_range = (min(wls), max(wls))
         self.pw_down.setXRange(*x_range)
         self.pw_up.setXRange(*x_range)
         self.pw_reflec.setXRange(*x_range)

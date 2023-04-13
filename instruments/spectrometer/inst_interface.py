@@ -5,7 +5,11 @@ from os.path import isabs
 from os import makedirs
 
 #Qt Imports
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    layout_test = QtGui.QVBoxLayout()
+except Exception:
+    QtGui = QtWidgets   #Compatibility hack
 
 #MoDaCS Imports
 from inst_common import Inst_jsonFF

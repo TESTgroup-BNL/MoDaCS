@@ -19,6 +19,7 @@ class UI_interface(QtCore.QObject):
     remote_event_Sig = QtCore.pyqtSignal(object)
     remote_ui_updateTime = QtCore.pyqtSignal(object)
     displayRec = QtCore.pyqtSignal(int)
+    status_Sig = QtCore.pyqtSignal(str)
     
     def __init__(self, main_app, cp, active_insts, inst_list, displayOnly=False):
         super().__init__()
@@ -67,7 +68,9 @@ class UI_interface(QtCore.QObject):
         self.ui.tbl_Instruments.horizontalHeader().setStyleSheet(stylesheet)
         self.ui.tbl_Instruments.setColumnWidth(0, 150)
         self.ui.tbl_Instruments.setColumnWidth(1, 50)
-        self.ui.tbl_Instruments.setColumnWidth(2, 500)
+        self.ui.tbl_Instruments.setColumnWidth(2, 100)
+        self.ui.tbl_Instruments.setColumnWidth(3, 500)
+        self.ui.tbl_Instruments.setColumnWidth(4, 500)
         self.ui.tbl_Instruments.horizontalHeader().setStretchLastSection(True)
         self.ui.tbl_Instruments.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.ui.tbl_Instruments.itemChanged.connect(self.ui_set_tooltip)
@@ -95,6 +98,8 @@ class UI_interface(QtCore.QObject):
             self.ui.actionTile_Cascade.triggered.connect(self.ui.mdiArea.cascadeSubWindows)
             self.ui.actionLoad_Records.triggered.connect(main_app.loadRecs)
             self.ui.actionSwAcq.triggered.connect(main_app.switchToAcq)
+            self.ui.actionRun_Post_Processing.triggered.connect(main_app.runPostProcessing)
+            self.status_Sig.connect(self.ui_update_status)
 
         else:
             self.ui.tbl_Instruments.setVisible(False)
@@ -111,15 +116,14 @@ class UI_interface(QtCore.QObject):
         
         if displayOnly and self.ui_large:
             self.ui.dockWidget_Top.setVisible(False)
+            self.ui.dockWidget_Global.setVisible(False)
             self.ui.actionSwAcq.setEnabled(True)
-            
+            self.ui.actionRun_Post_Processing.setEnabled(True)
         
         if self.client.enabled or self.server.enabled:
             #Client and Server
             self.client.dataRecievedSig.connect(self.ui_update_net_R)
             self.server.dataSentSig.connect(self.ui_update_net_S)
-            
-            
         else:
             #No Client or Server
             self.ui.gb_Network.setVisible(False)
@@ -144,6 +148,7 @@ class UI_interface(QtCore.QObject):
         
         #Client
         if self.client.enabled:
+            self.ui.lbl_mode.setText("Client")
             self.remote_ui_updateTime.connect(self.ui_updateTime)
             self.remote_event_Sig.connect(self.ui_remote_event) 
             #self.client.connectionSig.connect(self.ui_update_net_client)
@@ -155,11 +160,15 @@ class UI_interface(QtCore.QObject):
         
         #Server
         if self.server.enabled:
+            self.ui.lbl_mode.setText("Server")
             self.remote_event_Sig.connect(lambda val: self.server.sendSig.emit("main_app.ui_int.remote_event_Sig", val))
             #self.server.connectionSig.connect(self.ui_update_net_server)
             if self.server.allowControl:
                 self.server.controlClient.dataRecievedSig.connect(self.ui_update_net_R)
                 #self.server.controlClient.connectionSig.connect(self.ui_update_net_client)
+
+        if self.server.enabled and self.client.enabled:
+            self.ui.lbl_mode.setText("Server and client")
 
     def clock_update(self):
         lt = localtime()
@@ -168,16 +177,19 @@ class UI_interface(QtCore.QObject):
             self.ui_updateTime(lt)
             if self.server.enabled:
                 self.server.sendSig.emit("main_app.ui_int.remote_ui_updateTime", lt)
+
+    def ui_update_status(self, new_stat):
+        self.ui.lbl_status.setText(new_stat)
                 
     def ui_update_net_R(self, host, port, l):
         self._rCount += l
         self.ui.lbl_Rcount.setText("%.3f MB" % (self._rCount/(1024*1024)))
-        self.ui.lbl_R_IP.setText(host + " on port " + str(port))
+        self.ui.lbl_R_IP.setText(host + ":" + str(port))
         
     def ui_update_net_S(self, host, port, l):
         self._sCount += l
         self.ui.lbl_Scount.setText("%.3f MB" % (self._sCount/(1024*1024)))
-        self.ui.lbl_S_IP.setText(host + " on port " + str(port))
+        self.ui.lbl_S_IP.setText(host + ":" + str(port))
         
 #     def ui_update_net_server(self, host, port, l):
 #         self.ui.lbl_R_IP.setText(host + " on port " + str(port))
@@ -431,8 +443,12 @@ class UI_interface(QtCore.QObject):
         self.ui.tbl_Instruments.setItem(r, 0, item)
         #self.ui.tbl_Instruments.setItem(r, 1, QtWidgets.QTableWidgetItem(cp_inst["InstrumentInfo"]["Model"]))
         self.ui.tbl_Instruments.setItem(r, 1, QtWidgets.QTableWidgetItem("0"))
-        self.ui.tbl_Instruments.setItem(r, 2, QtWidgets.QTableWidgetItem("Standby"))
-        self.ui.tbl_Instruments.setItem(r, 3, QtWidgets.QTableWidgetItem(cp_inst["Data"]["absolutePath"]))
+        try:
+            self.ui.tbl_Instruments.setItem(r, 2, QtWidgets.QTableWidgetItem(cp_inst["Trigger"]["Interval"]))
+        except KeyError:
+            self.ui.tbl_Instruments.setItem(r, 2, QtWidgets.QTableWidgetItem("None"))
+        self.ui.tbl_Instruments.setItem(r, 3, QtWidgets.QTableWidgetItem("Standby"))
+        self.ui.tbl_Instruments.setItem(r, 4, QtWidgets.QTableWidgetItem(cp_inst["Data"]["absolutePath"]))
             
     #def ui_update_run_status(self, s):
     #    self.ui.plainTextEdit.appendPlainText(s)
@@ -440,7 +456,7 @@ class UI_interface(QtCore.QObject):
     def ui_update_inst_status(self, val):
         r = self.inst_list.index(val[0])
         status = val[1]
-        self.ui.tbl_Instruments.setItem(r, 2, QtWidgets.QTableWidgetItem(status))
+        self.ui.tbl_Instruments.setItem(r, 3, QtWidgets.QTableWidgetItem(status))
         
     def ui_update_tCount(self, val):
         r = self.inst_list.index(val[0])

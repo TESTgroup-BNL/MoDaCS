@@ -1,5 +1,9 @@
 from time import sleep, strftime
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    layout_test = QtGui.QVBoxLayout()
+except Exception:
+    QtGui = QtWidgets   #Compatibility hack
 
 try:
     import RPi.GPIO as GPIO

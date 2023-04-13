@@ -1,10 +1,12 @@
 import sys, getopt, json
-
+import logging
+from os import path
+from shutil import move
 from numpy import interp, asarray
 
 
 
-def calcReflectance(wavelengths, refs_avg, intensities, upward_ref_interp):   
+def calcReflectance(wavelengths, refs_avg, intensities, upward_ref_interp):
     upward_interp = interp(wavelengths["Downward"], wavelengths["Upward"], intensities["Upward"])
     reflec = (upward_ref_interp/asarray(refs_avg["Downward"]))*(asarray(intensities["Downward"])/upward_interp)
     return reflec
@@ -41,62 +43,79 @@ def avgSamples(samples):
 if __name__ == '__main__':
 
     in_path = sys.argv[1]
+    logging.basicConfig(level=logging.DEBUG)
+    post_log = logging.getLogger("Post_Processing")
 
     #Read input file
+    post_log.info("Opening original file: %s" % in_path)
     with open(in_path, 'r') as in_file:
         raw = json.load(in_file)
 
     wavelengths = raw["Wavelengths"]
     data = raw["Data"]
-    refs = raw["References"]
-    
     data_out = {}
-    
-    for recNum in data:
-        try:
-            darkCurrent = {}
-            for dark_intens in raw["DarkCurrent"]:    #Upward and Downward
-                darkCurrent[dark_intens[0]] = {"Upward":dark_intens[2]["Upward"], "Downward":dark_intens[2]["Downward"]}
-            correctDark = True
-        except KeyError:
-            correctDark = False
 
+    post_log.info("\tLoading %i dark current values..." % len(raw["DarkCurrent"]))
+    darkCurrent = {}    
+    try:
+        for dark_intens in raw["DarkCurrent"]:    #Upward and Downward
+            darkCurrent[dark_intens[0]] = {"Upward":dark_intens[2]["Upward"], "Downward":dark_intens[2]["Downward"]}
+        correctDark = True
+    except KeyError:
+        correctDark = False
+
+    #Set References
+    refs = {} #{"Upward": [], "Downward": []}
+    refs_avg = {}
+    upward_ref_interp = {}
+    refs_temp = raw["References"]
+
+    post_log.info("\tLoading %i references..." % len(refs_temp))
+    for ref in refs_temp:
+        int_time = ref[0]
+        if correctDark:
+            r = doCorrectDark(ref[2], darkCurrent, ref[0])   
+        else:
+            r = ref[2]
+        try:
+            refs[int_time].append(r)
+        except KeyError:
+            refs[int_time] = []
+            refs[int_time].append(r)
+
+    for int_time, ref in refs.items():              
+        refs_avg[int_time] = avgSamples(refs[int_time])
+        upward_ref_interp[int_time] = interp(wavelengths["Downward"], wavelengths["Upward"], refs_avg[int_time]["Upward"])
+
+
+    post_log.info("\tProcessing %i records..." % len(data))
+    for n, recNum in enumerate(data):
+        if n % 50 == 0:
+            post_log.info("\t\t%i%% (%i/%i)" % (round(n/len(data)*100), n, len(data)))
+
+        timestamp = data[str(recNum)][0]
         options = data[str(recNum)][1]["Options"]
         int_time = options["IntegrationTime"]
-
-        #Set References
-        refs = {} #{"Upward": [], "Downward": []}
-        refs_avg = {}
-        refs_temp = raw["References"]
-
-        for ref in refs_temp:
-
-            if ref[0] == int_time:
-                if correctDark:
-                    r = doCorrectDark(ref[2], darkCurrent, ref[0])   
-                else:
-                    r = ref[2]
-                try:
-                    refs[int_time].append(r)
-                except KeyError:
-                    refs[int_time] = []
-                    refs[int_time].append(r)
-                        
-            refs_avg[int_time] = avgSamples(refs[int_time])
-            upward_ref_interp = interp(wavelengths["Downward"], wavelengths["Upward"], refs_avg[int_time]["Upward"])
-
-            
-
+        
         #Set Intensities
+        #post_log.info("\tCorrecting dark currents")
         intensities = {"Upward":data[str(recNum)][1]["Upward"], "Downward":data[str(recNum)][1]["Downward"]}
         if correctDark:
-            intensities = doCorrectDark(intensities, darkCurrent, int_time)
+            intensities_corrected = doCorrectDark(intensities, darkCurrent, int_time)
 
-        #Calc Reflectance
-        reflec = calcReflectance(wavelengths, refs_avg[int_time], intensities, upward_ref_interp)
+            #Calc Reflectance
+            #post_log.info("\tCorrecting reflectance")
+            reflec = calcReflectance(wavelengths, refs_avg[int_time], intensities_corrected, upward_ref_interp[int_time])
+        else:
+            reflec = calcReflectance(wavelengths, refs_avg[int_time], intensities, upward_ref_interp[int_time])
 
-        data_out[recNum] = {"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Reflectance":list(reflec), "Options":options}
+        data_out[recNum] = [timestamp, {"Downward":intensities["Downward"], "Upward":intensities["Upward"], "Reflectance":list(reflec), "Options":options}]
         
-raw["Data"] = data_out
-with open(in_path+"_recalced", 'a') as out_file:
-    json.dump(raw, out_file)
+    raw["Data"] = data_out
+    move(in_path, path.join(path.split(in_path)[0], "post", path.split(in_path)[1]).replace(".json", "_original.json"))
+    
+    post_log.info("Dumping JSON and saving output... (this might take a minute)")
+    with open(in_path, 'a') as out_file:
+        json.dump(raw, out_file)
+
+    post_log.info("Recalced file saved: %s" % in_path)

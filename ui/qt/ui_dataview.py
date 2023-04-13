@@ -573,7 +573,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MoDaCS"))
         self.dw_MasterLog.setWindowTitle(_translate("MainWindow", "Main Log"))
         self.plainTextEdit.setPlaceholderText(_translate("MainWindow", "Status Info..."))
         self.menuFile.setTitle(_translate("MainWindow", "File"))

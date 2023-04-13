@@ -343,14 +343,19 @@ class TCPConnection(QObject):
             packed_target = str([target_obj, val])
             data = str(len(packed_target)) + "\n" + packed_target
             #print(data)
-            for s in self.sock:
-                s.write(data.encode())
-                s.flush()
+            try:
+                for s in self.sock:
+                    s.write(data.encode())
+                    s.flush()
+            except Exception as e:
+                logging.warning("Error sending data to socket: %s" % e)
+                if "QTcpSocket has been deleted" in str(e):
+                    self.sock.remove(s)
                 #s.writeDatagram(data, self.target_addr, self.port)
             self.dataSentSig.emit(str(len(self.sock)) + " clients", int(self.port), len(data))
         except Exception as e:
             logging.warning("Error sending remote data: %s" % e)
-    
+
         
     def processIncoming(self, s):
         #if self.UIready:

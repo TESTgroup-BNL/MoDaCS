@@ -1,5 +1,10 @@
 #Qt Imports
 from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    layout_test = QtGui.QVBoxLayout()
+except Exception:
+    QtGui = QtWidgets   #Compatibility hack
+    
 #System Imports
 from time import sleep, time
 from os import path, makedirs

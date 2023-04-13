@@ -10,11 +10,8 @@ from os import makedirs, path, execl, chdir
 from os.path import dirname, abspath
 
 #Qt Imports
-from PyQt5 import QtWidgets, QtCore, QtNetwork, QtGui
+from PyQt5 import QtWidgets, QtCore, QtNetwork
 from PyQt5.QtCore import QDir, QProcess
-
-#RasPi Imports
-from status_led import StatusLED
 
 #MoDaCS Imports
 chdir(dirname(dirname(abspath(__file__))))
@@ -25,9 +22,9 @@ from inst_common import inst_init
 from events_common import events_init
 import ui.ui_interface
 from util import QSignalHandler, RunningThreads, my_excepthook, JSONFileField
-import sftp
 import event_handlers
-
+import post_processing.post_common as post_common
+import ntp_server
 
 class Main(QtWidgets.QMainWindow):
     
@@ -37,6 +34,7 @@ class Main(QtWidgets.QMainWindow):
     event_reloadSig = QtCore.pyqtSignal(object, str)
     event_reloadRemoteSig = QtCore.pyqtSignal(object, str)
     globalTrig = QtCore.pyqtSignal(str)
+    systemStatus = QtCore.pyqtSignal(str)
     logupdateSig = QtCore.pyqtSignal(str)
     finishedSig = QtCore.pyqtSignal(str)
     uiReadySig = QtCore.pyqtSignal()
@@ -45,9 +43,8 @@ class Main(QtWidgets.QMainWindow):
         super().__init__()
         QtWidgets.QMainWindow.__init__(self)
         
-        event_handlers.pre_init()
-        self.status_LED = StatusLED()
-        self.status_LED.setLED.emit(255,0,0)
+        self.appEvents = event_handlers.AppEvents()
+        self.appEvents.pre_init()
         
         self.active_insts = {}
         self.inst_list = []
@@ -60,7 +57,7 @@ class Main(QtWidgets.QMainWindow):
         
         self.globalTrigCount = -1
         self.globalTrig.connect(self.incGlobalTrigCount)
-        self.globalTrig.connect(lambda: self.status_LED.setBlink.emit(0,0,255,100,0,255,0,100,2))
+        self.globalTrig.connect(self.appEvents.globalTrig)
         
         self.finishedSig.connect(self.finished)
         self.readyToClose = False
@@ -85,12 +82,12 @@ class Main(QtWidgets.QMainWindow):
               
         #Initialize config parser and logger
         cp = configparser.ConfigParser()
-        opts, args = getopt.getopt(sys.argv[1:],"hc:f:o", ["run_config="])
+        opts, args = getopt.getopt(sys.argv[1:],"hc:f:op:", ["run_config="])
         run_config = path.join('.', 'core', 'run_cfg.ini')
         try:
             for opt, arg in opts:
                 if opt in ("-h", "--help", "?", "help"):
-                    print("MoDaCS Main Module\n\nUsage: main.py [-c <run config file>]\n\nOptions:\n     -c, --run_config : Specifies an alternate run configuration file.  (Default is 'core\\run_cfg.ini'.)\n\n-o, --open : Prompts user to select an existing 'RunData.json' file to load data from\n\n-f, --file : Open a spcified 'RunData.json' file to load data from")
+                    print("MoDaCS Main Module\n\nUsage: main.py [-c <run config file>]\n\nOptions:\n     -c, --run_config : Specifies an alternate run configuration file.  (Default is 'core\\run_cfg.ini'.)\n\n-o, --open : Prompts user to select an existing 'RunData.json' file to load data from\n\n-f, --file : Open a spcified 'RunData.json' file to load data from\n\n-pb, --post_batch : Run post processing on every directory within the directory specified")
                     sys.exit()
                 if opt in ("-c", "--run_config"):
                     run_config = arg
@@ -98,6 +95,20 @@ class Main(QtWidgets.QMainWindow):
                     print(opt)
                     print(arg)
                     print(sys.argv)
+
+                if opt in ("-p", "--post_batch"):
+                    try:
+                        if not arg == "":
+                            batch_path = arg
+                        else:
+                            raise Exception
+                    except Exception:
+                        batch_path, typ = QtWidgets.QFileDialog.getOpenFileName(None, 'Open Global Record File', ".", "JSON files (*.json)")
+
+                    batch = post_common.BatchProcess(batch_path)
+                    batch.run_batch()
+                    sys.exit(app.exec_())
+
                 if opt in ("-f", "--file", "-o", "--open"):
                     self.displayOnly = True
                     try:
@@ -127,6 +138,7 @@ class Main(QtWidgets.QMainWindow):
             
             if self.displayOnly == False:
                 cp.read(run_config)
+                
                 if self.usingRasPi:
                     if cp["UI"]["WaitForNTP"] == "True":
                         self.waitForNTP()
@@ -140,17 +152,21 @@ class Main(QtWidgets.QMainWindow):
             print("Error: run_cfg file missing or missing required keys")
             raise
         
+        try:
+            log_level = logging._nameToLevel[cp["UI"]["WaitForNTP"]]
+        except (KeyError, TypeError):
+            log_level = logging.INFO
+
         logging.basicConfig(
         filename=logFile,
-        level=logging.DEBUG,
+        level=log_level,
         format='[%(levelname)-10s] (%(threadName)-10s), %(asctime)s, %(message)s') #datefmt='%Y/%m/%d %I:%M:%S'
         
         if not self.displayOnly:
             sh = logging.StreamHandler()
             formatter = logging.Formatter("[%(levelname)-10s] (%(threadName)-10s), %(asctime)s, %(message)s")
-            sh.setFormatter(formatter)
-            
-            logging.getLogger().addHandler(sh)
+            sh.setFormatter(formatter)  
+            logging.getLogger().addHandler(sh)      
         
         #Initialize Main UI
         if cp.has_option("UI", "Size"):
@@ -159,10 +175,7 @@ class Main(QtWidgets.QMainWindow):
         self.ui_int = ui.ui_interface.UI_interface(self, cp, self.active_insts, self.inst_list, self.displayOnly)
         self.run_cfg = cp
         self.run_cfg["Data"]["dataPath"] = self.dataPath
-        
-        if cp.has_option("Data", "AutoTransfer"):
-            if cp["Data"]["AutoTransfer"] == "True":
-                self.sftpEnabled = True
+        self.isServer = self.ui_int.server.enabled
         
         #Connect event UI widgets
         self.globalTrig.connect(lambda source="" : self.ui_int.ui.treeWidget.topLevelItem(0).setText(1, source))
@@ -176,16 +189,25 @@ class Main(QtWidgets.QMainWindow):
         self.logupdateSig.connect(self.ui_int.ui.plainTextEdit.appendPlainText)
         
         #Connect remote signals if server is enabled
-        self.isServer = self.ui_int.server.enabled
-        if self.ui_int.server.enabled:
+        if self.isServer:
             self.globalTrig.connect(lambda val="": self.ui_int.server.sendSig.emit("main_app.globalTrig", val))
             self.logupdateSig.connect(lambda val="": self.ui_int.server.sendSig.emit("main_app.logupdateSig", "[Remote] " + val))
        
         if not self.ui_int.client.enabled:
             self.ui_int.ui.btn_ManTrig.released.connect(lambda: self.globalTrig.emit("Manual"))
         else:
+            #If running as client connect remote shutdown and start NTP server (if enabled)
             self.ui_int.ui.btn_RemSD.released.connect(self.remoteShutdown)
-            
+            try:
+                if str.lower(self.run_cfg["Client"]["ProvideNTP"]) == "true":
+                    try:
+                        logging.info("Starting NTP server")
+                        self.ntp_service = ntp_server.NTP_Server(self.run_cfg["Client"]["TCP_Client_IP"])
+                    except Exception as e:
+                        logging.warning("Exception starting NTP server: " + str(e))
+            except KeyError:
+                pass
+
         #Initialize Main Data File
         if self.displayOnly:
             sorted_recs = sorted(self.globalRecs.items(), key=lambda x: x[1])
@@ -198,36 +220,44 @@ class Main(QtWidgets.QMainWindow):
             self.jsonFF.addField("globalRecs", fieldType=object)
             self.jsonFF.addField("InstrumentPaths", fieldType=object)
         
-        self.status_LED.setLED.emit(255,200,0)
+        self.appEvents.pre_inst_init(cp, self.isServer)
+        
         
         #Initialize Instruments
+        self.ui_int.ui_update_status("Initializing Instruments...")
         try:
             mainthreadlist = cp["MainThread"]
         except:
             mainthreadlist = []
         inst_init(self, cp["Active_Insts"], self.dataPath, mainthreadlist, self.displayOnly, self.instrumentPaths)
         
+
         #Initialize Events
+        self.ui_int.ui_update_status("Initializing Events...")
         events_init(self, cp["Events"], self.displayOnly)
+        
 
         #Initialize inst widgets
+        self.ui_int.ui_update_status("Initializing Inst UIs...")
         self.ui_int.ui_init_widgets()
         
         if self.ui_int.client.enabled:
             #Start client thread
             self.ui_int.client.thread.start()
+            self.ui_int.ui_update_status("Listening for connections")
         
         if (self.ui_int.server.enabled or (not self.ui_int.client.enabled)) and (self.displayOnly == False):
             #Start instrument threads
+            self.ui_int.ui_update_status("Starting Instruments...")
             for key, i in self.active_insts.items():
                 i.inst_thread.start()
+            self.ui_int.ui_update_status("Ready")
                 
         if self.ui_int.server.allowControl:
             self.ui_int.server.controlClient.thread.start()
     
         #self.status_LED.setColor(0,255,0)
-        event_handlers.post_init()
-        self.status_LED.setBlink.emit(0,0,0,250,0,255,0,250,3)
+        self.appEvents.post_init()
 
     
     def getGlobalTrigCount(self):
@@ -251,6 +281,9 @@ class Main(QtWidgets.QMainWindow):
     def switchToAcq(self):
         self.shutdown_mode = "Restart\nMoDaCS"
         self.close()
+
+    def runPostProcessing(self):
+        self.appEvents.post_processing(self.dataPath)
             
     def addInstPath(self, inst_cfg):
         self.jsonFF["InstrumentPaths"][inst_cfg["Data"]["Inst"]] = path.join(inst_cfg["Data"]["absolutePath"], inst_cfg["Data"]["outputFilePrefix"])
@@ -259,10 +292,7 @@ class Main(QtWidgets.QMainWindow):
         msgbox = ShutdownPopup()
         if msgbox.clickedButton().text() == "Cancel":
             return
-        
-        if self.sftpEnabled:
-            sftp_client = sftp.SFTP_Client(self.run_cfg)
-        
+                
         if msgbox.clickedButton().text() == "Exit to Console":
             logging.info("Exiting remote instance...")
             self.ui_int.client.sendSig.emit("main_app.finishedSig", "Close")
@@ -270,12 +300,12 @@ class Main(QtWidgets.QMainWindow):
             remSD_mode = msgbox.clickedButton().text()
             logging.info("Remote shutdown: " + remSD_mode)      
             self.ui_int.client.sendSig.emit("main_app.finishedSig", remSD_mode)
+
+        self.appEvents.client_remote_shutdown()
         
             
     def closeEvent(self, event):
         if self.readyToClose:
-            self.status_LED.setLED.emit(0,0,0)
-            sleep(0.1)
             #print("Using Rasp Pi still? %s" % self.usingRasPi)
             if self.usingRasPi:
                 if self.shutdown_mode == "Restart\nMoDaCS":
@@ -345,20 +375,25 @@ class Main(QtWidgets.QMainWindow):
                     
     def finished(self, mode=""):
         
-        if mode is not "":
+        if mode != "":
             self.shutdown_mode = mode
             self.isRemoteShutdown = True
             logging.info("Remotely initiated shutdown...")
         else:
             self.isRemoteShutdown = False
             logging.info("Shutting down...")
-        
-        self.status_LED.setLED.emit(255,0,255)
+
+        self.appEvents.pre_shutdown()
             
         try:
             self.jsonFF.close()
         except:
             pass
+
+        try:
+            self.ntp_service.stop()
+        except Exception as e:
+            logging.warning("Exception stopping NTP server: " + str(e))
 
         if len(self.runningThreads) == 0:
             self.quit()
@@ -377,11 +412,11 @@ class Main(QtWidgets.QMainWindow):
     def check_shutdown(self):
         self._i += 1
         
-        if self._i > 10 or self.runningThreads.active_threads == 0:
+        if self._i > 30 or self.runningThreads.active_threads == 0:
             logging.warning("Thread(s) blocked, attempting to force quit application.")
             self.quit()
             
-        elif self._i == 10:   #5 second timeout for stopping all threads
+        elif self._i == 30:   #5 second timeout for stopping all threads
             self._i += 1
             bad_threads = []
             for i in self.runningThreads.active_threads:
@@ -390,7 +425,6 @@ class Main(QtWidgets.QMainWindow):
             
             for i in self.runningThreads.active_threads:
                 i.terminate()
-
             
     def quit(self):
         logging.info("Done.")
@@ -398,20 +432,21 @@ class Main(QtWidgets.QMainWindow):
             self.shut_timer.stop()
         except AttributeError:
             pass
-        if self.sftpEnabled and self.isServer and self.isRemoteShutdown:
-            self.sftpEnabled = False
-            sftp_server = sftp.SFTP_Server(self.run_cfg, event_handlers.client_post, self.quit)
+        
+        if self.isServer:
+            self.appEvents.server_post_shutdown(self.isRemoteShutdown)
         else:
-            self.readyToClose = True
-            self.close()
+            self.appEvents.client_post_shutdown()
             
-
+        self.readyToClose = True
+        self.close()
 
     def waitForNTP(self):
+        
         subprocess.call("sudo service ntp stop", shell=True)
         for i in range(0, 60): #try for 1 minute
             print("Waiting for NTP...")
-            self.status_LED.setBlink.emit(255,200,0,100,255,0,0,100,3)
+            #self.status_LED.setBlink.emit(255,200,0,100,255,0,0,100,3)
             try:
                 ret = subprocess.check_output("sudo ntpdate -t 0.5 192.168.1.100", shell=True)
                 break
