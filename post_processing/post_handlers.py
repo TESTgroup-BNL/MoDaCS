@@ -3,13 +3,14 @@ import json
 import logging
 import ctypes
 import subprocess
+import os
 from os import path, makedirs
 from datetime import datetime, timezone
 
 import numpy as np
 from matplotlib import pyplot as plt
-import post_processing.gpsphoto as gpsphoto
-import post_processing.kml as kml     
+import gpsphoto as gpsphoto
+import kml as kml
 
 
 class PostHandlers():
@@ -286,9 +287,25 @@ class PostHandlers():
 
         with open(inst_data_path, 'r') as data_file:
             data = json.load(data_file)
+            
+        try:
+            cfg_out_path = self.config["gphoto2_cam_path"]
+            if os.path.isabs(cfg_out_path):
+                out_path_base = cfg_out_path
+            else:
+                out_path_base = path.join(path.split(inst_data_path)[0], "Canon", cfg_out_path)
+        except KeyError:
+            out_path_base = path.join(path.split(inst_data_path)[0], "Canon")
+            self.post_log.warning("Full size path not specified, attempting to use preview path")
+        
+        self.post_log.info("Preview path:\t%s" % path.normpath(path.join(path.split(inst_data_path)[0], "Canon")))
+        self.post_log.info("Full size path:\t%s" % out_path_base)
 
         for recNum, rec in data["Data"].items():
         #for recNum, rec in [(recNum, data["Data"][str(recNum)]) for recNum in sorted(int(i) for i in data["Data"].keys())]:
+            if int(recNum) % 50 == 0:
+                self.post_log.info("\t%i%% (%i/%i)" % (round(int(recNum)/len(data["Data"])*100), int(recNum), len(data["Data"])))
+        
             #Get prev filename
             out_prev_path = path.normpath(path.join(path.split(inst_data_path)[0], "Canon", "prev_" + path.split(rec[1])[1]))
             if int(recNum) >= 0 and (recNum not in output["recNum"]):   #keep only global events
@@ -297,11 +314,7 @@ class PostHandlers():
 
             if self.config["geotag"].lower() == "true":
                 #Get full size filename
-                try:
-                    out_path = path.normpath(path.join(self.config["gphoto2_cam_path"], path.split(rec[1])[1]))
-                except KeyError:
-                    out_path = path.normpath(path.join(path.split(inst_data_path)[0], "Canon", path.split(rec[1])[1]))
-                    self.post_log.warning("Full size path not specified, attempting to use preview path")
+                out_path = path.normpath(path.join(out_path_base, path.split(rec[1])[1]))
 
                 #Prep GPS data
                 try:
@@ -480,9 +493,15 @@ class PostHandlers():
         elif len(ulog_paths) == 0:
             self.post_log.warning("No ulog files found, skipping px4 log data")
             return
+            
         ulog = pyulog.ULog(ulog_paths[0], msg_list)
-        ulog_dict = ulog.data_list[0].data
-        ulog_global_dict = ulog.data_list[1].data
+        if ulog.data_list[0].name == "vehicle_gps_position":
+            ulog_dict = ulog.data_list[0].data
+            ulog_global_dict = ulog.data_list[1].data
+        else:
+            ulog_dict = ulog.data_list[1].data
+            ulog_global_dict = ulog.data_list[0].data
+            
         ulog_dict["pdop"] = np.sqrt(np.power(ulog_dict["hdop"],2) + np.power(ulog_dict["vdop"],2))     #calc pdop since ulog provides h and v separately
         ulog_dict["lon"] = ulog_dict["lon"] / 10000000
         ulog_dict["lat"] = ulog_dict["lat"] / 10000000
