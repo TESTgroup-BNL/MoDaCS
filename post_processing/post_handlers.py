@@ -8,9 +8,12 @@ from os import path, makedirs
 from datetime import datetime, timezone
 
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-import gpsphoto as gpsphoto
-import kml as kml
+
+import post_processing.gpsphoto as gpsphoto
+import post_processing.kml as kml
 
 
 class PostHandlers():
@@ -257,17 +260,27 @@ class PostHandlers():
         except KeyError:
             self.post_log.warning("Spec recalc not configured, skipping")
 
-        if self.config["generate_spec_previews"].lower() == "true":
-            self.post_log.info("Generating spec previews...")
+        base_dir = path.normpath(path.join(path.split(inst_data_path)[0], "post", "Specs"))
+        gen_previews = self.config["generate_spec_previews"].lower() == "true"
+
+        if gen_previews or path.isdir(base_dir):
+            if gen_previews:
+                self.post_log.info("Generating spec previews...")
+                makedirs(base_dir, exist_ok=True)
+            else:
+                self.post_log.info("Indexing existing spec previews...")
+            
             with open(inst_data_path, 'r') as data_file:
                 data = json.load(data_file)
-            base_dir = path.normpath(path.join(path.split(inst_data_path)[0], "post", "Specs"))
-            makedirs(base_dir, exist_ok=True)
+
             for recNum, rec in data["Data"].items():
                 if int(recNum) % 50 == 0:
                     self.post_log.info("\t%i%% (%i/%i)" % (round(int(recNum)/len(data["Data"])*100), int(recNum), len(data["Data"])))
                 out_path = path.join(base_dir, "recNum_" + recNum + ".png")
-                generate_preview(data["Wavelengths"]["Downward"], rec, out_path)
+                
+                if gen_previews:
+                    generate_preview(data["Wavelengths"]["Downward"], rec, out_path)
+                
                 if int(recNum) >= 0 and (recNum not in output["recNum"]):   #keep only global events
                     output["images"].append(out_path)
                     output["recNum"].append(recNum)
@@ -411,17 +424,20 @@ class PostHandlers():
         
         locations = self.get_locations(data)
         rec_list = locations["recNum"]
-        image_lists = []
+        image_lists = {}
 
         for i_name, inst in data.items():
             try:
                 image_list = [inst["images"][rec] if rec >=0 else "" for rec in [inst["recNum"].index(r) if r in inst["recNum"] else -1 for r in rec_list]]
-                image_lists.append(image_list)
+                image_lists[i_name] = image_list
             except (KeyError, TypeError):
                 continue
 
-        images = list(zip(*image_lists))
+        images = list(zip(*image_lists.values()))
         buildkml.build_kml(locations, images)
+
+        if self.config["generate_kmz"].lower() == "true":
+            buildkml.build_kmz(locations, images)
 
 
     def px4_ulog(self, inst_data_path, data):

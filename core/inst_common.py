@@ -10,7 +10,7 @@ from PyQt5.QtCore import pyqtSignal
 from util import QSignalHandler, Sig
 
 #MoDaCS Imports
-from util import JSONFileField
+from core.JSONFileField.jsonfilefield import JSONFileField
 
     
 def inst_init(self, instlist, globalPath, mainthreadlist, displayOnly, instrumentPaths):
@@ -153,7 +153,7 @@ class Inst_obj(QtCore.QObject):
     @error.setter
     def error(self, e):
         self.error_prop = e
-        if e is not None and e is not "":
+        if e is not None and e != "":
             self.instLog.error(e)
             self.ready = False
             #if isinstance(e, Exception):

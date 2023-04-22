@@ -6,8 +6,8 @@ from datetime import datetime
 from shutil import ExecError, copy2
 import configparser
 
-from JSONFileField.jsonfilefield import JSONFileField
-from post_handlers import PostHandlers
+from core.JSONFileField.jsonfilefield import JSONFileField
+from post_processing.post_handlers import PostHandlers
 
 class PostProcessing():
 
@@ -151,7 +151,7 @@ class PostProcessing():
 
 class BatchProcess():
 
-    def __init__(self, top_path, post_config_fname):
+    def __init__(self, top_path, post_config_fname=None):
         self.path_list = sorted(next(os.walk(top_path))[1])
         self.post_config_fname = post_config_fname
         logging.basicConfig(level=logging.INFO)

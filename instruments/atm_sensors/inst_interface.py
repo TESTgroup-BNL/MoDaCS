@@ -9,7 +9,7 @@ except Exception:
 from time import sleep, time
 from os import path, makedirs
 #MoDaCS Imports
-from util import JSONFileField
+from core.JSONFileField.jsonfilefield import JSONFileField
 #Other Imports
 import pyqtgraph as pg
 
