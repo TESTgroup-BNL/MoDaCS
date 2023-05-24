@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
+from PIL import Image
 
 import post_processing.gpsphoto as gpsphoto
 import post_processing.kml as kml
@@ -325,10 +326,19 @@ class PostHandlers():
                 output["images"].append(out_prev_path)
                 output["recNum"].append(recNum)
 
-            if self.config["geotag"].lower() == "true":
-                #Get full size filename
-                out_path = path.normpath(path.join(out_path_base, path.split(rec[1])[1]))
 
+            #Get full size filename
+            out_path = path.normpath(path.join(out_path_base, path.split(rec[1])[1]))
+
+            if self.config["convert_raw_to_jpg"].lower() == "true":
+                if out_path[:-3].upper() == "CR2":
+                    jpg_path = out_path.rsplit(out_path[:-3], 1)[0] + ".JPG"
+                    im = Image.open(out_path)
+                    rgb_im = im.convert('RGB')
+                    rgb_im.save(jpg_path)
+                    out_path = jpg_path
+
+            if self.config["geotag"].lower() == "true":
                 #Prep GPS data
                 try:
                     coords = [float(f) for f in locations["coords"][int(recNum)]]
