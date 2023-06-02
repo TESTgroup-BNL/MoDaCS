@@ -1,7 +1,7 @@
 from time import sleep, time
 from os import path, makedirs
     
-from util import JSONFileField
+from core.JSONFileField.jsonfilefield import JSONFileField
 
 
 class Inst_interface():

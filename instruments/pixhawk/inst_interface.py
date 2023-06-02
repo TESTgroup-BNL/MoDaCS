@@ -8,7 +8,7 @@ from time import time, sleep
 from os import path, makedirs
 
 #MoDaCS Imports
-from util import JSONFileField
+from core.JSONFileField.jsonfilefield import JSONFileField
 
 class Inst_interface(QtCore.QObject):
     

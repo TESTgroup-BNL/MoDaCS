@@ -6,7 +6,7 @@ from datetime import datetime
 from shutil import ExecError, copy2
 import configparser
 
-from util import JSONFileField
+from core.JSONFileField.jsonfilefield import JSONFileField
 from post_processing.post_handlers import PostHandlers
 
 class PostProcessing():
@@ -151,7 +151,7 @@ class PostProcessing():
 
 class BatchProcess():
 
-    def __init__(self, top_path, post_config_fname):
+    def __init__(self, top_path, post_config_fname=None):
         self.path_list = sorted(next(os.walk(top_path))[1])
         self.post_config_fname = post_config_fname
         logging.basicConfig(level=logging.INFO)
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     batch = False
     post_dir = None
     post_config_fname = None
-    opts, args = getopt.getopt(sys.argv[1:],"hf:b:")
+    opts, args = getopt.getopt(sys.argv[1:],"hd:c:b:", ["help", "dir =", "config =", "batch ="])
     for opt, arg in opts:
         if opt in ("-h", "--help", "?", "help"):
             print("MoDaCS Post Processing Module\n\nUsage:\n\tpost_common.py -d <Directory> [-b] [-c <post config file>]\n\n\t<Directory> : Directory containing RunData.json file or nested directories containing RunData.json\n\t-b, --batch : Run post processing on every directory within the directory specified\n\t-c, --config : Use specified post config file (Defualt: './post_config.ini')")

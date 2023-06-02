@@ -4,7 +4,7 @@ import ctypes
 
 from PyQt5 import QtCore
     
-from util import JSONFileField
+from core.JSONFileField.jsonfilefield import JSONFileField
 
 
 class Inst_interface():

@@ -13,7 +13,7 @@ except Exception:
 #Other Imports
 import pyqtgraph as pg
 import numpy
-from util import JSONFileField
+from core.JSONFileField.jsonfilefield import JSONFileField
 try:
     import gphoto2 as gp
 except:

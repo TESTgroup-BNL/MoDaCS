@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtNetwork
 from time import sleep, time
 from os import path, makedirs
 #MoDaCS Imports
-from util import JSONFileField
+from core.JSONFileField.jsonfilefield import JSONFileField
 #Other Imports
 import pyqtgraph as pg
 

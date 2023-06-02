@@ -1,0 +1,3 @@
+[submodule "core/JSONFileField"]
+	path = core/JSONFileField
+	url = https://github.com/TESTgroup-BNL/JSONFileField.git

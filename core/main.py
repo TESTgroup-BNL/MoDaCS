@@ -18,13 +18,14 @@ chdir(dirname(dirname(abspath(__file__))))
 sys.path.append(dirname(abspath(__file__)))
 sys.path.append(dirname(dirname(abspath(__file__))))
 
-from inst_common import inst_init
-from events_common import events_init
+from core.inst_common import inst_init
+from core.events_common import events_init
 import ui.ui_interface
-from util import QSignalHandler, RunningThreads, my_excepthook, JSONFileField
-import event_handlers
+from core.util import QSignalHandler, RunningThreads, my_excepthook
+from core.JSONFileField.jsonfilefield import JSONFileField
+import core.event_handlers
 import post_processing.post_common as post_common
-import ntp_server
+import core.ntp_server
 
 class Main(QtWidgets.QMainWindow):
     
@@ -43,7 +44,7 @@ class Main(QtWidgets.QMainWindow):
         super().__init__()
         QtWidgets.QMainWindow.__init__(self)
         
-        self.appEvents = event_handlers.AppEvents()
+        self.appEvents = core.event_handlers.AppEvents()
         self.appEvents.pre_init()
         
         self.active_insts = {}
@@ -84,6 +85,8 @@ class Main(QtWidgets.QMainWindow):
         cp = configparser.ConfigParser()
         opts, args = getopt.getopt(sys.argv[1:],"hc:f:op:", ["run_config="])
         run_config = path.join('.', 'core', 'run_cfg.ini')
+        logFile = None
+
         try:
             for opt, arg in opts:
                 if opt in ("-h", "--help", "?", "help"):
@@ -122,7 +125,6 @@ class Main(QtWidgets.QMainWindow):
                         self.instrumentPaths = runData["InstrumentPaths"]
                         cp.read_dict(runData["Configuration"])
                         self.dataPath = path.dirname(fname)
-                        logFile = None
                         cp["Server"]["enabled"] = "False"
                         cp["Client"]["enabled"] = "False"
                         cp["UI"]["Size"] = "large"
@@ -202,7 +204,7 @@ class Main(QtWidgets.QMainWindow):
                 if str.lower(self.run_cfg["Client"]["ProvideNTP"]) == "true":
                     try:
                         logging.info("Starting NTP server")
-                        self.ntp_service = ntp_server.NTP_Server(self.run_cfg["Client"]["TCP_Client_IP"])
+                        self.ntp_service = core.ntp_server.NTP_Server(self.run_cfg["Client"]["TCP_Client_IP"])
                     except Exception as e:
                         logging.warning("Exception starting NTP server: " + str(e))
             except KeyError:

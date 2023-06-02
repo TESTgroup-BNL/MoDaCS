@@ -4,7 +4,8 @@ import logging
 from time import sleep, time, strftime
 
 #MoDaCS Imports
-from util import JSONFileField, SBlock
+from core.JSONFileField.jsonfilefield import JSONFileField
+from core.util import SBlock
 
 #Other Imports
 from pylepton import Lepton

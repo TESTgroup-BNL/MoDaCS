@@ -1,9 +1,10 @@
 from genericpath import exists
 import json, ast, os
-from os import path
+from os import path, makedirs
 from datetime import datetime
-
-import simplekml, logging
+import logging
+import zipfile
+import simplekml
 
 
 class BuildKML():
@@ -61,7 +62,7 @@ class BuildKML():
 
         return None
 
-    def build_kml(self, locations=None, images=None):
+    def build_kml(self, locations=None, images=None, out_file_path=""):
         #if data_root==None:
         #    data_root = self.data_root
         try:
@@ -80,21 +81,22 @@ class BuildKML():
                         continue
 
             try:
-                locations["coords"] = [(lon, lat, alt) for ((lon, lat), alt) in zip(locations["coords"], locations["alt"])]
+                coords_list = [(lon, lat, alt) for ((lon, lat), alt) in zip(locations["coords"], locations["alt"])]
                 alt_mode = simplekml.AltitudeMode.absolute
             except KeyError:
+                coords_list = locations["coords"]
                 alt_mode = simplekml.AltitudeMode.clamptoground
 
             kml = simplekml.Kml()
             ls = kml.newlinestring(name=flight_start)
-            ls.coords = locations["coords"]
+            ls.coords = coords_list
             ls.extrude = 1
             ls.style.polystyle.color = simplekml.Color.changealphaint(50, simplekml.Color.lightblue)
             ls.altitudemode = alt_mode
             ls.style.linestyle.width = 5
             ls.style.linestyle.color = simplekml.Color.lightblue
 
-            for i, coords in enumerate(locations["coords"]):
+            for i, coords in enumerate(coords_list):
                 pnt = kml.newpoint(name="%i" % i)
                 pnt.coords = [coords]
                 pnt.altitudemode = alt_mode
@@ -105,17 +107,60 @@ class BuildKML():
                 if images is not None:
                     img_str = ""
                     for img in images[i]:
-                        img_str += r"<tr><td><img width=100% src='file:///" + img + r"' /></td></tr>"
+                        try:
+                            img_str += r"<tr><td><img width=100% src='" + path.relpath(img, self.data_root) + r"' /></td></tr>"
+                        except ValueError:
+                            img_str += r"<tr><td><div width=100%>(No preview available)</div></td></tr>"
+
                     pnt.balloonstyle.text = r"<![CDATA[ <table width=640px cellpadding=0 cellspacing=0>" + img_str + r"</table>]]>"
                 pnt.timestamp.when = datetime.fromtimestamp(locations["timestamps"][i]).strftime('%Y-%m-%dT%H:%M:%SZ')
 
-            out_file_path = path.join(self.data_root, flight_start + ".kml")
+            if out_file_path=="":
+                out_file_path = path.join(self.data_root, flight_start + ".kml")
+
             kml.save(out_file_path)
-            if self.build_dir==True:
-                kml.save(path.join(self.starting_root, flight_start + ".kml"))
+            
             self.post_log.info("\tDone.")
         except KeyError:
             self.post_log.info("\tMissing info from instrument data, skipping flight")
+        return
+
+    def build_kmz(self, locations=None, images=[]):
+        self.post_log.info("Building KMZ...")
+        try:
+            flight_start = self.splitall(self.data_root)[-1]
+            out_file_path = path.join(self.data_root, flight_start + ".kmz")
+            makedirs(path.join(self.data_root, "post"), exist_ok=True)
+            self.post_log.info("\tCreating file: %s" % out_file_path)
+
+            with zipfile.ZipFile(out_file_path, 'w') as kmz:
+                self.post_log.info("\tAdding previews for %i points..." % len(images))
+                for recNum, pt in enumerate(images):
+                    if int(recNum) % 50 == 0:
+                        self.post_log.info("\t\t%i%% (%i/%i)" % (round(int(recNum)/len(images)*100), int(recNum), len(images)))
+                    for f in pt:
+                        try:
+                            f_arc = path.relpath(f, self.data_root)
+                            kmz.write(f,f_arc)
+                        except ValueError:
+                            pass
+                kml_temp = path.join(self.data_root,"post","doc.kml")
+                self.build_kml(locations, images, out_file_path=kml_temp)
+                kmz.write(kml_temp, "doc.kml")
+
+            self.post_log.info("\tDone writing, checking integrity...")
+            with zipfile.ZipFile(out_file_path, 'r') as kmz:
+                test = kmz.testzip() 
+                if test is None:
+                    self.post_log.info("\t\tAll files and checksums are good.")
+                else:
+                    self.post_log.warning("\t\tError in file: %s, KMZ may be corrupt" % test)
+
+            self.post_log.info("\tRemoving temp files...")
+            os.remove(kml_temp)
+            self.post_log.info("\tDone.")
+        except KeyError as e:
+            self.post_log.info("\t'%s', skipping flight" % str(e))
         return
 
     def reprocess_dir(self):

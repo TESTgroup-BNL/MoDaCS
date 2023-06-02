@@ -3,13 +3,18 @@ import json
 import logging
 import ctypes
 import subprocess
+import os
 from os import path, makedirs
 from datetime import datetime, timezone
 
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot as plt
+from PIL import Image
+
 import post_processing.gpsphoto as gpsphoto
-import post_processing.kml as kml     
+import post_processing.kml as kml
 
 
 class PostHandlers():
@@ -256,17 +261,27 @@ class PostHandlers():
         except KeyError:
             self.post_log.warning("Spec recalc not configured, skipping")
 
-        if self.config["generate_spec_previews"].lower() == "true":
-            self.post_log.info("Generating spec previews...")
+        base_dir = path.normpath(path.join(path.split(inst_data_path)[0], "post", "Specs"))
+        gen_previews = self.config["generate_spec_previews"].lower() == "true"
+
+        if gen_previews or path.isdir(base_dir):
+            if gen_previews:
+                self.post_log.info("Generating spec previews...")
+                makedirs(base_dir, exist_ok=True)
+            else:
+                self.post_log.info("Indexing existing spec previews...")
+            
             with open(inst_data_path, 'r') as data_file:
                 data = json.load(data_file)
-            base_dir = path.normpath(path.join(path.split(inst_data_path)[0], "post", "Specs"))
-            makedirs(base_dir, exist_ok=True)
+
             for recNum, rec in data["Data"].items():
                 if int(recNum) % 50 == 0:
                     self.post_log.info("\t%i%% (%i/%i)" % (round(int(recNum)/len(data["Data"])*100), int(recNum), len(data["Data"])))
                 out_path = path.join(base_dir, "recNum_" + recNum + ".png")
-                generate_preview(data["Wavelengths"]["Downward"], rec, out_path)
+                
+                if gen_previews:
+                    generate_preview(data["Wavelengths"]["Downward"], rec, out_path)
+                
                 if int(recNum) >= 0 and (recNum not in output["recNum"]):   #keep only global events
                     output["images"].append(out_path)
                     output["recNum"].append(recNum)
@@ -286,23 +301,44 @@ class PostHandlers():
 
         with open(inst_data_path, 'r') as data_file:
             data = json.load(data_file)
+            
+        try:
+            cfg_out_path = self.config["gphoto2_cam_path"]
+            if os.path.isabs(cfg_out_path):
+                out_path_base = cfg_out_path
+            else:
+                out_path_base = path.join(path.split(inst_data_path)[0], "Canon", cfg_out_path)
+        except KeyError:
+            out_path_base = path.join(path.split(inst_data_path)[0], "Canon")
+            self.post_log.warning("Full size path not specified, attempting to use preview path")
+        
+        self.post_log.info("Preview path:\t%s" % path.normpath(path.join(path.split(inst_data_path)[0], "Canon")))
+        self.post_log.info("Full size path:\t%s" % out_path_base)
 
         for recNum, rec in data["Data"].items():
         #for recNum, rec in [(recNum, data["Data"][str(recNum)]) for recNum in sorted(int(i) for i in data["Data"].keys())]:
+            if int(recNum) % 50 == 0:
+                self.post_log.info("\t%i%% (%i/%i)" % (round(int(recNum)/len(data["Data"])*100), int(recNum), len(data["Data"])))
+        
             #Get prev filename
             out_prev_path = path.normpath(path.join(path.split(inst_data_path)[0], "Canon", "prev_" + path.split(rec[1])[1]))
             if int(recNum) >= 0 and (recNum not in output["recNum"]):   #keep only global events
                 output["images"].append(out_prev_path)
                 output["recNum"].append(recNum)
 
-            if self.config["geotag"].lower() == "true":
-                #Get full size filename
-                try:
-                    out_path = path.normpath(path.join(self.config["gphoto2_cam_path"], path.split(rec[1])[1]))
-                except KeyError:
-                    out_path = path.normpath(path.join(path.split(inst_data_path)[0], "Canon", path.split(rec[1])[1]))
-                    self.post_log.warning("Full size path not specified, attempting to use preview path")
 
+            #Get full size filename
+            out_path = path.normpath(path.join(out_path_base, path.split(rec[1])[1]))
+
+            if self.config["convert_raw_to_jpg"].lower() == "true":
+                if out_path[:-3].upper() == "CR2":
+                    jpg_path = out_path.rsplit(out_path[:-3], 1)[0] + ".JPG"
+                    im = Image.open(out_path)
+                    rgb_im = im.convert('RGB')
+                    rgb_im.save(jpg_path)
+                    out_path = jpg_path
+
+            if self.config["geotag"].lower() == "true":
                 #Prep GPS data
                 try:
                     coords = [float(f) for f in locations["coords"][int(recNum)]]
@@ -398,17 +434,20 @@ class PostHandlers():
         
         locations = self.get_locations(data)
         rec_list = locations["recNum"]
-        image_lists = []
+        image_lists = {}
 
         for i_name, inst in data.items():
             try:
                 image_list = [inst["images"][rec] if rec >=0 else "" for rec in [inst["recNum"].index(r) if r in inst["recNum"] else -1 for r in rec_list]]
-                image_lists.append(image_list)
+                image_lists[i_name] = image_list
             except (KeyError, TypeError):
                 continue
 
-        images = list(zip(*image_lists))
+        images = list(zip(*image_lists.values()))
         buildkml.build_kml(locations, images)
+
+        if self.config["generate_kmz"].lower() == "true":
+            buildkml.build_kmz(locations, images)
 
 
     def px4_ulog(self, inst_data_path, data):
@@ -480,9 +519,15 @@ class PostHandlers():
         elif len(ulog_paths) == 0:
             self.post_log.warning("No ulog files found, skipping px4 log data")
             return
+            
         ulog = pyulog.ULog(ulog_paths[0], msg_list)
-        ulog_dict = ulog.data_list[0].data
-        ulog_global_dict = ulog.data_list[1].data
+        if ulog.data_list[0].name == "vehicle_gps_position":
+            ulog_dict = ulog.data_list[0].data
+            ulog_global_dict = ulog.data_list[1].data
+        else:
+            ulog_dict = ulog.data_list[1].data
+            ulog_global_dict = ulog.data_list[0].data
+            
         ulog_dict["pdop"] = np.sqrt(np.power(ulog_dict["hdop"],2) + np.power(ulog_dict["vdop"],2))     #calc pdop since ulog provides h and v separately
         ulog_dict["lon"] = ulog_dict["lon"] / 10000000
         ulog_dict["lat"] = ulog_dict["lat"] / 10000000
