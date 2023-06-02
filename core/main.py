@@ -44,7 +44,7 @@ class Main(QtWidgets.QMainWindow):
         super().__init__()
         QtWidgets.QMainWindow.__init__(self)
         
-        self.appEvents = event_handlers.AppEvents()
+        self.appEvents = core.event_handlers.AppEvents()
         self.appEvents.pre_init()
         
         self.active_insts = {}
@@ -204,7 +204,7 @@ class Main(QtWidgets.QMainWindow):
                 if str.lower(self.run_cfg["Client"]["ProvideNTP"]) == "true":
                     try:
                         logging.info("Starting NTP server")
-                        self.ntp_service = ntp_server.NTP_Server(self.run_cfg["Client"]["TCP_Client_IP"])
+                        self.ntp_service = core.ntp_server.NTP_Server(self.run_cfg["Client"]["TCP_Client_IP"])
                     except Exception as e:
                         logging.warning("Exception starting NTP server: " + str(e))
             except KeyError:
