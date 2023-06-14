@@ -73,7 +73,7 @@ class Main(QtWidgets.QMainWindow):
         
         try:
             from os import uname
-            if uname()[4].startswith("arm"):
+            if uname()[4].startswith("arm") or uname()[4].startswith("aarch"):
                 self.usingRasPi = True
                 print("Running on RaspPi (or other ARM device)")
             else:
@@ -143,6 +143,7 @@ class Main(QtWidgets.QMainWindow):
                 
                 if self.usingRasPi:
                     if cp["UI"]["WaitForNTP"] == "True":
+                        print("Querying NTP server...")
                         self.waitForNTP()
                 
                 self.dataPath = path.join(cp["Data"]["location"], str(strftime("%Y-%m-%d_%H%M%S")))
@@ -155,7 +156,7 @@ class Main(QtWidgets.QMainWindow):
             raise
         
         try:
-            log_level = logging._nameToLevel[cp["UI"]["WaitForNTP"]]
+            log_level = logging._nameToLevel[cp["UI"]["LogLevel"]]
         except (KeyError, TypeError):
             log_level = logging.INFO
 
@@ -444,8 +445,10 @@ class Main(QtWidgets.QMainWindow):
         self.close()
 
     def waitForNTP(self):
-        
-        subprocess.call("sudo service ntp stop", shell=True)
+        try:
+            subprocess.call("sudo service ntp stop", shell=True)
+        except Exception:
+            pass
         for i in range(0, 60): #try for 1 minute
             print("Waiting for NTP...")
             #self.status_LED.setBlink.emit(255,200,0,100,255,0,0,100,3)

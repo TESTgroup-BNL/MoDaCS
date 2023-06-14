@@ -40,6 +40,15 @@ class Inst_interface():
         self.inst_vars = inst_vars
         self.jsonFF = jsonFF
         self.cam_present = False
+        self.preview = True
+
+        try:
+            self.preview = bool(self.inst_vars.inst_cfg["Initialization"]["preview"])
+        except KeyError:
+            pass
+
+        self.imgPath = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Canon")
+        makedirs(self.imgPath, exist_ok=True)
 
         try:
             #Call instrument init
@@ -48,8 +57,8 @@ class Inst_interface():
             cam_info = self.cam.get_summary().text
             self.cam_present = True
         except Exception as e:
-            if "'cam_info' referenced before assignment" in str(e):
-                self.inst_vars.inst_log.warning("No camera found.")
+            if "referenced before assignment" in str(e):
+                Exception("No camera found.")
             else:
                 self.inst_vars.inst_log.warning(e)
         
@@ -57,20 +66,20 @@ class Inst_interface():
         header = self.jsonFF.addField("Header")
         header["Camera Info"] = cam_info
 
-        self.imgPath = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Canon")
-        makedirs(self.imgPath, exist_ok=True)
         
     def acquire(self):
         if self.cam_present:
-            t = time()
-            prev = self.cam.capture_preview()
+            
+            if self.preview:
+                prev = self.cam.capture_preview()
+            t = time()    
             img = self.cam.capture(gp.GP_CAPTURE_IMAGE)
 
             self.jsonFF["Data"].write(img.name, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
-            prev.save(path.join(self.imgPath, "prev_" + img.name))
-
-            with open(path.join(self.imgPath, "prev_" + img.name), 'rb') as f:
-                self.ui_signals["updateImage"].emit(f.read())
+            if self.preview:
+                prev.save(path.join(self.imgPath, "prev_" + img.name))
+                with open(path.join(self.imgPath, "prev_" + img.name), 'rb') as f:
+                    self.ui_signals["updateImage"].emit(f.read())
             #Save prev and copy temp prev to inst data path
             #shutil.move(prev.name, path.join(self.imgPath, prev.name))
 

@@ -8,7 +8,9 @@ except Exception:
 #System Imports
 from os import path, makedirs
 import logging, ctypes
-from time import sleep, time, strftime
+from time import sleep, time
+from datetime import datetime
+from shutil import copy2
 
 #MoDaCS Imports
 from core.JSONFileField.jsonfilefield import JSONFileField
@@ -41,26 +43,35 @@ class Inst_interface(QtCore.QObject):
         self.jsonFF = jsonFF
         self.filePrefix = "Thermal_"
         self.updateDisplay = bool(self.inst_vars.inst_cfg["Initialization"]["UpdateDisplay"])
-        
-        sleep(1)
 
         #Init camera   
         try:
-            libpath = path.join(self.inst_vars.inst_path, 'ici9000Pythonlib_v2.so')
-            self.tc = ctypes.cdll.LoadLibrary(libpath) 
+            copy2(path.join(self.inst_vars.inst_path, 'ici9000.hex'), 'ici9000.hex')    #make sure firmware is in current working dir; should figure out a better way to do this
+            ctypes.CDLL("/usr/local/lib/libusb-1.0.so", mode = ctypes.RTLD_GLOBAL)
+            ctypes.CDLL("/usr/local/lib/libicisdk.so")
+            libpath = path.join(self.inst_vars.inst_path, 'ici9000Pythonlib_v2.so')  
+            self.tc = ctypes.cdll.LoadLibrary(libpath)
+            self.tc.startCam.restype = ctypes.c_int
+            self.tc.stopCam.restype = ctypes.c_void_p
+            self.tc.getSize.restype = ctypes.c_int
+            self.tc.getWidth.restype = ctypes.c_int
+            self.tc.getHeight.restype = ctypes.c_int
             self.tc.loadCal.argtypes = [ctypes.c_char_p]
+            self.tc.loadCal.restype = ctypes.c_int
+            self.tc.doNUC.restype = ctypes.c_int
             self.tc.getSN.restype = ctypes.c_long
             self.tc.getImage.argtypes = [ctypes.POINTER(ctypes.c_float)]
         except Exception as e:
             self.inst_vars.inst_log.error("Error importing library: %s" % e)
             
         try:
-            self.tc.startCam()
+            if self.tc.startCam() < 0:
+                raise Exception("No cameras found")
         except Exception as e:
-            self.inst_vars.inst_log.error("Error starting thermal cam: %s" % e)
+            raise Exception("Error starting thermal cam: %s" % e)
+            
         
         try:
-            
             self.size = self.tc.getSize()
             self.height = self.tc.getHeight()
             self.width = self.tc.getWidth()
@@ -68,12 +79,18 @@ class Inst_interface(QtCore.QObject):
             if self.size > (640*480) or self.height==0 or self.width==0:
                 raise Exception("Problem with image dimensions")
             
-            self.imgbuf = numpy.zeros((self.height, self.width), numpy.float)
+            self.imgbuf = numpy.zeros((self.height, self.width), numpy.float32)
             self.datbuf = (ctypes.c_float * self.size)()
             
              #Load calibration
-            self.calPath = path.join(self.inst_vars.inst_path, self.inst_vars.inst_cfg["Initialization"]["CalibrationFolder"])
-            self.tc.loadCal(self.calPath.encode())
+            self.calPath = self.inst_vars.inst_cfg["Initialization"]["CalibrationFolder"]
+            self.inst_vars.inst_log.info("Loading cals from: " + self.calPath)
+            retval = self.tc.loadCal(self.calPath.encode())
+            self.inst_vars.inst_log.info("Cal load returned: %i" % retval)
+
+            retval = self.tc.doNUC()
+            self.inst_vars.inst_log.info("NUC returned: %i" % retval)
+
         except Exception as e:
             raise Exception("Error setting up thermal camera: %s" % e)
         
@@ -102,7 +119,7 @@ class Inst_interface(QtCore.QObject):
             self.tc.getImage(self.datbuf)
             if not self.datbuf[0] == 0:
                 #Save metadata
-                imgFile = path.join(self.imgPath, self.filePrefix + strftime("%Y%m%d_%H%M%S") + ".dat")
+                imgFile = path.join(self.imgPath, self.filePrefix + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".dat")
                 self.jsonFF["Data"].write(imgFile, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
                 
                 #Save binary
@@ -148,7 +165,7 @@ class Inst_interface(QtCore.QObject):
         self.size = cachedHeader["Size"]
         
         if (not hasattr(self, "databuf")) or (not hasattr(self, "imgbuf")):
-            self.imgbuf = numpy.zeros((self.height, self.width), numpy.float)
+            self.imgbuf = numpy.zeros((self.height, self.width), numpy.float32)
             self.datbuf = (ctypes.c_float * self.size)()
         
         #Load binary

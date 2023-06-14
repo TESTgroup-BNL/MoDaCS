@@ -27,7 +27,7 @@ Currently being developed with:
 
 Get everything at once for all current modules and instruments:
 
-	(sudo) pip3 install pyqt5 pyqtgraph paramiko simplekml dronekit seabreeze pyusb pynmea2 rpi_ws281x adafruit-circuitpython-neopixel matplotlib pyexif exifread
+	(sudo) pip3 install pyqt5 pyqtgraph paramiko simplekml dronekit seabreeze pyusb pynmea2 rpi_ws281x adafruit-circuitpython-neopixel matplotlib pyexif exifread gphoto2 sparkfun-ublox-gps
 
 Requirements:
 

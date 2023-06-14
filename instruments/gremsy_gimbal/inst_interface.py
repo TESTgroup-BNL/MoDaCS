@@ -60,7 +60,7 @@ class Inst_interface():
             self.glib.getAttitude.argtypes = [GimbalInterface, ctypes.POINTER(ctypes.c_float * 3)]
             self.glib.getAttitude.restype = ctypes.c_void_p
         except Exception as e:
-            self.inst_vars.inst_log.error("Error importing library: %s" % e)
+            raise Exception("Error importing library: %s" % e)
             
         try:
             self.inst_vars.inst_log.info("Starting gimbal interface...")
@@ -68,7 +68,7 @@ class Inst_interface():
             self.gimbal = self.glib.createGimbalInterface(self.port)
             sleep(15)
         except Exception as e:
-            self.inst_vars.inst_log.error("Error starting gimbal: %s" % e)
+            raise Exception("Error starting gimbal: %s" % e)
 
         # Set up UI
         self.ui_signals["ui.pb_off.released"].connect(lambda: self.motor_power(False))
