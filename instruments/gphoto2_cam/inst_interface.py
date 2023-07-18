@@ -66,6 +66,9 @@ class Inst_interface():
         header = self.jsonFF.addField("Header")
         header["Camera Info"] = cam_info
 
+        self.inst_vars.inst_log.info("Capturing test image...")
+        self.acquire()
+
         
     def acquire(self):
         if self.cam_present:

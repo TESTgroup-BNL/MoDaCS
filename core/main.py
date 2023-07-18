@@ -129,8 +129,6 @@ class Main(QtWidgets.QMainWindow):
                         cp["Client"]["enabled"] = "False"
                         cp["UI"]["Size"] = "large"
                         
-                        origpath = cp["Data"]["Location"]
-                        
                         for inst, instpath in self.instrumentPaths.items():
                             self.instrumentPaths[inst] = path.join(self.dataPath, path.split(instpath)[1])
 
@@ -146,9 +144,14 @@ class Main(QtWidgets.QMainWindow):
                         print("Querying NTP server...")
                         self.waitForNTP()
                 
-                self.dataPath = path.join(cp["Data"]["location"], str(strftime("%Y-%m-%d_%H%M%S")))
+                if path.isdir(path.dirname(cp["Data"]["Location"])):
+                    self.dataPath = path.join(cp["Data"]["Location"], str(strftime("%Y-%m-%d_%H%M%S")))
+                else:
+                    self.dataPath = path.join(cp["Data"]["Location_fallback"], str(strftime("%Y-%m-%d_%H%M%S")))
+                    print("Primary data location unavailable, using fallback location")
                 
                 makedirs(self.dataPath, exist_ok=True)
+                print("Data Storage Path: " + self.dataPath)
                 logFile = path.join(self.dataPath, str(strftime("%Y-%m-%d_%H%M%S_RunLog.txt")))
                 
         except KeyError:
@@ -210,6 +213,8 @@ class Main(QtWidgets.QMainWindow):
                         logging.warning("Exception starting NTP server: " + str(e))
             except KeyError:
                 pass
+                
+        sleep(5)
 
         #Initialize Main Data File
         if self.displayOnly:
@@ -406,11 +411,23 @@ class Main(QtWidgets.QMainWindow):
             self._i = 0
             
             self.runningThreads.allDone.connect(self.quit)
-            self.runningThreads.countChange.connect(lambda n: logging.debug("Waiting for %i thread(s)" % n))
+            self.runningThreads.countChange.connect(self.check_threads)
     
             self.shut_timer = QtCore.QTimer(self)
             self.shut_timer.timeout.connect(self.check_shutdown)
             self.shut_timer.start(1000)
+
+    def check_threads(self, n):
+        if self.ui_int.server.enabled and n==1:
+            self.ui_int.server.shutdownSig.emit()   #if server thread is the only thing left, stop it
+        elif self.ui_int.client.enabled and n==1:
+            self.ui_int.client.shutdownSig.emit()   #if client thread is the only thing left, stop it
+        elif self.ui_int.server.enabled and self.ui_int.client.enabled and n==2:
+            self.ui_int.server.shutdownSig.emit()
+            self.ui_int.client.shutdownSig.emit()
+        else:
+            logging.debug("Waiting for %i thread(s)" % n)
+
     
     def check_shutdown(self):
         self._i += 1
