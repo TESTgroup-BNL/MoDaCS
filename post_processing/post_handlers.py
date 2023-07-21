@@ -138,46 +138,50 @@ class PostHandlers():
         attitudes = self.get_cam_attitude(data)
 
         for i_name, inst in data.items():
-            try:
-                img_list = inst["images"]
-                rec_list = [int(r) for r in inst["recNum"]]
-            except KeyError:
-                self.post_log.info("No images for instrument %s, skipping")
-                continue
+            for img_type in ("images","previews"):
+                try:
+                    img_list = inst[img_type]
+                    rec_list = [int(r) for r in inst["recNum"]]
+                except KeyError:
+                    self.post_log.info("No %s for instrument %s, skipping" % (img_type, i_name))
+                    continue
+                
+                if img_type == "previews":
+                    fname = path.normpath(path.join(path.dirname(img_list[0]),"geo_previews.txt"))
+                else:
+                    fname = path.normpath(path.join(path.dirname(img_list[0]),"geo.txt"))
 
-            fname = path.normpath(path.join(path.dirname(img_list[0]),"geo.txt"))
+                with open(fname, 'w') as csv_f:
+                    csv_f.write("EPSG:4326\n")
+                    combined = {}
+                    for rec in rec_list:
+                        loc_idx = locations["recNum"].index(str(rec))
+                        att_idx = attitudes["recNum"].index(str(rec))
+                        img_file = img_list[rec_list.index(rec)]
 
-            with open(fname, 'w') as csv_f:
-                csv_f.write("EPSG:4326\n")
-                combined = {}
-                for rec in rec_list:
-                    loc_idx = locations["recNum"].index(str(rec))
-                    att_idx = attitudes["recNum"].index(str(rec))
-                    img_file = img_list[rec_list.index(rec)]
+                        combined = {"file":path.split(img_file)[1]}
+                        locs_dict = {}
+                        atts_dict = {}
 
-                    combined = {"file":path.split(img_file)[1]}
-                    locs_dict = {}
-                    atts_dict = {}
+                        try:
+                            locs_dict = {"loc_timestamp":locations["timestamps"][loc_idx], "coords":locations["coords"][loc_idx], "alt":locations["alt"][loc_idx], "yaw":locations["yaw"][loc_idx]}
+                        except KeyError:
+                            self.post_log.warning("\tLocation missing for recNum %i" % rec)
+                            locs_dict = {"loc_timestamp":np.NaN, "coords":(np.NaN,np.NaN), "alt":np.NaN, "yaw":np.NaN}
+                        finally:
+                            combined.update(locs_dict)
 
-                    try:
-                        locs_dict = {"loc_timestamp":locations["timestamps"][loc_idx], "coords":locations["coords"][loc_idx], "alt":locations["alt"][loc_idx], "yaw":locations["yaw"][loc_idx]}
-                    except KeyError:
-                        self.post_log.warning("\tLocation missing for recNum %i" % rec)
-                        locs_dict = {"loc_timestamp":np.NaN, "coords":(np.NaN,np.NaN), "alt":np.NaN, "yaw":np.NaN}
-                    finally:
-                        combined.update(locs_dict)
+                        try:
+                            atts_dict = {"att_timestamp":attitudes["timestamps"][att_idx], "cam_pitch":attitudes["pitch"][att_idx], "cam_roll":attitudes["roll"][att_idx], "cam_yaw":attitudes["yaw"][att_idx]}
+                        except KeyError:
+                            self.post_log.warning("\tAtittude missing for recNum %i" % rec)
+                            atts_dict = {"att_timestamp":np.NaN, "cam_pitch":np.NaN, "cam_roll":np.NaN, "cam_yaw":np.NaN}
+                        finally:
+                            combined.update(atts_dict)
 
-                    try:
-                        atts_dict = {"att_timestamp":attitudes["timestamps"][att_idx], "cam_pitch":attitudes["pitch"][att_idx], "cam_roll":attitudes["roll"][att_idx], "cam_yaw":attitudes["yaw"][att_idx]}
-                    except KeyError:
-                        self.post_log.warning("\tAtittude missing for recNum %i" % rec)
-                        atts_dict = {"att_timestamp":np.NaN, "cam_pitch":np.NaN, "cam_roll":np.NaN, "cam_yaw":np.NaN}
-                    finally:
-                        combined.update(atts_dict)
-
-                    rec_str = "%s\t%f\t%f\t%f\t%f\t%f\t%f\n" % (combined["file"],combined["coords"][0],combined["coords"][1],combined["alt"],combined["yaw"]+combined["cam_yaw"],combined["cam_pitch"],combined["cam_roll"])
-                    csv_f.write(rec_str)
-            self.post_log.info("Done saving to %s" % i_name)
+                        rec_str = "%s\t%f\t%f\t%f\t%f\t%f\t%f\n" % (combined["file"],combined["coords"][0],combined["coords"][1],combined["alt"],combined["yaw"]+combined["cam_yaw"],combined["cam_pitch"],combined["cam_roll"])
+                        csv_f.write(rec_str)
+                self.post_log.info("Done saving geo for %s %s to %s" % (i_name, img_type, path.split(fname)[1]))
         return       
 
     def pixhawk_v2(self, inst_data_path, data):
@@ -298,7 +302,7 @@ class PostHandlers():
             return fname
 
         output = {} #list of preview filenames
-        output["images"] = []
+        output["previews"] = []
         output["recNum"] = []
 
         try:
@@ -333,7 +337,7 @@ class PostHandlers():
                     generate_preview(data["Wavelengths"]["Downward"], rec, out_path)
                 
                 if int(recNum) >= 0 and (recNum not in output["recNum"]):   #keep only global events
-                    output["images"].append(out_path)
+                    output["previews"].append(out_path)
                     output["recNum"].append(recNum)
             self.post_log.info("Done.")
         return output
@@ -341,6 +345,7 @@ class PostHandlers():
 
     def gphoto2_cam(self, inst_data_path, data):
         output = {} #list of preview filenames
+        output["previews"] = []
         output["images"] = []
         output["recNum"] = []
 
@@ -373,12 +378,13 @@ class PostHandlers():
             #Get prev filename
             out_prev_path = path.normpath(path.join(path.split(inst_data_path)[0], "Canon", "prev_" + path.split(rec[1])[1]))
             if int(recNum) >= 0 and (recNum not in output["recNum"]):   #keep only global events
-                output["images"].append(out_prev_path)
+                output["previews"].append(out_prev_path)
                 output["recNum"].append(recNum)
 
 
             #Get full size filename
             out_path = path.normpath(path.join(out_path_base, path.split(rec[1])[1]))
+            output["images"].append(out_path)
 
             if self.config["convert_raw_to_jpg"].lower() == "true":
                 if out_path[:-3].upper() == "CR2":
@@ -407,12 +413,13 @@ class PostHandlers():
                     except FileNotFoundError:
                         self.post_log.warning("\tPreview %s not found, skipping" % out_prev_path)
 
-                    #Modify full size
-                    try:
-                        photo = gpsphoto.GPSPhoto(out_path)
-                        photo.modGPSData(gps_meta, out_path)
-                    except FileNotFoundError:
-                        self.post_log.warning("\tFull sized image %s not found, skipping" % out_path)
+                    if self.config["geotag_fullsize"].lower() == "true":
+                        #Modify full size
+                        try:
+                            photo = gpsphoto.GPSPhoto(out_path)
+                            photo.modGPSData(gps_meta, out_path)
+                        except FileNotFoundError:
+                            self.post_log.warning("\tFull sized image %s not found, skipping" % out_path)
 
                 except KeyError:
                     self.post_log.warning("No location data for record %s, EXIF not updated." % recNum)
@@ -421,6 +428,7 @@ class PostHandlers():
 
     def ici_thermal(self, inst_data_path, data):
         output = {} #list of preview filenames
+        output["previews"] = []
         output["images"] = []
         output["recNum"] = []
 
@@ -454,6 +462,7 @@ class PostHandlers():
             out_path = path.normpath(path.join(path.split(inst_data_path)[0], "post", "Thermal", path.split(fname)[1]))[:-3] + "jpg"
             out_path_tif = path.normpath(path.join(path.split(inst_data_path)[0], "post", "Thermal", path.split(fname)[1]))[:-3] + "tif"
             if int(recNum) >= 0 and (recNum not in output["recNum"]):   #keep only global events
+                output["previews"].append(out_path)
                 output["images"].append(out_path_tif)
                 output["recNum"].append(recNum)
 
@@ -499,7 +508,7 @@ class PostHandlers():
 
         for i_name, inst in data.items():
             try:
-                image_list = [inst["images"][rec] if rec >=0 else "" for rec in [inst["recNum"].index(r) if r in inst["recNum"] else -1 for r in rec_list]]
+                image_list = [inst["previews"][rec] if rec >=0 else "" for rec in [inst["recNum"].index(r) if r in inst["recNum"] else -1 for r in rec_list]]
                 image_lists[i_name] = image_list
             except (KeyError, TypeError):
                 continue
