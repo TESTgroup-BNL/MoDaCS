@@ -393,8 +393,15 @@ class PostHandlers():
         for recNum, rec in data["Data"].items():
         #for recNum, rec in [(recNum, data["Data"][str(recNum)]) for recNum in sorted(int(i) for i in data["Data"].keys())]:
             #Get filename
-            imgFile = path.normpath(path.join(path.split(inst_data_path)[0], "Thermal", path.split(rec[1])[1]))
-            out_path = path.normpath(path.join(path.split(inst_data_path)[0], "post", "Thermal", path.split(rec[1])[1]))[:-3] + "jpg"
+            try:
+                fname = rec[1]["file"]  #check for newer format
+                fpaState = rec[1]["fpaState"]
+            except (TypeError, KeyError):
+                fname = rec[1]
+                fpaState = -1
+        
+            imgFile = path.normpath(path.join(path.split(inst_data_path)[0], "Thermal", path.split(fname)[1]))
+            out_path = path.normpath(path.join(path.split(inst_data_path)[0], "post", "Thermal", path.split(fname)[1]))[:-3] + "jpg"
             if int(recNum) >= 0 and (recNum not in output["recNum"]):   #keep only global events
                 output["images"].append(out_path)
                 output["recNum"].append(recNum)
@@ -455,7 +462,7 @@ class PostHandlers():
             from scipy import interpolate
             import pyulog
         except Exception:
-            self.post_log.warning("pyulog module not found, skipping px4 log data")
+            self.post_log.warning("pyulog or scipy not found, skipping px4 log data")
             return
 
         primary = data["pi_gps_ublox"]

@@ -24,6 +24,7 @@ extern "C"
 	int getHeight();
 	int getSize();
 	long getSN();
+	int getTemps(float* fpaTemp, float* lensTemp, unsigned short* fpaState);
 }
 
 int getWidth() {
@@ -109,11 +110,26 @@ int loadCal(const char folder_path[])
 
 }
 
-int doNUC(){
+int doNUC() {
 	int nRtnError = pFrameGrabber->PerformNUC();
 	printf("nRtnError = %d, %s\n", nRtnError, pFrameGrabber->GetError(nRtnError));
 	return nRtnError;
 }
+
+
+int getTemps(float* fpaTemp, float* lensTemp, unsigned short* fpaState) {
+
+	TemperatureData pTemperatureData;
+	int nRtnError = pFrameGrabber->GetFPALensTemperatureData(&pTemperatureData);
+
+	*fpaTemp = pTemperatureData.fpa;
+	*lensTemp = pTemperatureData.lens;
+	*fpaState = pTemperatureData.fpaState;
+
+	printf("nRtnError = %d, %s\n", nRtnError, pFrameGrabber->GetError(nRtnError));
+	return nRtnError;
+}
+
 
 void getImage(float pRadiometricImage[])
 

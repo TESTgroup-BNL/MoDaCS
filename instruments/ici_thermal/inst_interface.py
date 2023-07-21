@@ -49,7 +49,7 @@ class Inst_interface(QtCore.QObject):
             copy2(path.join(self.inst_vars.inst_path, 'ici9000.hex'), 'ici9000.hex')    #make sure firmware is in current working dir; should figure out a better way to do this
             ctypes.CDLL("/usr/local/lib/libusb-1.0.so", mode = ctypes.RTLD_GLOBAL)
             ctypes.CDLL("/usr/local/lib/libicisdk.so")
-            libpath = path.join(self.inst_vars.inst_path, 'ici9000Pythonlib_v2.so')  
+            libpath = path.join(self.inst_vars.inst_path, 'ici9000Pythonlib_v3.so')  
             self.tc = ctypes.cdll.LoadLibrary(libpath)
             self.tc.startCam.restype = ctypes.c_int
             self.tc.stopCam.restype = ctypes.c_void_p
@@ -61,6 +61,9 @@ class Inst_interface(QtCore.QObject):
             self.tc.doNUC.restype = ctypes.c_int
             self.tc.getSN.restype = ctypes.c_long
             self.tc.getImage.argtypes = [ctypes.POINTER(ctypes.c_float)]
+            #int GetTemps(float* fpaTemp, float* lensTemp, unsigned short* fpaState)
+            self.tc.getTemps.argtypes = [ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_ushort)]
+            self.tc.getTemps.restype = ctypes.c_int
         except Exception as e:
             self.inst_vars.inst_log.error("Error importing library: %s" % e)
             
@@ -81,7 +84,10 @@ class Inst_interface(QtCore.QObject):
             
             self.imgbuf = numpy.zeros((self.height, self.width), numpy.float32)
             self.datbuf = (ctypes.c_float * self.size)()
-            
+            self.lensTemp = ctypes.c_float()
+            self.fpaTemp = ctypes.c_float()
+            self.fpaState = ctypes.c_ushort()
+
              #Load calibration
             self.calPath = self.inst_vars.inst_cfg["Initialization"]["CalibrationFolder"]
             self.inst_vars.inst_log.info("Loading cals from: " + self.calPath)
@@ -117,14 +123,25 @@ class Inst_interface(QtCore.QObject):
         while  trys < 10:
             t = time()
             self.tc.getImage(self.datbuf)
+            self.tc.getTemps(self.fpaTemp, self.lensTemp, self.fpaState)
+
             if not self.datbuf[0] == 0:
-                #Save metadata
-                imgFile = path.join(self.imgPath, self.filePrefix + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".dat")
-                self.jsonFF["Data"].write(imgFile, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
-                
+
                 #Save binary
+                imgFile = path.join(self.imgPath, self.filePrefix + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".dat")
                 with open(imgFile, 'wb') as out_file:
                     out_file.write(self.datbuf)
+
+                #Save metadata
+                meanT = numpy.mean(self.datbuf)
+                medT = numpy.median(self.datbuf)
+                minT = numpy.min(self.datbuf)
+                maxT = numpy.max(self.datbuf)
+
+                rec = {"file": imgFile, "lensTemp": self.lensTemp.value, "fpaTemp": self.fpaTemp.value, "fpaState": self.fpaState.value, "meanTemp": float(meanT), "medTemp": float(medT), "minTemp": float(minT), "maxTemp": float(maxT)}
+                self.jsonFF["Data"].write(rec, recnum=self.inst_vars.globalTrigCount, timestamp=t, compact=True)
+                
+                self.inst_vars.inst_log.info("Lens T: %f\tFPA T: %f\tFPA State: %d,\nMean T: %f\tMedian T: %f\nMin T: %f\tMax T: %f" % (self.lensTemp.value, self.fpaTemp.value, self.fpaState.value, meanT, medT, minT, maxT))
                     
                 #Update display #Disabled 7-19-18 Nome
                 if self.inst_vars.trigger_source in ("Manual", "Individual") or self.updateDisplay == True:  
@@ -157,7 +174,10 @@ class Inst_interface(QtCore.QObject):
         
         imgPath = path.join(self.inst_vars.inst_cfg["Data"]["absolutePath"], "Thermal")
         
-        imgFile = cachedData[str(recNum)][1]     #Get filename
+        try:
+            imgFile = cachedData[str(recNum)][1]["file"]     #Get filename
+        except (TypeError, KeyError):
+             imgFile = cachedData[str(recNum)][1]
         
         imgFile = path.join(imgPath, path.split(imgFile)[1])
         self.height = cachedHeader["Height"]
