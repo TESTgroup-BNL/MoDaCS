@@ -1,6 +1,6 @@
 #System Imports
-from time import time, strftime
-import logging, configparser, importlib, traceback, sys, json
+from time import time, strftime, sleep
+import logging, configparser, importlib, traceback, sys, json, shutil
 from os import makedirs, path
 from collections import namedtuple
 
@@ -427,6 +427,18 @@ class Inst_obj(QtCore.QObject):
         except Exception as e:
             self.instLog.info(e)
             pass
+        
+        sleep(1)
+
+        #Rename existing json data file so it isn't overwritten; note that this may fail if jsonFF fails to close files
+        try:
+            newpath = self.jsonFF.dataFile[:-5] + strftime("_reset_%Y-%m-%d_%H%M%S") + self.jsonFF.dataFile[-5:]
+            shutil.move(self.jsonFF.dataFile, newpath)
+            self.instLog.info("Previous data file moced to %s" % newpath)
+        except Exception as e:
+            self.instLog.warning("Error saving old data: %s" % str(e))
+
+        #Create new instance
         self.create_inst_interface()
         #self.init_UI_Sigs()
         #self.init()
