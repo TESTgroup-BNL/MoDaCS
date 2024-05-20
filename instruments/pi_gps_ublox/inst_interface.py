@@ -44,7 +44,7 @@ class Inst_interface(QtCore.QObject):
             self.t_gps = threading.Thread(target=self.gps_monitor)
             self.t_gps.start()   
         except Exception as e:
-            self.inst_vars.inst_log.warning(e)
+           raise Exception(e)
         
     def acquire(self):
         d = {}
@@ -74,7 +74,8 @@ class Inst_interface(QtCore.QObject):
         led = False
         self.inst_vars.inst_log.info("Listening thread started.")
 
-        ser = serial.Serial(self.port, baudrate=38400, timeout=1)
+        ser = serial.Serial(self.port, baudrate=38400, timeout=5)
+        sleep(1)
         gps = UbloxGps(ser)
 
         try: 
@@ -102,7 +103,10 @@ class Inst_interface(QtCore.QObject):
                     self.inst_vars.inst_log.warning(err)
 
                 except Exception as err:
+                    #self.listen = False
                     self.inst_vars.inst_log.error(err)
+                    #raise Exception(err)
+                    
         finally:
             ser.close()
         self.inst_vars.inst_log.info("Listening thread finished.")

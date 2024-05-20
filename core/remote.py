@@ -209,6 +209,7 @@ class TCPConnection(QObject):
     dataRecievedSig = pyqtSignal(str, int, int)
     dataSentSig = pyqtSignal(str, int, int)
     clientConnectSig = pyqtSignal()
+    shutdownSig = pyqtSignal()
     
     def __init__(self, cp, main_app, active_insts, mode="server"):
         super().__init__()
@@ -236,7 +237,8 @@ class TCPConnection(QObject):
                 self.thread.setObjectName("TCP Connection(" + self.server_IP + ":" + str(self.port) + ")")
                 self.moveToThread(self.thread)                 #move to new thread
                 main_app.runningThreads.watchThread(self.thread)
-                main_app.finishedSig.connect(self.close)       #make sure thread exits when inst is closed
+                #main_app.finishedSig.connect(self.close)       #make sure thread exits when inst is closed
+                self.shutdownSig.connect(self.close)
                 self.thread.started.connect(self.init)         #make sure object init when thread starts  
                 #main_app.uiReadySig.connect(lambda: self.uiReady = True)
                 
@@ -443,6 +445,7 @@ class TCPConnection(QObject):
             return -1
         
     def close(self):
+        logging.info("Closing remote connections...")
         #Interrupt any init that's still happening
         self.thread.requestInterruption()
         

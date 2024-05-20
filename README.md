@@ -8,7 +8,7 @@ This package is currently under development.
 The goal is to develop a framework that uses a central module/UI to coordinate data acquisition, synchronization with a UAS control system and data storage through a common interface and interchangeable, hardware specific software modules.  Utilizing this structure, the system can be easily reconfigured on the fly to meet the needs of a specific platform or operation, eliminating the need to redevelop complete acquisition systems for specific instrument/platform configurations.  As an instrument module library develops, adding new hardware to a platform will become as simple as enabling the corresponding software module.
 
 Currently being developed with:
-- Python 3.9+
+- Python 3.11
 - Qt 5.11
 
 
@@ -27,12 +27,11 @@ Currently being developed with:
 
 Get everything at once for all current modules and instruments:
 
-	git clone --recurse-submodules https://github.com/TESTgroup-BNL/MoDaCS.git
-	(sudo) pip3 install pyqt5 pyqtgraph paramiko simplekml dronekit seabreeze pyusb pynmea2 rpi_ws281x adafruit-circuitpython-neopixel matplotlib piexif exifread
+	(sudo) pip3 install pyqt5 pyqtgraph paramiko simplekml dronekit seabreeze pyusb pynmea2 rpi_ws281x adafruit-circuitpython-neopixel matplotlib piexif exifread gphoto2 sparkfun-ublox-gps pyulog Pillow tifffile
 
 Requirements:
 
-- *python* (32-bit) >= 3.4 ([https://www.python.org/downloads/](https://www.python.org/downloads/))
+- *python* >= 3.9 ([https://www.python.org/downloads/](https://www.python.org/downloads/))
 - *pyqt5* (available via pip on Windows or under the package name "python3-pyqt5" on Raspbian)
 
 Optional:

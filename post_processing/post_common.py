@@ -145,7 +145,10 @@ class PostProcessing():
             else:
                 self.post_log.info("\t\tNo processing function '%s' found, skipping instrument" % handler_name)
 
+        formatter = logging.Formatter("[%(levelname)-10s] (%(threadName)-10s), %(asctime)s,        [Post_Processsing]: %(message)s")
+        self.log_sh.setFormatter(formatter)
         self.post_log.info("Done with post processing.")
+        self.post_log.removeHandler(self.log_sh)
         return None
 
 
