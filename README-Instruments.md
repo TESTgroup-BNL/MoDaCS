@@ -1,5 +1,7 @@
 # Instrument Modules
 
+<img src=".\images\inst.png">
+
 
 <table><tr><th>Instrument</th><th>Dependencies</th><th>Notes</th></tr>
 <tr><td rowspan="3">

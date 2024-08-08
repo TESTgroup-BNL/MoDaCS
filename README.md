@@ -64,8 +64,21 @@ Optional:
 - *numpy* (allows Viewer Mode to work for most instruments without all dependencies)
 
     Available via pip
-    
+
+# Overview
+<img src=".\images\outline.png">
+
 ## [Instrument Modules Information](README-Instruments.md)
+
+<img src=".\images\inst.png">
+
+## Event Handlers & Connections
+
+<img src=".\images\events.png">
+
+## Remote Connections
+
+<img src=".\images\remote.png">
     
 ## Running MoDaCS
 
